@@ -24,7 +24,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: "/forTest",
       routes: {
+        //按R，测试替换
+        "/forTest": (context) => IndexPage(),
         "/": (context) => IndexPage(), //VoiceRoomListPage()
         "/index": (context) => IndexPage(), //VoiceRoomListPage()
         "/login": (context) => LoginPage(),

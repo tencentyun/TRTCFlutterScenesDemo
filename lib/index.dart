@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './utils/TxUtils.dart' as TxUtils;
 import 'utils/constants.dart' as constants;
+import './base/TestFlowDelegate.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage({Key key}) : super(key: key);
@@ -76,9 +77,6 @@ class IndexPageState extends State<IndexPage> {
           tooltip: '退出',
           onPressed: () async {
             await logout();
-            // if (delete != null) {
-            //   Navigator.pop(context);
-            // }
           },
         ),
         title: const Text('TRTC'),
@@ -87,14 +85,28 @@ class IndexPageState extends State<IndexPage> {
         // automaticallyImplyLeading: false,
         backgroundColor: Color.fromRGBO(14, 25, 44, 1),
       ),
-      body: Center(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, "/voiceRoom/list");
-          },
-          child: Container(
-            child: Text('go TRTCVoiceRoomDemo'),
-          ),
+      body: Container(
+        color: Color.fromRGBO(14, 25, 44, 1),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Image.asset("assets/images/bg_main_title.png")..height,
+            Flow(
+              delegate: TestFlowDelegate(margin: EdgeInsets.all(10.0)),
+              children: <Widget>[
+                GestureDetector(
+                  child: Container(
+                    width: 150.0,
+                    height: 80.0,
+                    alignment: Alignment.center,
+                    child: Text('语音聊天室'),
+                    color: Colors.white,
+                  ),
+                  onTap: () => {goVoiceRoomDemo()},
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

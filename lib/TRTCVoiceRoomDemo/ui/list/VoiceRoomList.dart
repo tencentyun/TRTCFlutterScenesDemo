@@ -48,10 +48,34 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
               },
             ),
           ]),
-      body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {},
-        child: Text('空'),
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(8.0),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, //Grid按两列显示
+                mainAxisSpacing: 10.0,
+                crossAxisSpacing: 10.0,
+                childAspectRatio: 4.0,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  //创建子widget
+                  return Container(
+                    alignment: Alignment.center,
+                    height: 850,
+                    color: Colors.cyan[100 * (index % 9)],
+                    child: Container(
+                      child: Text('xxxx $index' * 6100),
+                    ),
+                  );
+                },
+                childCount: 5,
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
@@ -67,5 +91,40 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
         child: Icon(Icons.add),
       ),
     );
+  }
+}
+
+class TestFlowDelegate extends FlowDelegate {
+  EdgeInsets margin = EdgeInsets.zero;
+  TestFlowDelegate({this.margin});
+  @override
+  void paintChildren(FlowPaintingContext context) {
+    var x = margin.left;
+    var y = margin.top;
+    //计算每一个子widget的位置
+    for (int i = 0; i < context.childCount; i++) {
+      var w = context.getChildSize(i).width + x + margin.right;
+      if (w < context.size.width) {
+        context.paintChild(i, transform: Matrix4.translationValues(x, y, 0.0));
+        x = w + margin.left;
+      } else {
+        x = margin.left;
+        y += context.getChildSize(i).height + margin.top + margin.bottom;
+        //绘制子widget(有优化)
+        context.paintChild(i, transform: Matrix4.translationValues(x, y, 0.0));
+        x += context.getChildSize(i).width + margin.left + margin.right;
+      }
+    }
+  }
+
+  @override
+  getSize(BoxConstraints constraints) {
+    //指定Flow的大小
+    return Size(double.infinity, 200.0);
+  }
+
+  @override
+  bool shouldRepaint(FlowDelegate oldDelegate) {
+    return oldDelegate != this;
   }
 }
