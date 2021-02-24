@@ -15,7 +15,7 @@ setStorageByKey(key, value) async {
   sharedPreferences.setString(key, value);
 }
 
-getStorageByKey(key) async {
+Future<String> getStorageByKey(key) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   return sharedPreferences.getString(key);
 }

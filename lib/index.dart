@@ -11,6 +11,22 @@ class IndexPage extends StatefulWidget {
 }
 
 class IndexPageState extends State<IndexPage> {
+  @override
+  void initState() {
+    super.initState();
+    var userObject = TxUtils.getStorageByKey(constants.USERID_KEY);
+    userObject.then((value) => {
+          if (value == null || value == '')
+            {
+              Navigator.pushNamed(
+                context,
+                "/login",
+              )
+            }
+        });
+    print('init state:');
+  }
+
   Future<bool> logout() {
     return showDialog<bool>(
       context: context,
@@ -28,7 +44,10 @@ class IndexPageState extends State<IndexPage> {
               onPressed: () {
                 //关闭对话框并返回true
                 TxUtils.setStorageByKey(constants.USERID_KEY, '');
-                Navigator.of(context).pop(true);
+                Navigator.pushNamed(
+                  context,
+                  "/login",
+                );
               },
             ),
           ],
@@ -56,10 +75,10 @@ class IndexPageState extends State<IndexPage> {
           icon: Icon(Icons.person),
           tooltip: '退出',
           onPressed: () async {
-            bool delete = await logout();
-            if (delete != null) {
-              Navigator.pop(context);
-            }
+            await logout();
+            // if (delete != null) {
+            //   Navigator.pop(context);
+            // }
           },
         ),
         title: const Text('TRTC'),
@@ -69,7 +88,14 @@ class IndexPageState extends State<IndexPage> {
         backgroundColor: Color.fromRGBO(14, 25, 44, 1),
       ),
       body: Center(
-        child: Text('index'),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, "/voiceRoom/list");
+          },
+          child: Container(
+            child: Text('go TRTCVoiceRoomDemo'),
+          ),
+        ),
       ),
     );
   }

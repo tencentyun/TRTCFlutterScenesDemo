@@ -34,11 +34,25 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
+// 隐藏底部输入框
+  unFocus() {
+    if (userFocusNode.hasFocus) {
+      userFocusNode.unfocus();
+    }
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    unFocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('腾讯云TRTC'),
         centerTitle: true,
         elevation: 0,
@@ -65,7 +79,7 @@ class LoginPageState extends State<LoginPage> {
                   children: [
                     TextField(
                         style: TextStyle(color: Colors.white),
-                        autofocus: false,
+                        autofocus: true,
                         focusNode: userFocusNode,
                         decoration: InputDecoration(
                           labelText: "用户名",
@@ -73,7 +87,10 @@ class LoginPageState extends State<LoginPage> {
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
-                          border: InputBorder.none,
+                          //border: InputBorder.none,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
                         ),
                         keyboardType: TextInputType.text,
                         onChanged: (value) => this.userId = value),

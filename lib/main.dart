@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        "/": (context) => LoginPage(), //VoiceRoomListPage()
+        "/": (context) => IndexPage(), //VoiceRoomListPage()
         "/index": (context) => IndexPage(), //VoiceRoomListPage()
         "/login": (context) => LoginPage(),
         "/voiceRoom/list": (context) => VoiceRoomListPage(),
