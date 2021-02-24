@@ -1,19 +1,22 @@
+/*
+ * 创建房间
+ */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 import 'package:toast/toast.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../debug/GenerateTestUserSig.dart';
+import '../../../debug/GenerateTestUserSig.dart';
 
 // 多人视频会议首页
-class IndexPage extends StatefulWidget {
-  IndexPage({Key key}) : super(key: key);
+class VoiceRoomCreatePage extends StatefulWidget {
+  VoiceRoomCreatePage({Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => IndexPageState();
+  State<StatefulWidget> createState() => VoiceRoomCreatePageState();
 }
 
-class IndexPageState extends State<IndexPage> {
+class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   /// 用户id
   String userId = '';
 
@@ -119,7 +122,7 @@ class IndexPageState extends State<IndexPage> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: const Text('多人视频会议'),
+        title: const Text('创建语聊沙龙'),
         centerTitle: true,
         elevation: 0,
         // automaticallyImplyLeading: false,
@@ -175,77 +178,6 @@ class IndexPageState extends State<IndexPage> {
                         ),
                         keyboardType: TextInputType.text,
                         onChanged: (value) => this.userId = value),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title:
-                          Text("开启摄像头", style: TextStyle(color: Colors.white)),
-                      trailing: Switch(
-                        value: enabledCamera,
-                        onChanged: (value) =>
-                            this.setState(() => enabledCamera = value),
-                      ),
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title:
-                          Text("开启麦克风", style: TextStyle(color: Colors.white)),
-                      trailing: Switch(
-                        value: enabledMicrophone,
-                        onChanged: (value) =>
-                            this.setState(() => enabledMicrophone = value),
-                      ),
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title:
-                          Text("音质选择", style: TextStyle(color: Colors.white)),
-                      subtitle: Row(
-                        children: [
-                          {
-                            "text": "语音",
-                            "value": TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH
-                          },
-                          {
-                            "text": "标准",
-                            "value": TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT
-                          },
-                          {
-                            "text": "音乐",
-                            "value": TRTCCloudDef.TRTC_AUDIO_QUALITY_MUSIC
-                          },
-                        ]
-                            .map(
-                              (e) => Expanded(
-                                child: Row(
-                                  children: [
-                                    Theme(
-                                      data: ThemeData(
-                                          unselectedWidgetColor:
-                                              Color.fromRGBO(102, 102, 102, 1)),
-                                      child: Radio(
-                                        hoverColor: Colors.white,
-                                        value: e["value"],
-                                        groupValue: this.quality,
-                                        onChanged: (value) => this.setState(
-                                            () => this.quality = value),
-                                      ),
-                                    ),
-                                    Text(e["text"],
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
                   ],
                 ),
               ),

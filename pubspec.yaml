@@ -28,6 +28,7 @@ dependencies:
   crypto: 2.1.5
   permission_handler: 5.0.1+1
   toast: ^0.1.5
+  url_launcher: ^5.1.2
   flutter:
     sdk: flutter
 

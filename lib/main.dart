@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './trtcvoiceroomdemo/ui/index.dart';
+import './TRTCVoiceRoomDemo/ui/list/VoiceRoomList.dart';
+import './TRTCVoiceRoomDemo/ui/list/VoiceRoomCreate.dart';
+import './TRTCVoiceRoomDemo/ui/room/VoiceRoomAnchor.dart';
+import './TRTCVoiceRoomDemo/ui/room/VoiceRoomAudience.dart';
+import './index.dart';
+import './login/LoginPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,8 +25,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        "/": (context) => IndexPage(),
-        "/index": (context) => IndexPage(),
+        "/": (context) => LoginPage(), //VoiceRoomListPage()
+        "/index": (context) => IndexPage(), //VoiceRoomListPage()
+        "/login": (context) => LoginPage(),
+        "/voiceRoom/list": (context) => VoiceRoomListPage(),
+        "/voiceRoom/roomCreate": (context) => VoiceRoomCreatePage(),
+        "/voiceRoom/roomAnchor": (context) => VoiceRoomAnchorPage(),
+        "/voiceRoom/roomAudience": (context) => VoiceRoomAudiencePage(),
       },
     );
   }
