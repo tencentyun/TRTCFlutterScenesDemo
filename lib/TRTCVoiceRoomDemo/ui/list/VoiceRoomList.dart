@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart';
 import 'package:dio/dio.dart';
@@ -114,40 +115,47 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           ]),
       body: Container(
         color: Color.fromRGBO(14, 25, 44, 1),
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 8.0),
-              sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, //Grid按两列显示
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 10.0,
-                  childAspectRatio: 1.0,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    RoomInfo info = roomInfList[index];
-                    //创建子widget
-                    return InkWell(
-                      onTap: () {
-                        goRoomPage(info);
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        color: Colors.blue,
-                        child: Text(
-                          "roomId:" + info.roomId.toString(),
-                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+        child: EasyRefresh(
+          onRefresh: () async {
+            print('onRefresh');
+            getRoomList();
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 8.0),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, //Grid按两列显示
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 10.0,
+                    childAspectRatio: 1.0,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      RoomInfo info = roomInfList[index];
+                      //创建子widget
+                      return InkWell(
+                        onTap: () {
+                          goRoomPage(info);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          color: Colors.blue,
+                          child: Text(
+                            "roomId:" + info.roomId.toString(),
+                            style:
+                                TextStyle(fontSize: 20.0, color: Colors.white),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  childCount: roomInfList.length,
+                      );
+                    },
+                    childCount: roomInfList.length,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
