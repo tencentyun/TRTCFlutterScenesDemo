@@ -90,13 +90,13 @@ class IndexPageState extends State<IndexPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Image.asset("assets/images/bg_main_title.png")..height,
+            Image.asset("assets/images/bg_main_title.png"),
             Flow(
               delegate: TestFlowDelegate(margin: EdgeInsets.all(10.0)),
               children: <Widget>[
                 GestureDetector(
                   child: Container(
-                    width: 150.0,
+                    width: 550.0,
                     height: 80.0,
                     alignment: Alignment.center,
                     child: Text('语音聊天室'),

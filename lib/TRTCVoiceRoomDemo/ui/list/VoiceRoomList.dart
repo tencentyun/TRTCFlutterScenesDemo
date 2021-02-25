@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart';
+import 'package:dio/dio.dart';
+import '../../../debug/Config.dart';
+import '../../../utils/TxUtils.dart' as TxUtils;
 
 /*
  * 房间列表
@@ -14,6 +17,7 @@ class VoiceRoomListPage extends StatefulWidget {
 }
 
 class VoiceRoomListPageState extends State<VoiceRoomListPage> {
+  List<RoomInfo> roomInfList = new List<RoomInfo>();
   openUrl(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -25,6 +29,67 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
         gravity: Toast.CENTER,
       );
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //获取数据
+    this.getRoomList();
+  }
+
+  getRoomList() {
+    Dio dio = new Dio();
+    dio.get(
+      "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/forTest",
+      queryParameters: {
+        "method": "getRoomList",
+        "appId": Config.sdkAppId,
+        "type": 'voiceRoom'
+      },
+    ).then((value) {
+      var data = value.data;
+      print(data);
+      List<RoomInfo> roomls = new List<RoomInfo>();
+      if (data["errorCode"] == 0) {
+        List<dynamic> resList = data["data"] as List<dynamic>;
+        for (int i = 0; i < resList.length; i++) {
+          dynamic item = resList[i];
+          //房间信息
+          roomls.add(new RoomInfo(
+              item["id"].toString(), item["roomId"], item["title"]));
+          roomls.add(new RoomInfo(item["id"].toString() + '-22',
+              item["roomId"] + '-22', item["title"]));
+          roomls.add(new RoomInfo(item["id"].toString() + '-33',
+              item["roomId"] + '-33', item["title"]));
+        }
+      } else {
+        TxUtils.showToast(data['errorMessage'], context);
+      }
+      setState(() {
+        roomInfList = roomls;
+      });
+    });
+  }
+
+  goRoomPage(RoomInfo roomInfo) {
+    if (roomInfo.id.indexOf('-22') > 0) {
+      Navigator.pushNamed(
+        context,
+        "/voiceRoom/roomAudience",
+        arguments: {
+          'roomId': roomInfo.roomId,
+        },
+      );
+      return;
+    }
+    Navigator.pushNamed(
+      context,
+      "/voiceRoom/roomAnchor",
+      arguments: {
+        'roomId': roomInfo.roomId,
+      },
+    );
   }
 
   @override
@@ -42,49 +107,54 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
               icon: const Icon(Icons.contact_support),
               tooltip: '查看说明文档',
               onPressed: () {
-                const url =
-                    'https://cloud.tencent.com/document/product/647/35428';
-                this.openUrl(url);
+                this.openUrl(
+                    'https://cloud.tencent.com/document/product/647/35428');
               },
             ),
           ]),
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.all(8.0),
-            sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, //Grid按两列显示
-                mainAxisSpacing: 10.0,
-                crossAxisSpacing: 10.0,
-                childAspectRatio: 4.0,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  //创建子widget
-                  return Container(
-                    alignment: Alignment.center,
-                    height: 850,
-                    color: Colors.cyan[100 * (index % 9)],
-                    child: Container(
-                      child: Text('xxxx $index' * 6100),
-                    ),
-                  );
-                },
-                childCount: 5,
+      body: Container(
+        color: Color.fromRGBO(14, 25, 44, 1),
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 8.0),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, //Grid按两列显示
+                  mainAxisSpacing: 10.0,
+                  crossAxisSpacing: 10.0,
+                  childAspectRatio: 1.0,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    RoomInfo info = roomInfList[index];
+                    //创建子widget
+                    return InkWell(
+                      onTap: () {
+                        goRoomPage(info);
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        color: Colors.blue,
+                        child: Text(
+                          "roomId:" + info.roomId.toString(),
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                      ),
+                    );
+                  },
+                  childCount: roomInfList.length,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
           Navigator.pushNamed(
             context,
             "/voiceRoom/roomCreate",
-            arguments: {
-              "userId": 'test',
-            },
           )
         },
         tooltip: '创建语音聊天室',
@@ -94,37 +164,14 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
   }
 }
 
-class TestFlowDelegate extends FlowDelegate {
-  EdgeInsets margin = EdgeInsets.zero;
-  TestFlowDelegate({this.margin});
-  @override
-  void paintChildren(FlowPaintingContext context) {
-    var x = margin.left;
-    var y = margin.top;
-    //计算每一个子widget的位置
-    for (int i = 0; i < context.childCount; i++) {
-      var w = context.getChildSize(i).width + x + margin.right;
-      if (w < context.size.width) {
-        context.paintChild(i, transform: Matrix4.translationValues(x, y, 0.0));
-        x = w + margin.left;
-      } else {
-        x = margin.left;
-        y += context.getChildSize(i).height + margin.top + margin.bottom;
-        //绘制子widget(有优化)
-        context.paintChild(i, transform: Matrix4.translationValues(x, y, 0.0));
-        x += context.getChildSize(i).width + margin.left + margin.right;
-      }
-    }
-  }
-
-  @override
-  getSize(BoxConstraints constraints) {
-    //指定Flow的大小
-    return Size(double.infinity, 200.0);
-  }
-
-  @override
-  bool shouldRepaint(FlowDelegate oldDelegate) {
-    return oldDelegate != this;
+class RoomInfo {
+  String roomId;
+  String title;
+  String id;
+  RoomInfo(String id, String roomId, String title) {
+    print(id);
+    this.id = id;
+    this.title = title;
+    this.roomId = roomId;
   }
 }

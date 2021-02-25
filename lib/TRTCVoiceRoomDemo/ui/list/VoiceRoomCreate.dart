@@ -24,16 +24,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   String userSig;
 
   /// 会议id
-  String meetId = '';
-
-  /// 是否开启摄像头
-  bool enabledCamera = true;
-
-  /// 是否开启麦克风
-  bool enabledMicrophone = false;
-
-  /// 音质选择
-  int quality = TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH;
+  String meetTitle = '';
 
   final meetIdFocusNode = FocusNode();
   final userFocusNode = FocusNode();
@@ -68,7 +59,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     unFocus();
   }
 
-  enterMeeting() async {
+  createVoiceRoom() async {
     if (GenerateTestUserSig.sdkAppId == 0) {
       showToast('请填写SDKAPPID');
       return;
@@ -77,18 +68,12 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
       showToast('请填写密钥');
       return;
     }
-    meetId = meetId.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-    if (meetId == '') {
-      showToast('请输入会议号');
+    meetTitle = meetTitle.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+    if (meetTitle == '') {
+      showToast('请输入房间主题');
       return;
-    } else if (meetId == '0') {
-      showToast('请输入合法的会议ID');
-      return;
-    } else if (meetId.toString().length > 10) {
-      showToast('会议ID过长，请输入合法的会议ID');
-      return;
-    } else if (!new RegExp(r"[0-9]+$").hasMatch(meetId)) {
-      showToast('会议ID只能为数字，请输入合法的会议ID');
+    } else if (meetTitle.toString().length > 250) {
+      showToast('房间主题过长，请输入合法的房间主题');
       return;
     }
     userId = userId.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
@@ -105,12 +90,12 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     unFocus();
     if (await Permission.camera.request().isGranted &&
         await Permission.microphone.request().isGranted) {
-      Navigator.pushNamed(context, "/video", arguments: {
-        "meetId": int.parse(meetId),
+      Navigator.pushNamed(context, "/voiceRoom/roomAnchor", arguments: {
+        "meetId": int.parse(meetTitle),
         "userId": userId,
-        "enabledCamera": enabledCamera,
-        "enabledMicrophone": enabledMicrophone,
-        "quality": quality
+        "enabledCamera": false,
+        "enabledMicrophone": true,
+        "quality": TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH
       });
     } else {
       showToast('需要获取音视频权限才能进入');
@@ -153,8 +138,8 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                         autofocus: false,
                         focusNode: meetIdFocusNode,
                         decoration: InputDecoration(
-                          labelText: "会议号",
-                          hintText: "请输入会议号",
+                          labelText: "主题",
+                          hintText: "默认房间名称",
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
@@ -163,18 +148,20 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                           ),
                         ),
                         keyboardType: TextInputType.number,
-                        onChanged: (value) => meetId = value),
+                        onChanged: (value) => meetTitle = value),
                     TextField(
                         style: TextStyle(color: Colors.white),
                         autofocus: false,
                         focusNode: userFocusNode,
                         decoration: InputDecoration(
-                          labelText: "用户ID",
-                          hintText: "请输入用户ID",
+                          labelText: "用户名",
+                          hintText: "默认用户名",
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
-                          border: InputBorder.none,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
                         ),
                         keyboardType: TextInputType.text,
                         onChanged: (value) => this.userId = value),
@@ -188,10 +175,10 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                     Expanded(
                       child: RaisedButton(
                         padding: EdgeInsets.all(15.0),
-                        child: Text("进入会议"),
-                        color: Theme.of(context).primaryColor,
+                        child: Text("开始交谈"),
+                        color: Theme.of(context).primaryColor, //#0062E3;
                         textColor: Colors.white,
-                        onPressed: enterMeeting,
+                        onPressed: createVoiceRoom,
                       ),
                     ),
                   ],
