@@ -13,6 +13,14 @@ class VoiceRoomAnchorPage extends StatefulWidget {
 }
 
 class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
+  UserStatus userStatus = UserStatus.NoSpeaking;
+  UserType userType = UserType.Administrator;
+  List<String> speakingList = new List<String>();
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,20 +35,106 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       body: ConstrainedBox(
         constraints: BoxConstraints.expand(),
         child: Stack(
-          alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
+          alignment: Alignment.topLeft, //指定未定位或部分定位widget的对齐方式
           fit: StackFit.expand,
           children: <Widget>[
-            //未定位,撑满
             Container(
-              //这里设置容器的对齐方式
-              alignment: Alignment.center,
-              child: Text("未进行定位", style: TextStyle(color: Colors.red)),
+              alignment: Alignment.topLeft,
+              child: Flex(
+                direction: Axis.vertical,
+                children: <Widget>[
+                  Expanded(
+                    flex: 0,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      color: Colors.red,
+                      width: MediaQuery.of(context).size.width,
+                      //height: 200,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text('听众图标'),
+                              Text('听众'),
+                            ],
+                          ),
+                          Container(
+                              height: 130,
+                              width: MediaQuery.of(context).size.width,
+                              child: GridView(
+                                padding: EdgeInsets.zero,
+                                gridDelegate:
+                                    SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: 50.0,
+                                        childAspectRatio: 1.0),
+                                children: <Widget>[
+                                  Icon(Icons.beach_access),
+                                  Icon(Icons.cake),
+                                  Icon(Icons.free_breakfast),
+                                  Icon(Icons.ac_unit),
+                                  Icon(Icons.airport_shuttle),
+                                  Icon(Icons.all_inclusive),
+                                  Icon(Icons.beach_access),
+                                  Icon(Icons.ac_unit),
+                                  Icon(Icons.airport_shuttle),
+                                  Icon(Icons.all_inclusive),
+                                  Icon(Icons.beach_access),
+                                  Icon(Icons.cake),
+                                  Icon(Icons.free_breakfast),
+                                  Icon(Icons.ac_unit),
+                                  Icon(Icons.airport_shuttle),
+                                  Icon(Icons.all_inclusive),
+                                  Icon(Icons.beach_access),
+                                  Icon(Icons.cake),
+                                  Icon(Icons.free_breakfast),
+                                  Icon(Icons.airport_shuttle),
+                                  Icon(Icons.all_inclusive),
+                                  Icon(Icons.beach_access),
+                                  Icon(Icons.ac_unit),
+                                  Icon(Icons.airport_shuttle),
+                                  Icon(Icons.all_inclusive),
+                                  Icon(Icons.beach_access),
+                                  Icon(Icons.cake),
+                                  Icon(Icons.free_breakfast),
+                                  Icon(Icons.ac_unit),
+                                  Icon(Icons.airport_shuttle),
+                                  Icon(Icons.all_inclusive),
+                                  Icon(Icons.beach_access),
+                                  Icon(Icons.cake),
+                                  Icon(Icons.free_breakfast),
+                                ],
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      color: Colors.green,
+                      width: MediaQuery.of(context).size.width,
+                      child: Text('BUTTOM'),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 0,
+                    child: Container(
+                      height: 60,
+                    ),
+                  )
+                ],
+              ),
               color: Color.fromRGBO(14, 25, 44, 1),
             ),
             RoomBottomBar(
-              isAnchor: true,
+              userStatus: userStatus,
+              userType: userType,
               onTab: (v) {
                 print('onTab---' + v);
+                setState(() {
+                  userStatus = UserStatus.Speaking;
+                  userType = UserType.Audience;
+                });
               },
             ),
           ],
