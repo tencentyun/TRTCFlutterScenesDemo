@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widget/RoomBottomBar.dart';
+import '../widget/AnchorItem.dart';
+import '../widget/AudienceItem.dart';
 
 /*
  *  主播界面
@@ -15,7 +17,49 @@ class VoiceRoomAnchorPage extends StatefulWidget {
 class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   UserStatus userStatus = UserStatus.NoSpeaking;
   UserType userType = UserType.Administrator;
-  List<String> speakingList = new List<String>();
+  List<String> _AnchorList = [
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44'
+  ];
+  List<String> _AudienceList = [
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44',
+    '2',
+    '44',
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44',
+    '2',
+    '33',
+    '44'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -43,77 +87,32 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
               child: Flex(
                 direction: Axis.vertical,
                 children: <Widget>[
-                  Expanded(
-                    flex: 0,
-                    child: Container(
-                      alignment: Alignment.topLeft,
-                      color: Colors.red,
-                      width: MediaQuery.of(context).size.width,
-                      //height: 200,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text('听众图标'),
-                              Text('听众'),
-                            ],
-                          ),
-                          Container(
-                              height: 130,
-                              width: MediaQuery.of(context).size.width,
-                              child: GridView(
-                                padding: EdgeInsets.zero,
-                                gridDelegate:
-                                    SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 50.0,
-                                        childAspectRatio: 1.0),
-                                children: <Widget>[
-                                  Icon(Icons.beach_access),
-                                  Icon(Icons.cake),
-                                  Icon(Icons.free_breakfast),
-                                  Icon(Icons.ac_unit),
-                                  Icon(Icons.airport_shuttle),
-                                  Icon(Icons.all_inclusive),
-                                  Icon(Icons.beach_access),
-                                  Icon(Icons.ac_unit),
-                                  Icon(Icons.airport_shuttle),
-                                  Icon(Icons.all_inclusive),
-                                  Icon(Icons.beach_access),
-                                  Icon(Icons.cake),
-                                  Icon(Icons.free_breakfast),
-                                  Icon(Icons.ac_unit),
-                                  Icon(Icons.airport_shuttle),
-                                  Icon(Icons.all_inclusive),
-                                  Icon(Icons.beach_access),
-                                  Icon(Icons.cake),
-                                  Icon(Icons.free_breakfast),
-                                  Icon(Icons.airport_shuttle),
-                                  Icon(Icons.all_inclusive),
-                                  Icon(Icons.beach_access),
-                                  Icon(Icons.ac_unit),
-                                  Icon(Icons.airport_shuttle),
-                                  Icon(Icons.all_inclusive),
-                                  Icon(Icons.beach_access),
-                                  Icon(Icons.cake),
-                                  Icon(Icons.free_breakfast),
-                                  Icon(Icons.ac_unit),
-                                  Icon(Icons.airport_shuttle),
-                                  Icon(Icons.all_inclusive),
-                                  Icon(Icons.beach_access),
-                                  Icon(Icons.cake),
-                                  Icon(Icons.free_breakfast),
-                                ],
-                              )),
-                        ],
-                      ),
+                  DescriptionTitle("", "主播"),
+                  Container(
+                    height: 130,
+                    width: MediaQuery.of(context).size.width,
+                    child: GridView(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 120.0,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 25,
+                          childAspectRatio: 1.0),
+                      children: _AnchorList.map((e) => AnchorItem()).toList(),
                     ),
                   ),
+                  DescriptionTitle("", "听众"),
                   Expanded(
                     flex: 2,
-                    child: Container(
-                      color: Colors.green,
-                      width: MediaQuery.of(context).size.width,
-                      child: Text('BUTTOM'),
+                    child: GridView(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 80.0,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 25,
+                          childAspectRatio: 1.0),
+                      children:
+                          _AudienceList.map((e) => AudienceItem()).toList(),
                     ),
                   ),
                   Expanded(
@@ -141,5 +140,21 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         ),
       ),
     );
+  }
+}
+
+class DescriptionTitle extends StatelessWidget {
+  DescriptionTitle(this.imgUrl, this.title, {Key key}) : super(key: key);
+  final String imgUrl;
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Icon(Icons.ac_unit_sharp),
+      Text(
+        "  " + title,
+        style: TextStyle(color: Colors.white),
+      ),
+    ]);
   }
 }
