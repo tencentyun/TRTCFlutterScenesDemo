@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../widget/RoomBottomBar.dart';
 import '../widget/AnchorItem.dart';
 import '../widget/AudienceItem.dart';
+import '../widget/RoomTopMsg.dart';
 
 /*
  *  主播界面
@@ -87,6 +88,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
               child: Flex(
                 direction: Axis.vertical,
                 children: <Widget>[
+                  RoomTopMessage(
+                    message: 'xxx',
+                  ),
                   DescriptionTitle("", "主播"),
                   Container(
                     height: 120,
