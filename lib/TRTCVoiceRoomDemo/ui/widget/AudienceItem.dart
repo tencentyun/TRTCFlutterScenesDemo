@@ -12,7 +12,7 @@ class _AudienceItemState extends State<AudienceItem> {
     return Container(
       height: 100,
       width: 60,
-      color: Colors.red,
+      color: Colors.greenAccent,
       child: Text(
         'AudienceItem',
       ),

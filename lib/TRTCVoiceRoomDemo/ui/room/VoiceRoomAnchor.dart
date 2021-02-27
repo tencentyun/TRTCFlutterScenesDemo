@@ -89,7 +89,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                 children: <Widget>[
                   DescriptionTitle("", "主播"),
                   Container(
-                    height: 130,
+                    height: 120,
                     width: MediaQuery.of(context).size.width,
                     child: GridView(
                       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
