@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../utils/TxUtils.dart' as TxUtils;
+import '../utils/TxUtils.dart';
 import '../utils/constants.dart' as constants;
 
 /*

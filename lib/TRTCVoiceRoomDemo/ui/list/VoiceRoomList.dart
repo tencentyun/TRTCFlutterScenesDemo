@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart';
 import 'package:dio/dio.dart';
 import '../../../debug/Config.dart';
-import '../../../utils/TxUtils.dart' as TxUtils;
+import '../../../utils/TxUtils.dart';
 
 /*
  * 房间列表
@@ -203,7 +203,7 @@ class RoomInfo {
   int onLineCount;
   RoomInfo(String id, String roomId, String title, String adminName,
       int onLineCount) {
-    if (title == null) title = '';
+    if (title == null) title = '--';
     if (adminName == null) adminName = '';
     this.id = id;
     this.title = title;
