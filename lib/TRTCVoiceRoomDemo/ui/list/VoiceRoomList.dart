@@ -57,12 +57,12 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
         for (int i = 0; i < resList.length; i++) {
           dynamic item = resList[i];
           //房间信息
-          roomls.add(new RoomInfo(
-              item["id"].toString(), item["roomId"], item["title"]));
+          roomls.add(new RoomInfo(item["id"].toString(), item["roomId"],
+              item["title"], "admin1", 1));
           roomls.add(new RoomInfo(item["id"].toString() + '-22',
-              item["roomId"] + '-22', item["title"]));
+              item["roomId"] + '-22', item["title"], "admin1", 1));
           roomls.add(new RoomInfo(item["id"].toString() + '-33',
-              item["roomId"] + '-33', item["title"]));
+              item["roomId"] + '-33', item["title"], "admin1", 2));
         }
       } else {
         TxUtils.showToast(data['errorMessage'], context);
@@ -139,14 +139,37 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                         onTap: () {
                           goRoomPage(info);
                         },
-                        child: Container(
-                          alignment: Alignment.center,
-                          color: Colors.blue,
-                          child: Text(
-                            "roomId:" + info.roomId.toString(),
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
-                          ),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset(
+                              "assets/images/headPortrait/2.png",
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              left: 10,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(info.title),
+                                  Text(info.adminName),
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              right: 10,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    info.onLineCount.toString() + '人在线',
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
                         ),
                       );
                     },
@@ -176,10 +199,17 @@ class RoomInfo {
   String roomId;
   String title;
   String id;
-  RoomInfo(String id, String roomId, String title) {
-    print(id);
+  String adminName;
+  int onLineCount;
+  RoomInfo(String id, String roomId, String title, String adminName,
+      int onLineCount) {
+    if (title == null) title = '';
+    if (adminName == null) adminName = '';
     this.id = id;
     this.title = title;
     this.roomId = roomId;
+    this.adminName = adminName;
+    if (onLineCount == null) onLineCount = 1;
+    this.onLineCount = onLineCount;
   }
 }

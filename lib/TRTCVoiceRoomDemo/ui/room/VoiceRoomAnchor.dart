@@ -154,7 +154,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                                 'assets/images/headPortrait/$_anchorItem.png',
                             isAdministrator: _anchorItem == '1' ? true : false,
                             isSoundOff: _anchorItem == '1' ? false : true,
-                            onUserTap: () {},
+                            onUserTap: () {
+                              //踢人
+                            },
                           )).toList(),
                     ),
                   ),
@@ -173,7 +175,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                           _AudienceList.map((_audienceItem) => AudienceItem(
                                 userImgUrl:
                                     'assets/images/headPortrait/$_audienceItem.png',
-                                userName: _audienceItem,
+                                userName: _audienceItem * 5,
                               )).toList(),
                     ),
                   ),
