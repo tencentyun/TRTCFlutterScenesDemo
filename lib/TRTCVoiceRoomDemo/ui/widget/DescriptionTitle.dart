@@ -9,14 +9,20 @@ class DescriptionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Image.asset(
-          imgUrl,
-          height: 16,
-          width: 16,
+        Padding(
+          padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+          child: Image.asset(
+            imgUrl,
+            height: 16,
+            width: 16,
+          ),
         ),
-        Text(
-          "  " + title,
-          style: TextStyle(color: Colors.white),
+        Padding(
+          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+          child: Text(
+            title,
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ],
     );

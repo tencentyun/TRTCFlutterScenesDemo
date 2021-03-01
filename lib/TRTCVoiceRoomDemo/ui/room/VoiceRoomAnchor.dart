@@ -136,7 +136,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                       this.onAgree();
                     },
                   ),
-                  DescriptionTitle("assets/images/Anchor_ICON.png", "主播"),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                    child:
+                        DescriptionTitle("assets/images/Anchor_ICON.png", "主播"),
+                  ),
                   Container(
                     height: 140,
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
