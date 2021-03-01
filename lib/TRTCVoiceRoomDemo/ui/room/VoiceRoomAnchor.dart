@@ -170,10 +170,10 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                     child: GridView(
                       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 90.0,
-                        mainAxisSpacing: 15,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 1.0,
+                        maxCrossAxisExtent: 100.0,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 15,
+                        childAspectRatio: 0.9,
                       ),
                       children:
                           _AudienceList.map((_audienceItem) => AudienceItem(
