@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 class AnchorItem extends StatefulWidget {
   AnchorItem({
     Key key,
-    this.userName,
-    this.userImgUrl,
-    this.isAdministrator,
+    this.userName = "",
+    this.userImgUrl = "",
+    this.isAdministrator = false,
     this.onUserTap,
     this.isSoundOff,
   }) : super(key: key);

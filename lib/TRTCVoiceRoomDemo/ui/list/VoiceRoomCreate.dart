@@ -18,7 +18,7 @@ class VoiceRoomCreatePage extends StatefulWidget {
 
 class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   /// 用户id
-  String userId = '';
+  String userName = '';
 
   /// 登录后签名
   String userSig;
@@ -76,23 +76,20 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
       showToast('房间主题过长，请输入合法的房间主题');
       return;
     }
-    userId = userId.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-    if (userId == '') {
+    userName = userName.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
+    if (userName == '') {
       showToast('请输入用户ID');
       return;
-    } else if (!new RegExp(r"[A-Za-z0-9_]+$").hasMatch(userId)) {
-      showToast('用户ID只能为数字、字母、下划线，请输入正确的用户ID');
-      return;
-    } else if (userId.length > 10) {
-      showToast('用户ID过长，请输入合法的用户ID');
+    } else if (userName.length > 10) {
+      showToast('用户名过长，请输入合法的用户名');
       return;
     }
     unFocus();
     if (await Permission.camera.request().isGranted &&
         await Permission.microphone.request().isGranted) {
       Navigator.pushNamed(context, "/voiceRoom/roomAnchor", arguments: {
-        "meetId": int.parse(meetTitle),
-        "userId": userId,
+        "meetTitle": int.parse(meetTitle),
+        "userName": userName,
         "enabledCamera": false,
         "enabledMicrophone": true,
         "quality": TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH
@@ -164,7 +161,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                           ),
                         ),
                         keyboardType: TextInputType.text,
-                        onChanged: (value) => this.userId = value),
+                        onChanged: (value) => this.userName = value),
                   ],
                 ),
               ),

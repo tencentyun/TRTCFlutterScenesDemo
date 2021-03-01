@@ -127,8 +127,8 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                 sliver: SliverGrid(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2, //Grid按两列显示
-                    mainAxisSpacing: 10.0,
-                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 20.0,
+                    crossAxisSpacing: 20.0,
                     childAspectRatio: 1.0,
                   ),
                   delegate: SliverChildBuilderDelegate(

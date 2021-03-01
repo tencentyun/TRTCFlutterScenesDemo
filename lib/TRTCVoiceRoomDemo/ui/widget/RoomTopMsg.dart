@@ -82,6 +82,7 @@ class _RoomTopMessageState extends State<RoomTopMessage> {
           Row(
             children: [
               Container(
+                height: widget.visible ? 38 : 0,
                 padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
                 child: Text(
                   widget.message,
