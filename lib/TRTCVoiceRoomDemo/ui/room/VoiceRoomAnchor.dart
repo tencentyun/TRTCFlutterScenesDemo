@@ -4,6 +4,7 @@ import '../widget/RoomBottomBar.dart';
 import '../widget/AnchorItem.dart';
 import '../widget/AudienceItem.dart';
 import '../widget/RoomTopMsg.dart';
+import '../widget/DescriptionTitle.dart';
 
 /*
  *  主播界面
@@ -19,7 +20,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   UserStatus userStatus = UserStatus.NoSpeaking;
   UserType userType = UserType.Administrator;
   List<String> _AnchorList = [
-    '2',
+    '1',
     '33',
     '44',
     '2',
@@ -89,23 +90,36 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                 direction: Axis.vertical,
                 children: <Widget>[
                   RoomTopMessage(
-                    message: 'xxx',
+                    message: 'XXX申请成为主播',
+                    visible: true,
+                    isShowBtn: true,
+                    okTitle: '欢迎',
+                    cancelTitle: '拒绝',
+                    onCancelTab: () {},
+                    onOkTab: () {},
                   ),
-                  DescriptionTitle("", "主播"),
+                  DescriptionTitle("assets/images/Anchor_ICON.png", "主播"),
                   Container(
-                    height: 120,
+                    height: 140,
                     width: MediaQuery.of(context).size.width,
                     child: GridView(
                       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 120.0,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 25,
-                          childAspectRatio: 1.0),
-                      children: _AnchorList.map((e) => AnchorItem()).toList(),
+                        maxCrossAxisExtent: 140.0,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 15, //水平间隔
+                        childAspectRatio: 1.0,
+                      ),
+                      children: _AnchorList.map((_anchorItem) => AnchorItem(
+                            userName: _anchorItem,
+                            userImgUrl: 'assets/images/Anchor-exp.jpg',
+                            isAdministrator: _anchorItem == '1' ? true : false,
+                            isSoundOff: _anchorItem == '1' ? true : false,
+                            onUserTap: () {},
+                          )).toList(),
                     ),
                   ),
-                  DescriptionTitle("", "听众"),
+                  DescriptionTitle("assets/images/Audience_ICON.png", "听众"),
                   Expanded(
                     flex: 2,
                     child: GridView(
@@ -144,21 +158,5 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         ),
       ),
     );
-  }
-}
-
-class DescriptionTitle extends StatelessWidget {
-  DescriptionTitle(this.imgUrl, this.title, {Key key}) : super(key: key);
-  final String imgUrl;
-  final String title;
-  @override
-  Widget build(BuildContext context) {
-    return Row(children: [
-      Icon(Icons.ac_unit_sharp),
-      Text(
-        "  " + title,
-        style: TextStyle(color: Colors.white),
-      ),
-    ]);
   }
 }
