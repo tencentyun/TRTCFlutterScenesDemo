@@ -25,14 +25,14 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   List<String> _AnchorList = [
     '1',
-    '33',
-    '44',
+    '2',
+    '3',
   ];
   List<String> _AudienceList = [
-    '2',
-    '33',
-    '44',
-    '2',
+    '4',
+    '5',
+    '6',
+    '7',
   ];
 
   @override
@@ -150,7 +150,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                       ),
                       children: _AnchorList.map((_anchorItem) => AnchorItem(
                             userName: _anchorItem,
-                            userImgUrl: 'assets/images/headPortrait/2.png',
+                            userImgUrl:
+                                'assets/images/headPortrait/$_anchorItem.png',
                             isAdministrator: _anchorItem == '1' ? true : false,
                             isSoundOff: _anchorItem == '1' ? false : true,
                             onUserTap: () {},
@@ -170,7 +171,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                       ),
                       children:
                           _AudienceList.map((_audienceItem) => AudienceItem(
-                                userImgUrl: 'assets/images/headPortrait/1.png',
+                                userImgUrl:
+                                    'assets/images/headPortrait/$_audienceItem.png',
                                 userName: _audienceItem,
                               )).toList(),
                     ),
