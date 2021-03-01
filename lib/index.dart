@@ -86,7 +86,17 @@ class IndexPageState extends State<IndexPage> {
         backgroundColor: Color.fromRGBO(14, 25, 44, 1),
       ),
       body: Container(
-        color: Color.fromRGBO(14, 25, 44, 1),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            stops: [0.0, 1.0],
+            colors: [
+              Color.fromRGBO(19, 41, 75, 1),
+              Color.fromRGBO(0, 0, 0, 1),
+            ],
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[

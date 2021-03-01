@@ -108,7 +108,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
         centerTitle: true,
         elevation: 0,
         // automaticallyImplyLeading: false,
-        backgroundColor: Color.fromRGBO(14, 25, 44, 1),
+        backgroundColor: Color.fromRGBO(19, 41, 75, 1),
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -120,7 +120,17 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
           }
         },
         child: Container(
-          color: Color.fromRGBO(14, 25, 44, 1),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: [0.0, 1.0],
+              colors: [
+                Color.fromRGBO(19, 41, 75, 1),
+                Color.fromRGBO(0, 0, 0, 1),
+              ],
+            ),
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             children: <Widget>[

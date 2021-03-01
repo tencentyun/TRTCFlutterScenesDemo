@@ -110,7 +110,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         title: const Text('主播界面'),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Color.fromRGBO(14, 25, 44, 1),
+        backgroundColor: Color.fromRGBO(19, 41, 75, 1),
       ),
       body: ConstrainedBox(
         constraints: BoxConstraints.expand(),
@@ -139,9 +139,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                   DescriptionTitle("assets/images/Anchor_ICON.png", "主播"),
                   Container(
                     height: 140,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     width: MediaQuery.of(context).size.width,
                     child: GridView(
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                         maxCrossAxisExtent: 140.0,
                         mainAxisSpacing: 20,
@@ -187,7 +187,17 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                   )
                 ],
               ),
-              color: Color.fromRGBO(14, 25, 44, 1),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  stops: [0.0, 1.0],
+                  colors: [
+                    Color.fromRGBO(19, 41, 75, 1),
+                    Color.fromRGBO(0, 0, 0, 1),
+                  ],
+                ),
+              ),
             ),
             RoomBottomBar(
               userStatus: userStatus,

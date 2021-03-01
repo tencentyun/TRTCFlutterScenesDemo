@@ -7,16 +7,18 @@ class DescriptionTitle extends StatelessWidget {
   final String title;
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Image.asset(
-        imgUrl,
-        height: 16,
-        width: 16,
-      ),
-      Text(
-        "  " + title,
-        style: TextStyle(color: Colors.white),
-      ),
-    ]);
+    return Row(
+      children: [
+        Image.asset(
+          imgUrl,
+          height: 16,
+          width: 16,
+        ),
+        Text(
+          "  " + title,
+          style: TextStyle(color: Colors.white),
+        ),
+      ],
+    );
   }
 }
