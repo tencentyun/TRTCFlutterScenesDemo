@@ -1,5 +1,5 @@
-name: trtcscenesdemo
-description: A new Flutter project.
+name: trtc_scenes_demo
+description: Trtc场景化demo for Flutter.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
