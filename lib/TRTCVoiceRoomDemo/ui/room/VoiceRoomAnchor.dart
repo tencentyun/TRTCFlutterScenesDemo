@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../utils/TxUtils.dart';
 import '../widget/RoomBottomBar.dart';
 import '../widget/AnchorItem.dart';
 import '../widget/AudienceItem.dart';
 import '../widget/RoomTopMsg.dart';
 import '../widget/DescriptionTitle.dart';
 import '../base/UserEnum.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
 
 /*
  *  主播界面
@@ -18,6 +21,7 @@ class VoiceRoomAnchorPage extends StatefulWidget {
 }
 
 class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
+  TRTCVoiceRoom trtcVoiceRoom;
   UserStatus userStatus = UserStatus.NoSpeaking;
   String title = "";
   UserType userType = UserType.Administrator;
@@ -25,11 +29,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   bool isShowTopMsgAction = false;
   String topMsg = "";
 
-  List<String> _AnchorList = [
-    '1',
-    '2',
-    '3',
-  ];
+  List<UserInfo> _AnchorList = [];
   List<String> _AudienceList = [
     '4',
     '5',
@@ -46,19 +46,42 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   @override
   void initState() {
-    super.initState();
-    this.initUserInfo();
     this.initSDK();
+    super.initState();
   }
 
-  initUserInfo() {
+  initSDK() async {
+    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+    this.initUserInfo();
+  }
+
+  initUserInfo() async {
+    Map arguments = ModalRoute.of(context).settings.arguments;
     setState(() {
       userType = widget.userType;
-      title = userType == UserType.Audience ? "听众界面" : "主播界面";
+      title = arguments["roomName"] == null ? '无主题' : arguments["roomName"];
     });
+    ActionCallback enterRoomResp =
+        await trtcVoiceRoom.enterRoom(arguments['roomId']);
+    if (enterRoomResp.code == 0) {
+      TxUtils.showToast('进房成功', context);
+    } else {
+      TxUtils.showToast('进房失败。' + enterRoomResp.desc, context);
+    }
+    UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
+    if (_archorResp.code == 0) {
+      setState(() {
+        _AnchorList = _archorResp.list;
+      });
+    }
+    MemberListCallback _memberList = await trtcVoiceRoom.getRoomMemberList(0);
+    if (_memberList.code == 0) {
+      setState(() {
+        //_AudienceList = _memberList.list;
+      });
+    }
   }
 
-  initSDK() {}
   //管理员同意其成为主播
   onAdminAgree() {}
 
@@ -253,7 +276,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         DescriptionTitle("assets/images/Anchor_ICON.png", "主播"),
                   ),
                   Container(
-                    height: 140,
+                    height: _AnchorList.length == 0 ? 30 : 140,
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     width: MediaQuery.of(context).size.width,
                     child: GridView(
@@ -263,16 +286,25 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         crossAxisSpacing: 15, //水平间隔
                         childAspectRatio: 1.0,
                       ),
-                      children: _AnchorList.map((_anchorItem) => AnchorItem(
-                            userName: _anchorItem,
-                            userImgUrl:
-                                'assets/images/headPortrait/$_anchorItem.png',
-                            isAdministrator: _anchorItem == '1' ? true : false,
-                            isSoundOff: _anchorItem == '1' ? false : true,
-                            onKickOutUser: () {
-                              //踢人
-                            },
-                          )).toList(),
+                      children:
+                          _AnchorList.map((UserInfo _anchorItem) => AnchorItem(
+                                userName: _anchorItem.userName != null &&
+                                        _anchorItem.userAvatar != ''
+                                    ? _anchorItem.userName
+                                    : '--',
+                                userImgUrl: _anchorItem.userAvatar != null &&
+                                        _anchorItem.userAvatar != ''
+                                    ? _anchorItem.userAvatar
+                                    : 'https://imgcache.qq.com/operation/dianshi/other/7.157d962fa53be4107d6258af6e6d83f33d45fba4.png',
+                                isAdministrator:
+                                    _anchorItem.userName == '1' ? true : false,
+                                isSoundOff: _anchorItem.userAvatar == '1'
+                                    ? false
+                                    : true,
+                                onKickOutUser: () {
+                                  //踢人
+                                },
+                              )).toList(),
                     ),
                   ),
                   DescriptionTitle("assets/images/Audience_ICON.png", "听众"),

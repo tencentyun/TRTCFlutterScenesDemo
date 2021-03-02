@@ -77,13 +77,15 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
     });
   }
 
-  goRoomPage(RoomInfo roomInfo) {
+  goRoomInfoPage(RoomInfo roomInfo) {
     if (roomInfo.roomId.toString() == TxUtils.getLoginUserId()) {
       Navigator.pushNamed(
         context,
         "/voiceRoom/roomAudience",
         arguments: {
           'roomId': roomInfo.roomId,
+          "ownerId": roomInfo.ownerId,
+          "roomName": roomInfo.roomName,
           'isAdmin': true,
         },
       );
@@ -93,7 +95,10 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       context,
       "/voiceRoom/roomAnchor",
       arguments: {
+        "ownerId": roomInfo.ownerId,
+        "roomName": roomInfo.roomName,
         'roomId': roomInfo.roomId,
+        'isAdmin': true,
       },
     );
   }
@@ -152,15 +157,15 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                       //创建子widget
                       return InkWell(
                         onTap: () {
-                          goRoomPage(info);
+                          goRoomInfoPage(info);
                         },
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
-                            Image.asset(
+                            Image.network(
                               info.coverUrl != null && info.coverUrl != ''
                                   ? info.coverUrl
-                                  : "assets/images/headPortrait/2.png",
+                                  : "https://imgcache.qq.com/operation/dianshi/other/5.ca48acfebc4dfb68c6c463c9f33e60cb8d7c9565.png",
                             ),
                             Positioned(
                               bottom: 10,
@@ -169,12 +174,22 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(info.roomName == null
-                                      ? "无主题"
-                                      : info.roomName),
-                                  Text(info.ownerName == null
-                                      ? "--"
-                                      : info.ownerName),
+                                  Text(
+                                    info.roomName == null
+                                        ? "无主题"
+                                        : info.roomName,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    info.ownerName == null
+                                        ? "--"
+                                        : info.ownerName,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -186,6 +201,9 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                 children: [
                                   Text(
                                     info.memberCount.toString() + '人在线',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ],
                               ),

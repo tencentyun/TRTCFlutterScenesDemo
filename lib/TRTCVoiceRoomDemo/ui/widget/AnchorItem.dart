@@ -99,7 +99,7 @@ class _AnchorItemState extends State<AnchorItem> {
                             this.handleShowDownWheat(context);
                           }
                         },
-                        child: Image.asset(
+                        child: Image.network(
                           widget.userImgUrl,
                           height: 80,
                         ),
