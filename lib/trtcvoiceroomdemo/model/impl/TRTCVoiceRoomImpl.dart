@@ -205,7 +205,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
         .getGroupManager()
         .getGroupsInfo(groupIDList: roomIdList);
     if (res.code != 0) {
-      return RoomInfoCallback(code: res.code, desc: res.desc, list: []);
+      return RoomInfoCallback(code: res.code, desc: res.desc);
     }
 
     List<V2TimGroupInfoResult> listInfo = res.data;
@@ -218,9 +218,12 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
           roomName: groupInfo.groupName,
           coverUrl: groupInfo.faceUrl,
           ownerId: groupInfo.owner,
+          ownerName: groupInfo.introduction,
           memberCount: groupInfo.memberCount));
     }
-    return RoomInfoCallback(code: res.code, desc: res.desc, list: newInfo);
+
+    return RoomInfoCallback(
+        code: 0, desc: 'getRoomInfoList success', list: newInfo);
   }
 
   @override
