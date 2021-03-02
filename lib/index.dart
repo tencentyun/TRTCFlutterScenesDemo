@@ -22,22 +22,20 @@ class IndexPageState extends State<IndexPage> {
       trtcVoiceRoom = value;
     });
     super.initState();
-    var userObject = TxUtils.getStorageByKey(constants.USERID_KEY);
-    userObject.then((userId) {
+    TRTCVoiceRoom.sharedInstance().then((trtcVoiceRoomObj) async {
+      trtcVoiceRoom = trtcVoiceRoomObj;
+      String userId = await TxUtils.getStorageByKey(constants.USERID_KEY);
       if (userId == null || userId == '') {
         Navigator.pushNamed(
           context,
           "/login",
         );
       } else {
-        TRTCVoiceRoom.sharedInstance().then((value) {
-          trtcVoiceRoom = value;
-          trtcVoiceRoom.login(
-            GenerateTestUserSig.sdkAppId,
-            userId,
-            GenerateTestUserSig.genTestSig(userId),
-          );
-        });
+        trtcVoiceRoom.login(
+          GenerateTestUserSig.sdkAppId,
+          userId,
+          GenerateTestUserSig.genTestSig(userId),
+        );
       }
     });
   }

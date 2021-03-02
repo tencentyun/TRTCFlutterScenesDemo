@@ -75,7 +75,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       }
       setState(() {
         roomInfList = roomls;
-        trtcVoiceRoom.getRoomInfoList(roomls.map((e) => e.id));
+        trtcVoiceRoom.getRoomInfoList(roomls.map<String>((e) => e.id).toList());
       });
     });
   }
