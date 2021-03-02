@@ -98,8 +98,10 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   //申请为主播
   applyToBeAnchor() {}
+
   //主播下麦
   anchorDownWheat() {
+    trtcVoiceRoom.leaveMic();
     print('anchorDownWheat');
   }
 
@@ -107,12 +109,13 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   handleSoundOff(bool isSpeaking) {
     setState(() {
       userStatus = isSpeaking ? UserStatus.NoSpeaking : UserStatus.Speaking;
-      //
+      trtcVoiceRoom.muteLocalAudio(!isSpeaking);
     });
   }
 
   //听众举手
   handleHandUpClick() {
+    trtcVoiceRoom.raiseHand();
     this._showTopMessage("举手成功！等待管理员通过~", false);
   }
 
