@@ -91,9 +91,9 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     unFocus();
     if (await Permission.camera.request().isGranted &&
         await Permission.microphone.request().isGranted) {
+      trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
       String avatarURL =
           "https://imgcache.qq.com/operation/dianshi/other/2.4c958e11852b2caa75da6c2726f9248108d6ec8a.png";
-      trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
       await trtcVoiceRoom.setSelfProfile(userName, avatarURL);
       ActionCallback resp = await trtcVoiceRoom.createRoom(
         2405,

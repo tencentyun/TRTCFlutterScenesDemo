@@ -63,17 +63,33 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     } else {
       TxUtils.showToast('进房失败。' + enterRoomResp.desc, context);
     }
-    UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
-    if (_archorResp.code == 0) {
-      setState(() {
-        _AnchorList = _archorResp.list;
-      });
+    await this.getAnchorList();
+    await this.getAudienceList();
+  }
+
+  getAnchorList() async {
+    try {
+      UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
+      if (_archorResp.code == 0) {
+        setState(() {
+          _AnchorList = _archorResp.list;
+        });
+      }
+    } catch (ex) {
+      print(ex);
     }
-    MemberListCallback _memberList = await trtcVoiceRoom.getRoomMemberList(0);
-    if (_memberList.code == 0) {
-      setState(() {
-        _AudienceList = _memberList.list;
-      });
+  }
+
+  getAudienceList() async {
+    try {
+      MemberListCallback _memberList = await trtcVoiceRoom.getRoomMemberList(0);
+      if (_memberList.code == 0) {
+        setState(() {
+          _AudienceList = _memberList.list;
+        });
+      }
+    } catch (ex) {
+      print(ex);
     }
   }
 
