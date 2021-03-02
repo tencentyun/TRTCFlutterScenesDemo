@@ -5,6 +5,9 @@ import 'package:toast/toast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../debug/GenerateTestUserSig.dart';
 
+import '../model/TRTCVoiceRoom.dart';
+import '../model/TRTCVoiceRoomDef.dart';
+
 // 多人视频会议首页
 class IndexPage extends StatefulWidget {
   IndexPage({Key key}) : super(key: key);
@@ -14,6 +17,8 @@ class IndexPage extends StatefulWidget {
 }
 
 class IndexPageState extends State<IndexPage> {
+  TRTCVoiceRoom trtcVoiceRoom;
+
   /// 用户id
   String userId = '';
 
@@ -21,13 +26,16 @@ class IndexPageState extends State<IndexPage> {
   String userSig;
 
   /// 会议id
-  String meetId = '';
+  String meetId = '334';
 
   /// 是否开启摄像头
   bool enabledCamera = true;
 
   /// 是否开启麦克风
   bool enabledMicrophone = false;
+
+  //是否是主播
+  bool isOwner = false;
 
   /// 音质选择
   int quality = TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH;
@@ -48,7 +56,10 @@ class IndexPageState extends State<IndexPage> {
   @override
   initState() {
     super.initState();
+    initData();
   }
+
+  initData() async {}
 
   // 隐藏底部输入框
   unFocus() {
@@ -63,6 +74,40 @@ class IndexPageState extends State<IndexPage> {
   dispose() {
     super.dispose();
     unFocus();
+    trtcVoiceRoom.unRegisterListener(onVoiceListener);
+  }
+
+  enterTest() async {
+    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+    ActionCallback resValue = await trtcVoiceRoom.login(
+        GenerateTestUserSig.sdkAppId,
+        userId,
+        GenerateTestUserSig.genTestSig(userId));
+    trtcVoiceRoom.registerListener(onVoiceListener);
+
+    // trtcVoiceRoom.enterRoom(333);
+
+    // trtcVoiceRoom.raiseHand();
+    // trtcVoiceRoom.getUserInfoList(['909', '789']);
+    if (isOwner) {
+      print("==create=");
+      ActionCallback createRes = await trtcVoiceRoom.createRoom(
+          int.parse(meetId),
+          RoomParam(coverUrl: 'http://aaa.www.1', roomName: 'xiixhe'));
+      print("==createRes=" + createRes.code.toString());
+      print("==createRes data=" + createRes.desc.toString());
+    } else {
+      await trtcVoiceRoom.enterRoom(int.parse(meetId));
+      // trtcVoiceRoom.raiseHand();
+    }
+
+    UserListCallback voiceInfo = await trtcVoiceRoom.getArchorInfoList();
+    print("==voiceInfo=" + voiceInfo.toString());
+  }
+
+  onVoiceListener(type, param) {
+    print("==1111type=" + type.toString());
+    print("==1111param=" + param.toString());
   }
 
   enterMeeting() async {
@@ -183,15 +228,14 @@ class IndexPageState extends State<IndexPage> {
                 child: Column(
                   children: [
                     ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title:
-                          Text("开启摄像头", style: TextStyle(color: Colors.white)),
-                      trailing: Switch(
-                        value: enabledCamera,
-                        onChanged: (value) =>
-                            this.setState(() => enabledCamera = value),
-                      ),
-                    ),
+                        contentPadding: EdgeInsets.all(0),
+                        title: Text("开启摄像头",
+                            style: TextStyle(color: Colors.white)),
+                        trailing: Switch(
+                            value: enabledCamera,
+                            onChanged: (value) =>
+                                // this.setState(() => enabledCamera = value),
+                                trtcVoiceRoom.exitRoom())),
                     ListTile(
                       contentPadding: EdgeInsets.all(0),
                       title:
@@ -199,7 +243,7 @@ class IndexPageState extends State<IndexPage> {
                       trailing: Switch(
                         value: enabledMicrophone,
                         onChanged: (value) =>
-                            this.setState(() => enabledMicrophone = value),
+                            this.setState(() => isOwner = value),
                       ),
                     ),
                     ListTile(
@@ -259,7 +303,7 @@ class IndexPageState extends State<IndexPage> {
                         child: Text("进入会议"),
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
-                        onPressed: enterMeeting,
+                        onPressed: enterTest,
                       ),
                     ),
                   ],
