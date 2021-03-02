@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../utils/TxUtils.dart';
 import '../utils/constants.dart' as constants;
+import '../debug/GenerateTestUserSig.dart';
+import '../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
+import '../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
 
 /*
  *  登录界面
@@ -14,24 +17,38 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
+  TRTCVoiceRoom trtcVoiceRoom;
+
   final userFocusNode = FocusNode();
 
   /// 用户id
   String userId = '';
 
-  login() async {
+  login(context) async {
     if (userId == '') {
       TxUtils.showToast('请输入用户名', context);
       return;
     }
-    TxUtils.setStorageByKey(constants.USERID_KEY, userId);
-    Navigator.pushNamed(
-      context,
-      "/index",
-      arguments: {
-        "userId": userId,
-      },
+    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+
+    ActionCallback resValue = await trtcVoiceRoom.login(
+      GenerateTestUserSig.sdkAppId,
+      userId,
+      GenerateTestUserSig.genTestSig(userId),
     );
+    if (resValue.code == 0) {
+      TxUtils.showToast('登录成功', context);
+      TxUtils.setStorageByKey(constants.USERID_KEY, userId);
+      Navigator.pushNamed(
+        context,
+        "/index",
+        arguments: {
+          "userId": userId,
+        },
+      );
+    } else {
+      TxUtils.showToast("登录失败！ " + resValue.desc, context);
+    }
   }
 
 // 隐藏底部输入框
@@ -107,7 +124,7 @@ class LoginPageState extends State<LoginPage> {
                         child: Text("登录"),
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
-                        onPressed: () => login(),
+                        onPressed: () => login(context),
                       ),
                     ),
                   ],

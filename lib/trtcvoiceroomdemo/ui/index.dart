@@ -80,9 +80,10 @@ class IndexPageState extends State<IndexPage> {
   enterTest() async {
     trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
     ActionCallback resValue = await trtcVoiceRoom.login(
-        GenerateTestUserSig.sdkAppId,
-        userId,
-        GenerateTestUserSig.genTestSig(userId));
+      GenerateTestUserSig.sdkAppId,
+      userId,
+      GenerateTestUserSig.genTestSig(userId),
+    );
     trtcVoiceRoom.registerListener(onVoiceListener);
 
     // trtcVoiceRoom.enterRoom(333);

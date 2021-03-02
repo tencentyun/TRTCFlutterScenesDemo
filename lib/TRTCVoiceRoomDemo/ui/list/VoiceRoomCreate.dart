@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 import 'package:toast/toast.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../utils/TxUtils.dart';
 import '../../../debug/GenerateTestUserSig.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
 
 // 多人视频会议首页
 class VoiceRoomCreatePage extends StatefulWidget {
@@ -17,6 +20,8 @@ class VoiceRoomCreatePage extends StatefulWidget {
 }
 
 class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
+  TRTCVoiceRoom trtcVoiceRoom;
+
   /// 用户id
   String userName = '';
 
@@ -87,13 +92,25 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     unFocus();
     if (await Permission.camera.request().isGranted &&
         await Permission.microphone.request().isGranted) {
-      Navigator.pushNamed(context, "/voiceRoom/roomAnchor", arguments: {
-        "meetTitle": int.parse(meetTitle),
-        "userName": userName,
-        "enabledCamera": false,
-        "enabledMicrophone": true,
-        "quality": TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH
-      });
+      String avatarURL =
+          "https://imgcache.qq.com/operation/dianshi/other/2.4c958e11852b2caa75da6c2726f9248108d6ec8a.png";
+      trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+      await trtcVoiceRoom.setSelfProfile(userName, avatarURL);
+      ActionCallback resp = await trtcVoiceRoom.createRoom(
+        2405,
+        RoomParam(coverUrl: avatarURL, roomName: meetTitle),
+      );
+      if (resp.code == 0) {
+        Navigator.pushNamed(context, "/voiceRoom/roomAnchor", arguments: {
+          "meetTitle": int.parse(meetTitle),
+          "userName": userName,
+          "enabledCamera": false,
+          "enabledMicrophone": true,
+          "quality": TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH
+        });
+      } else {
+        showToast("创建房间失败。" + resp.desc);
+      }
     } else {
       showToast('需要获取音视频权限才能进入');
     }

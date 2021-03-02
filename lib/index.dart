@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import './utils/TxUtils.dart';
 import 'utils/constants.dart' as constants;
 import './base/TestFlowDelegate.dart';
+import './debug/GenerateTestUserSig.dart';
+import './TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
+import './TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage({Key key}) : super(key: key);
@@ -12,20 +15,31 @@ class IndexPage extends StatefulWidget {
 }
 
 class IndexPageState extends State<IndexPage> {
+  TRTCVoiceRoom trtcVoiceRoom;
   @override
   void initState() {
+    TRTCVoiceRoom.sharedInstance().then((value) {
+      trtcVoiceRoom = value;
+    });
     super.initState();
     var userObject = TxUtils.getStorageByKey(constants.USERID_KEY);
-    userObject.then((value) => {
-          if (value == null || value == '')
-            {
-              Navigator.pushNamed(
-                context,
-                "/login",
-              )
-            }
+    userObject.then((userId) {
+      if (userId == null || userId == '') {
+        Navigator.pushNamed(
+          context,
+          "/login",
+        );
+      } else {
+        TRTCVoiceRoom.sharedInstance().then((value) {
+          trtcVoiceRoom = value;
+          trtcVoiceRoom.login(
+            GenerateTestUserSig.sdkAppId,
+            userId,
+            GenerateTestUserSig.genTestSig(userId),
+          );
         });
-    print('init state:');
+      }
+    });
   }
 
   Future<bool> logout() {
@@ -44,6 +58,7 @@ class IndexPageState extends State<IndexPage> {
               child: Text("确定"),
               onPressed: () {
                 //关闭对话框并返回true
+                trtcVoiceRoom.logout();
                 TxUtils.setStorageByKey(constants.USERID_KEY, '');
                 Navigator.pushNamed(
                   context,

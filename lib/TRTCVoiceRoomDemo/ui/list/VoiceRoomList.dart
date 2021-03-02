@@ -6,6 +6,9 @@ import 'package:toast/toast.dart';
 import 'package:dio/dio.dart';
 import '../../../debug/Config.dart';
 import '../../../utils/TxUtils.dart';
+import '../../../debug/GenerateTestUserSig.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
 
 /*
  * 房间列表
@@ -18,6 +21,7 @@ class VoiceRoomListPage extends StatefulWidget {
 }
 
 class VoiceRoomListPageState extends State<VoiceRoomListPage> {
+  TRTCVoiceRoom trtcVoiceRoom;
   List<RoomInfo> roomInfList = new List<RoomInfo>();
   openUrl(String url) async {
     if (await canLaunch(url)) {
@@ -39,7 +43,9 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
     this.getRoomList();
   }
 
-  getRoomList() {
+  getRoomList() async {
+    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+
     Dio dio = new Dio();
     dio.get(
       "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/forTest",
@@ -69,6 +75,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       }
       setState(() {
         roomInfList = roomls;
+        trtcVoiceRoom.getRoomInfoList(roomls.map((e) => e.id));
       });
     });
   }

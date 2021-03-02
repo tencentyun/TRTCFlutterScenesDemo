@@ -4,6 +4,14 @@ import './constants.dart' as constants;
 
 class TxUtils {
   static String _loginUserId = '';
+  static() {
+    if (_loginUserId == '') {
+      getStorageByKey(constants.USERID_KEY).then((value) {
+        _loginUserId = value;
+      });
+    }
+  }
+
   static showToast(text, context) {
     Toast.show(
       text,
@@ -27,6 +35,9 @@ class TxUtils {
   }
 
   static String getLoginUserId() {
+    // if (_loginUserId == '') {
+    //   _loginUserId = getStorageByKey(constants.USERID_KEY);
+    // }
     return _loginUserId;
   }
 }
