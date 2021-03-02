@@ -6,6 +6,7 @@ import './TRTCVoiceRoomDemo/ui/room/VoiceRoomAnchor.dart';
 import './TRTCVoiceRoomDemo/ui/room/VoiceRoomAudience.dart';
 import './index.dart';
 import './login/LoginPage.dart';
+import './TRTCVoiceRoomDemo/ui/base/UserEnum.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,14 +28,17 @@ class _MyAppState extends State<MyApp> {
       initialRoute: "/forTest",
       routes: {
         //按R，测试替换
-        "/forTest": (context) => VoiceRoomAnchorPage(),
+        "/forTest": (context) => VoiceRoomAnchorPage(UserType.Administrator),
         "/": (context) => IndexPage(), //VoiceRoomListPage()
         "/index": (context) => IndexPage(), //VoiceRoomListPage()
         "/login": (context) => LoginPage(),
         "/voiceRoom/list": (context) => VoiceRoomListPage(),
         "/voiceRoom/roomCreate": (context) => VoiceRoomCreatePage(),
-        "/voiceRoom/roomAnchor": (context) => VoiceRoomAnchorPage(),
-        "/voiceRoom/roomAudience": (context) => VoiceRoomAudiencePage(),
+        "/voiceRoom/roomAnchor": (context) =>
+            VoiceRoomAnchorPage(UserType.Anchor),
+        //"/voiceRoom/roomAudience": (context) => VoiceRoomAudiencePage(),
+        "/voiceRoom/roomAudience": (context) =>
+            VoiceRoomAnchorPage(UserType.Audience),
       },
     );
   }

@@ -21,7 +21,7 @@ class AnchorItem extends StatefulWidget {
 }
 
 class _AnchorItemState extends State<AnchorItem> {
-  showDownWheat(context) {
+  handleShowDownWheat(context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
@@ -95,7 +95,8 @@ class _AnchorItemState extends State<AnchorItem> {
                       child: InkWell(
                         onTap: () {
                           if (!widget.isAdministrator) {
-                            this.showDownWheat(context);
+                            //bug 需要判断当前用户是否为管理员才可以调用
+                            this.handleShowDownWheat(context);
                           }
                         },
                         child: Image.asset(

@@ -5,19 +5,21 @@ import '../widget/AnchorItem.dart';
 import '../widget/AudienceItem.dart';
 import '../widget/RoomTopMsg.dart';
 import '../widget/DescriptionTitle.dart';
+import '../base/UserEnum.dart';
 
 /*
  *  主播界面
  */
 class VoiceRoomAnchorPage extends StatefulWidget {
-  VoiceRoomAnchorPage({Key key}) : super(key: key);
-
+  VoiceRoomAnchorPage(this.userType, {Key key}) : super(key: key);
+  final UserType userType;
   @override
   State<StatefulWidget> createState() => VoiceRoomAnchorPageState();
 }
 
 class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   UserStatus userStatus = UserStatus.NoSpeaking;
+  String title = "";
   UserType userType = UserType.Administrator;
   bool topMsgVisible = false;
   bool isShowTopMsgAction = false;
@@ -49,9 +51,33 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     this.initSDK();
   }
 
-  initUserInfo() {}
+  initUserInfo() {
+    setState(() {
+      userType = widget.userType;
+      title = userType == UserType.Audience ? "听众界面" : "主播界面";
+    });
+  }
+
   initSDK() {}
-  onAgree() {}
+  //管理员同意其成为主播
+  onAdminAgree() {}
+
+  //申请为主播
+  applyToBeAnchor() {}
+  //主播下麦
+  anchorDownWheat() {}
+  //音频开关
+  handleSoundOff(bool isSpeaking) {
+    setState(() {
+      userStatus = isSpeaking ? UserStatus.NoSpeaking : UserStatus.Speaking;
+      //
+    });
+  }
+
+  //听众举手
+  handleHandUpClick() {
+    this._showTopMessage("举手成功！等待管理员通过~", false);
+  }
 
   _showTopMessage(String message, bool showAction) {
     setState(() {
@@ -96,7 +122,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   }
 
   // 显示举手列表
-  showHandList(content) {
+  handleShowHandList(content) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -189,7 +215,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: const Text('主播界面'),
+        title: Text(title),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Color.fromRGBO(19, 41, 75, 1),
@@ -215,7 +241,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                       this._closeTopMessage();
                     },
                     onOkTab: () {
-                      this.onAgree();
+                      this.onAdminAgree();
                     },
                   ),
                   Container(
@@ -289,20 +315,17 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
               userStatus: userStatus,
               userType: userType,
               onSoundClick: (value) {
-                setState(() {
-                  userStatus =
-                      value ? UserStatus.NoSpeaking : UserStatus.Speaking;
-                });
+                this.handleSoundOff(value);
               },
               onHandUp: () {
-                this._showTopMessage("举手成功！等待管理员通过~", false);
+                this.handleHandUpClick();
               },
               onShowHandList: () {
-                this.showHandList(context);
+                this.handleShowHandList(context);
               },
               onDownWheat: () {
                 //主播下麦
-                print('onDownWheat---');
+                this.anchorDownWheat();
               },
               onLeave: () async {
                 if (userType == UserType.Administrator) {
