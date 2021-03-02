@@ -147,7 +147,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                     width: MediaQuery.of(context).size.width,
                     child: GridView(
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 140.0,
+                        maxCrossAxisExtent: 135.0,
                         mainAxisSpacing: 20,
                         crossAxisSpacing: 15, //水平间隔
                         childAspectRatio: 1.0,
@@ -158,7 +158,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                                 'assets/images/headPortrait/$_anchorItem.png',
                             isAdministrator: _anchorItem == '1' ? true : false,
                             isSoundOff: _anchorItem == '1' ? false : true,
-                            onUserTap: () {
+                            onKickOutUser: () {
                               //踢人
                             },
                           )).toList(),

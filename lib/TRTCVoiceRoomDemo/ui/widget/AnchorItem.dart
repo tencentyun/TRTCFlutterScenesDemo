@@ -7,83 +7,150 @@ class AnchorItem extends StatefulWidget {
     this.userName = "",
     this.userImgUrl = "",
     this.isAdministrator = false,
-    this.onUserTap,
+    this.onKickOutUser,
     this.isSoundOff,
   }) : super(key: key);
 
   final String userName;
   final String userImgUrl;
   final bool isAdministrator;
-  final Function onUserTap;
+  final Function onKickOutUser;
   final bool isSoundOff;
   @override
   State<StatefulWidget> createState() => _AnchorItemState();
 }
 
 class _AnchorItemState extends State<AnchorItem> {
+  showDownWheat(context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: false,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (context, setState) => Container(
+                color: Color.fromRGBO(19, 35, 63, 1),
+                height: 160,
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        widget.onKickOutUser();
+                      },
+                      title: Text(
+                        '要求下麦',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color.fromRGBO(235, 240, 250, 1),
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          height: 2,
+                          width: MediaQuery.of(context).size.width,
+                          color: Color.fromRGBO(0, 9, 22, 1),
+                          child: Text(''),
+                        ),
+                      ],
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      title: Text(
+                        '取消',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color.fromRGBO(235, 240, 250, 0.5),
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                )));
+      },
+    );
+
+    widget.onKickOutUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 180,
-      child: Stack(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(32),
-                child: InkWell(
-                  onTap: () {
-                    widget.onUserTap();
-                  },
-                  child: Image.asset(
-                    widget.userImgUrl,
-                    height: 80,
+              Stack(
+                children: [
+                  Container(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(32),
+                      child: InkWell(
+                        onTap: () {
+                          if (!widget.isAdministrator) {
+                            this.showDownWheat(context);
+                          }
+                        },
+                        child: Image.asset(
+                          widget.userImgUrl,
+                          height: 80,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 55,
+                    top: 55,
+                    child: InkWell(
+                      onTap: () {},
+                      child: widget.isSoundOff
+                          ? Image.asset(
+                              "assets/images/sound_off.png",
+                              height: 24,
+                            )
+                          : Text(''),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Container(
+                height: 15,
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              widget.isAdministrator
+                  ? Image.asset(
+                      "assets/images/Administrator.png",
+                      height: 14,
+                    )
+                  : Text(''),
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: Text(
+                  widget.userName,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
                   ),
                 ),
               ),
             ],
-          ),
-          Positioned(
-            right: 0,
-            left: 0,
-            bottom: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                widget.isAdministrator
-                    ? Image.asset(
-                        "assets/images/Administrator.png",
-                        height: 14,
-                      )
-                    : Text(''),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  child: Text(
-                    widget.userName,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            right: 10,
-            top: 60,
-            child: InkWell(
-              onTap: () {},
-              child: widget.isSoundOff
-                  ? Image.asset(
-                      "assets/images/sound_off.png",
-                      height: 24,
-                    )
-                  : Text(''),
-            ),
           ),
         ],
       ),
