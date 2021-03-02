@@ -112,7 +112,9 @@ class IndexPageState extends State<IndexPage> {
                     child: Text('语音聊天室'),
                     color: Colors.white,
                   ),
-                  onTap: () => {goVoiceRoomDemo()},
+                  onTap: () {
+                    goVoiceRoomDemo();
+                  },
                 ),
               ],
             ),

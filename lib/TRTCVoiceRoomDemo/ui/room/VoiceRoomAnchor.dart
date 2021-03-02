@@ -65,7 +65,10 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   //申请为主播
   applyToBeAnchor() {}
   //主播下麦
-  anchorDownWheat() {}
+  anchorDownWheat() {
+    print('anchorDownWheat');
+  }
+
   //音频开关
   handleSoundOff(bool isSpeaking) {
     setState(() {
