@@ -101,6 +101,11 @@ class IndexPageState extends State<IndexPage> {
       // trtcVoiceRoom.raiseHand();
     }
 
+    RoomInfoCallback roomInfo =
+        await trtcVoiceRoom.getRoomInfoList(['12333', '12334']);
+
+    print("==roomInfo ownerId=" + roomInfo.list[0].ownerId.toString());
+
     UserListCallback voiceInfo = await trtcVoiceRoom.getArchorInfoList();
     print("==voiceInfo=" + voiceInfo.toString());
   }

@@ -218,8 +218,12 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
           roomName: groupInfo.groupName,
           coverUrl: groupInfo.faceUrl,
           ownerId: groupInfo.owner,
+          ownerName: groupInfo.introduction,
           memberCount: groupInfo.memberCount));
     }
+
+    return RoomInfoCallback(
+        code: 0, desc: 'getRoomInfoList success', list: newInfo);
   }
 
   @override
