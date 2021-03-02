@@ -29,7 +29,7 @@ class _AudienceItemState extends State<AudienceItem> {
                   onTap: () {
                     //
                   },
-                  child: Image.asset(
+                  child: Image.network(
                     widget.userImgUrl,
                     height: 60,
                   ),

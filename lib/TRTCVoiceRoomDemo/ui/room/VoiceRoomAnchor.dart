@@ -30,12 +30,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   String topMsg = "";
 
   List<UserInfo> _AnchorList = [];
-  List<String> _AudienceList = [
-    '4',
-    '5',
-    '6',
-    '7',
-  ];
+  List<UserInfo> _AudienceList = [];
 
   List<String> _HandUpList = [
     '4',
@@ -77,7 +72,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     MemberListCallback _memberList = await trtcVoiceRoom.getRoomMemberList(0);
     if (_memberList.code == 0) {
       setState(() {
-        //_AudienceList = _memberList.list;
+        _AudienceList = _memberList.list;
       });
     }
   }
@@ -318,11 +313,16 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         crossAxisSpacing: 15,
                         childAspectRatio: 0.9,
                       ),
-                      children:
-                          _AudienceList.map((_audienceItem) => AudienceItem(
-                                userImgUrl:
-                                    'assets/images/headPortrait/$_audienceItem.png',
-                                userName: _audienceItem * 5,
+                      children: _AudienceList.map(
+                          (UserInfo _audienceItem) => AudienceItem(
+                                userImgUrl: _audienceItem.userAvatar != null &&
+                                        _audienceItem.userAvatar != ''
+                                    ? _audienceItem.userAvatar
+                                    : 'https://imgcache.qq.com/operation/dianshi/other/6.1b984e741cc2275cda3451fa44515e018cc49cb5.png',
+                                userName: _audienceItem.userName != null &&
+                                        _audienceItem.userName != ''
+                                    ? _audienceItem.userName
+                                    : '--',
                               )).toList(),
                     ),
                   ),
