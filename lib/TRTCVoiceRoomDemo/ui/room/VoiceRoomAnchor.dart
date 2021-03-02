@@ -35,6 +35,13 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     '7',
   ];
 
+  List<String> _HandUpList = [
+    '4',
+    '5',
+    '6',
+    '7',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -95,7 +102,82 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) => Container(
-            child: Text(' 显示举手列表'),
+            color: Color.fromRGBO(19, 35, 63, 1),
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  leading: Text(''),
+                  pinned: true,
+                  //expandedHeight: 40.0,
+                  backgroundColor: Color.fromRGBO(19, 35, 63, 1),
+                  shadowColor: Color.fromRGBO(19, 35, 63, 1),
+                  title: Text(
+                    '举手列表',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SliverFixedExtentList(
+                  itemExtent: 75.0,
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      //创建列表项
+                      return Container(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 0,
+                              child: Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(44),
+                                    child: Image.asset(
+                                      'assets/images/headPortrait/1.png',
+                                      height: 44,
+                                    ),
+                                  )),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: Text(
+                                  "name---" + index.toString(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 0,
+                              child: InkWell(
+                                onTap: () {
+                                  //同意or拒绝
+                                  Navigator.pop(context);
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                  child: Image.asset(
+                                    index % 2 == 0
+                                        ? "assets/images/after-HandUp.png"
+                                        : "assets/images/before-HandUp.png",
+                                    height: 30,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    childCount: _HandUpList.length,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
