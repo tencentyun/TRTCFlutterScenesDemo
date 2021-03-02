@@ -54,39 +54,37 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
         "appId": Config.sdkAppId,
         "type": 'voiceRoom'
       },
-    ).then((value) {
+    ).then((value) async {
       var data = value.data;
-      print(data);
-      List<RoomInfo> roomls = new List<RoomInfo>();
+      List<String> roomIdls = new List<String>();
       if (data["errorCode"] == 0) {
         List<dynamic> resList = data["data"] as List<dynamic>;
         for (int i = 0; i < resList.length; i++) {
           dynamic item = resList[i];
-          //房间信息
-          roomls.add(new RoomInfo(item["id"].toString(), item["roomId"],
-              item["title"], "admin1", 1));
-          roomls.add(new RoomInfo(item["id"].toString() + '-22',
-              item["roomId"] + '-22', item["title"], "admin1", 1));
-          roomls.add(new RoomInfo(item["id"].toString() + '-33',
-              item["roomId"] + '-33', item["title"], "admin1", 2));
+          roomIdls.add(item["roomId"]);
         }
       } else {
         TxUtils.showToast(data['errorMessage'], context);
       }
-      setState(() {
-        roomInfList = roomls;
-        trtcVoiceRoom.getRoomInfoList(roomls.map<String>((e) => e.id).toList());
-      });
+      RoomInfoCallback resp = await trtcVoiceRoom.getRoomInfoList(roomIdls);
+      if (resp.code == 0) {
+        setState(() {
+          roomInfList = resp.list;
+        });
+      } else {
+        TxUtils.showToast(resp, context);
+      }
     });
   }
 
   goRoomPage(RoomInfo roomInfo) {
-    if (roomInfo.id.indexOf('-22') > 0) {
+    if (roomInfo.roomId.toString() == TxUtils.getLoginUserId()) {
       Navigator.pushNamed(
         context,
         "/voiceRoom/roomAudience",
         arguments: {
           'roomId': roomInfo.roomId,
+          'isAdmin': true,
         },
       );
       return;
@@ -160,7 +158,9 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                           fit: StackFit.expand,
                           children: [
                             Image.asset(
-                              "assets/images/headPortrait/2.png",
+                              info.coverUrl != null && info.coverUrl != ''
+                                  ? info.coverUrl
+                                  : "assets/images/headPortrait/2.png",
                             ),
                             Positioned(
                               bottom: 10,
@@ -169,8 +169,12 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(info.title),
-                                  Text(info.adminName),
+                                  Text(info.roomName == null
+                                      ? "无主题"
+                                      : info.roomName),
+                                  Text(info.ownerName == null
+                                      ? "--"
+                                      : info.ownerName),
                                 ],
                               ),
                             ),
@@ -181,7 +185,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    info.onLineCount.toString() + '人在线',
+                                    info.memberCount.toString() + '人在线',
                                   ),
                                 ],
                               ),
@@ -209,24 +213,5 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
         child: Icon(Icons.add),
       ),
     );
-  }
-}
-
-class RoomInfo {
-  String roomId;
-  String title;
-  String id;
-  String adminName;
-  int onLineCount;
-  RoomInfo(String id, String roomId, String title, String adminName,
-      int onLineCount) {
-    if (title == null) title = '--';
-    if (adminName == null) adminName = '';
-    this.id = id;
-    this.title = title;
-    this.roomId = roomId;
-    this.adminName = adminName;
-    if (onLineCount == null) onLineCount = 1;
-    this.onLineCount = onLineCount;
   }
 }
