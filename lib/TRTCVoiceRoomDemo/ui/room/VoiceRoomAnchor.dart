@@ -372,11 +372,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                                         _anchorItem.userAvatar != ''
                                     ? _anchorItem.userAvatar
                                     : 'https://imgcache.qq.com/operation/dianshi/other/7.157d962fa53be4107d6258af6e6d83f33d45fba4.png',
-                                isAdministrator:
-                                    _anchorItem.userName == '1' ? true : false,
-                                isSoundOff: _anchorItem.userAvatar == '1'
-                                    ? false
-                                    : true,
+                                isAdministrator: _anchorItem.userId ==
+                                        TxUtils.getLoginUserId()
+                                    ? true
+                                    : false,
+                                isMute: _anchorItem.mute,
                                 onKickOutUser: () {
                                   //踢人
                                 },

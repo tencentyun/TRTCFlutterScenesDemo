@@ -8,20 +8,20 @@ class AnchorItem extends StatefulWidget {
     this.userImgUrl = "",
     this.isAdministrator = false,
     this.onKickOutUser,
-    this.isSoundOff,
+    this.isMute,
   }) : super(key: key);
 
   final String userName;
   final String userImgUrl;
   final bool isAdministrator;
   final Function onKickOutUser;
-  final bool isSoundOff;
+  final bool isMute;
   @override
   State<StatefulWidget> createState() => _AnchorItemState();
 }
 
 class _AnchorItemState extends State<AnchorItem> {
-  handleShowDownWheat(context) {
+  handleShowKickOutUser(context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
@@ -96,7 +96,7 @@ class _AnchorItemState extends State<AnchorItem> {
                         onTap: () {
                           if (!widget.isAdministrator) {
                             //bug 需要判断当前用户是否为管理员才可以调用
-                            this.handleShowDownWheat(context);
+                            this.handleShowKickOutUser(context);
                           }
                         },
                         child: Image.network(
@@ -111,7 +111,7 @@ class _AnchorItemState extends State<AnchorItem> {
                     top: 55,
                     child: InkWell(
                       onTap: () {},
-                      child: widget.isSoundOff
+                      child: widget.isMute
                           ? Image.asset(
                               "assets/images/sound_off.png",
                               height: 24,
