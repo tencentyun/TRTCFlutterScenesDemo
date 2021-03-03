@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,9 +61,11 @@ class TxUtils {
   }
 
   static String getLoginUserId() {
-    // if (_loginUserId == '') {
-    //   _loginUserId = getStorageByKey(constants.USERID_KEY);
-    // }
+    if (_loginUserId == '') {
+      getStorageByKey(constants.USERID_KEY).then((value) {
+        _loginUserId = value;
+      });
+    }
     return _loginUserId;
   }
 }

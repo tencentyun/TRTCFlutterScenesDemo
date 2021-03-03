@@ -5,7 +5,6 @@ import 'utils/constants.dart' as constants;
 import './base/TestFlowDelegate.dart';
 import './debug/GenerateTestUserSig.dart';
 import './TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
-import './TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage({Key key}) : super(key: key);
@@ -31,6 +30,7 @@ class IndexPageState extends State<IndexPage> {
           "/login",
         );
       } else {
+        TxUtils.setStorageByKey(constants.USERID_KEY, userId);
         trtcVoiceRoom.login(
           GenerateTestUserSig.sdkAppId,
           userId,

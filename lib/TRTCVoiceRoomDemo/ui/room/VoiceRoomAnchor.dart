@@ -56,6 +56,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     Map arguments = ModalRoute.of(context).settings.arguments;
     currentRoomId = int.parse(arguments['roomId'].toString());
     currentOwnerId = int.parse(arguments['ownerId'].toString());
+    print('-------------------:' + currentOwnerId.toString());
+    print('-------------------:' + currentOwnerId.toString());
     final bool isAdmin =
         currentOwnerId.toString() == TxUtils.getLoginUserId() ? true : false;
     setState(() {
