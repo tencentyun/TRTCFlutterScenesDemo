@@ -286,6 +286,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                                           ? userInfo.userAvatar
                                           : 'https://imgcache.qq.com/operation/dianshi/other/1.724142271f4e811457eee00763e63f454af52d13.png',
                                       height: 44,
+                                      fit: BoxFit.fitHeight,
                                     ),
                                   )),
                             ),

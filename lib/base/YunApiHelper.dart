@@ -34,7 +34,6 @@ class YunApiHelper {
     return Future.value(data["errorCode"] == 0 ? true : false);
   }
 
-  static Future<bool> setNickname() async {}
   static Future<List<String>> getRoomList() async {
     Response<dynamic> resp = await _dio.get(
       _url,

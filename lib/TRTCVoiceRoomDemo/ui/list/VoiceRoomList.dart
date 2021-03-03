@@ -149,6 +149,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                               info.coverUrl != null && info.coverUrl != ''
                                   ? info.coverUrl
                                   : "https://imgcache.qq.com/operation/dianshi/other/5.ca48acfebc4dfb68c6c463c9f33e60cb8d7c9565.png",
+                              fit: BoxFit.fitWidth,
                             ),
                             Positioned(
                               left: 10,

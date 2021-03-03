@@ -102,6 +102,7 @@ class _AnchorItemState extends State<AnchorItem> {
                         child: Image.network(
                           widget.userImgUrl,
                           height: 80,
+                          fit: BoxFit.fitHeight,
                         ),
                       ),
                     ),
