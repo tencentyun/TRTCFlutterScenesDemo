@@ -44,7 +44,8 @@ class _AudienceItemState extends State<AudienceItem> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
+                Container(
+                  width: 60,
                   padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                   child: Text(
                     widget.userName,

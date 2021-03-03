@@ -21,6 +21,9 @@ class VoiceRoomAnchorPage extends StatefulWidget {
 }
 
 class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
+  int currentRoomId;
+  int currentOwnerId;
+
   TRTCVoiceRoom trtcVoiceRoom;
   UserStatus userStatus = UserStatus.NoSpeaking;
   String title = "";
@@ -52,14 +55,22 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   initUserInfo() async {
     Map arguments = ModalRoute.of(context).settings.arguments;
+    currentRoomId = int.parse(arguments['roomId'].toString());
+    currentOwnerId = int.parse(arguments['ownerId'].toString());
+
     setState(() {
-      userType = widget.userType;
+      userType = currentOwnerId.toString() == TxUtils.getLoginUserId()
+          ? UserType.Administrator
+          : widget.userType;
       title = arguments["roomName"] == null ? '无主题' : arguments["roomName"];
     });
-    ActionCallback enterRoomResp =
-        await trtcVoiceRoom.enterRoom(arguments['roomId']);
+    ActionCallback enterRoomResp = await trtcVoiceRoom.enterRoom(currentRoomId);
     if (enterRoomResp.code == 0) {
-      TxUtils.showToast('进房成功', context);
+      if (currentOwnerId.toString() == TxUtils.getLoginUserId()) {
+        TxUtils.showToast('房主占座成功。', context);
+      } else {
+        TxUtils.showToast('进房成功', context);
+      }
     } else {
       TxUtils.showErrorToast(enterRoomResp.desc, context);
     }

@@ -139,8 +139,9 @@ class _AnchorItemState extends State<AnchorItem> {
                       height: 14,
                     )
                   : Text(''),
-              Padding(
+              Container(
                 padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                width: 75,
                 child: Text(
                   widget.userName,
                   overflow: TextOverflow.ellipsis,
