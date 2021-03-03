@@ -104,8 +104,6 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
           ),
         );
         if (resp.code == 0) {
-          TxUtils.showToast("创建聊天室成功", context);
-
           Navigator.pushNamed(
             context,
             "/voiceRoom/roomAnchor",
