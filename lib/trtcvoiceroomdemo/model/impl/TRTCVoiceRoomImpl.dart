@@ -1,6 +1,7 @@
 import 'package:tencent_im_sdk_plugin/enum/group_add_opt_type.dart';
 import 'package:tencent_im_sdk_plugin/enum/group_member_filter_type.dart';
 import 'package:tencent_im_sdk_plugin/enum/message_priority.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_event_callback.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_full_info.dart';
@@ -26,6 +27,7 @@ import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 
 class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
+  String logTag = "VoiceRoomFlutterSdk";
   static TRTCVoiceRoomImpl sInstance;
   static VoiceRoomListener listener;
 
@@ -39,7 +41,6 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
   String mSelfUserName;
   bool mIsInitIMSDK = false;
   bool mIsLogin = false;
-  bool mIsEnterRoom = false;
   V2TIMManager timManager;
   TRTCCloud mTRTCCloud;
   TXAudioEffectManager txAudioManager;
@@ -68,17 +69,8 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     }
   }
 
-  bool isEnterRoom() {
-    return mIsLogin && mIsEnterRoom;
-  }
-
   @override
   Future<ActionCallback> createRoom(int roomId, RoomParam roomParam) async {
-    if (isEnterRoom()) {
-      return ActionCallback(
-          code: codeErr, desc: 'you have been in room:' + mRoomId);
-    }
-
     if (!mIsLogin) {
       return ActionCallback(
           code: codeErr, desc: 'im not login yet, create room fail.');
@@ -135,6 +127,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
           groupName: roomParam.roomName,
           faceUrl: roomParam.coverUrl,
           introduction: mSelfUserName);
+
       V2TimCallback initRes = await timManager
           .getGroupManager()
           .initGroupAttributes(groupID: mRoomId, attributes: {mUserId: "1"});
@@ -255,8 +248,14 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     V2TimValueCallback<Map<String, String>> attrRes = await timManager
         .getGroupManager()
         .getGroupAttributes(groupID: mRoomId, keys: null);
+    print("==attrRes=" + attrRes.code.toString());
+    print("==attrRes data=" + attrRes.data.toString());
     if (attrRes.code == 0) {
       Map<String, String> attrData = attrRes.data;
+      if (attrData == null) {
+        return UserListCallback(
+            code: 0, desc: 'get archorInfo success.', list: []);
+      }
       List<String> userIdList = [];
       attrData.forEach((k, v) => userIdList.add(k));
 
@@ -455,7 +454,13 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     }
   }
 
-  initImLisener(data) {}
+  initImLisener(V2TimEventCallback data) {
+    if (data.type == "onConnectFailed") {
+      print(logTag + "=onConnectFailed");
+    } else if (data.type == "onKickedOffline") {
+      print(logTag + "=onKickedOffline");
+    }
+  }
 
   @override
   Future<ActionCallback> agreeToSpeak(String userId) async {

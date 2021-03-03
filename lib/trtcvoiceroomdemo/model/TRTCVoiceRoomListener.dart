@@ -3,6 +3,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_event_callback.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_attribute_changed.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_member_enter.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_member_leave.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_recv_group_text_message.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 
 enum TRTCVoiceRoomListener {
@@ -93,8 +94,16 @@ enum TRTCVoiceRoomListener {
 class VoiceRoomListener {
   Map<String, String> mOldAttributeMap = {};
   Set<VoiceListenerFunc> listeners = Set();
+  TRTCCloud mTRTCCloud;
+  V2TIMManager timManager;
 
-  VoiceRoomListener(TRTCCloud mTRTCCloud, V2TIMManager timManager) {
+  VoiceRoomListener(TRTCCloud _mTRTCCloud, V2TIMManager _timManager) {
+    mTRTCCloud = _mTRTCCloud;
+    timManager = _timManager;
+  }
+
+  void addListener(VoiceListenerFunc func) {
+    listeners.add(func);
     mTRTCCloud.registerListener(rtcListener);
     timManager.addSimpleMsgListener(
       listener: simpleMsgListener,
@@ -102,10 +111,6 @@ class VoiceRoomListener {
     print("==setGroupListener1==");
     timManager.setGroupListener(listener: groupListener);
     print("==setGroupListener2==");
-  }
-
-  void addListener(VoiceListenerFunc func) {
-    listeners.add(func);
   }
 
   void removeListener(VoiceListenerFunc func, mTRTCCloud, timManager) {
@@ -172,10 +177,19 @@ class VoiceRoomListener {
       } else if (data.data.customData == "agreeToSpeak") {
         type = TRTCVoiceRoomListener.onAgreeToSpeak;
         emitEvent(type, data.data.sender.userID);
+      } else if (data.data.customData == "refuseToSpeak") {
+        type = TRTCVoiceRoomListener.onRefuseToSpeak;
+        emitEvent(type, data.data.sender.userID);
       }
-    } else if (data.data.customData == "refuseToSpeak") {
-      type = TRTCVoiceRoomListener.onRefuseToSpeak;
-      emitEvent(type, data.data.sender.userID);
+    } else if (data.type == "onRecvGroupTextMessage") {
+      V2TimRecvGroupTextMessage message = data.data;
+      type = TRTCVoiceRoomListener.onRecvRoomTextMsg;
+      emitEvent(type, {
+        "text": message.text,
+        "sendId": message.sender.userID,
+        "userAvatar": message.sender.faceUrl,
+        "userName": message.sender.nickName
+      });
     }
   }
 
@@ -191,7 +205,6 @@ class VoiceRoomListener {
     //   }
     // }
     typeStr = typeStr.replaceFirst("TRTCCloudListener.", "");
-    // print("==typeStr=" + typeStr);
     if (typeStr == "onEnterRoom") {
       type = TRTCVoiceRoomListener.onEnterRoom;
       emitEvent(type, param);

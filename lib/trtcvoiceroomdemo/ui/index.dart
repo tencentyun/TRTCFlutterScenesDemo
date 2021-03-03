@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 import 'package:toast/toast.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../debug/GenerateTestUserSig.dart';
 
 import '../model/TRTCVoiceRoom.dart';
@@ -59,7 +58,9 @@ class IndexPageState extends State<IndexPage> {
     initData();
   }
 
-  initData() async {}
+  initData() async {
+    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+  }
 
   // 隐藏底部输入框
   unFocus() {
@@ -78,11 +79,6 @@ class IndexPageState extends State<IndexPage> {
   }
 
   enterTest() async {
-    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
-    ActionCallback resValue = await trtcVoiceRoom.login(
-        GenerateTestUserSig.sdkAppId,
-        userId,
-        GenerateTestUserSig.genTestSig(userId));
     trtcVoiceRoom.registerListener(onVoiceListener);
 
     // trtcVoiceRoom.enterRoom(333);
@@ -117,55 +113,6 @@ class IndexPageState extends State<IndexPage> {
   onVoiceListener(type, param) {
     print("==1111type=" + type.toString());
     print("==1111param=" + param.toString());
-  }
-
-  enterMeeting() async {
-    if (GenerateTestUserSig.sdkAppId == 0) {
-      showToast('请填写SDKAPPID');
-      return;
-    }
-    if (GenerateTestUserSig.secretKey == '') {
-      showToast('请填写密钥');
-      return;
-    }
-    meetId = meetId.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-    if (meetId == '') {
-      showToast('请输入会议号');
-      return;
-    } else if (meetId == '0') {
-      showToast('请输入合法的会议ID');
-      return;
-    } else if (meetId.toString().length > 10) {
-      showToast('会议ID过长，请输入合法的会议ID');
-      return;
-    } else if (!new RegExp(r"[0-9]+$").hasMatch(meetId)) {
-      showToast('会议ID只能为数字，请输入合法的会议ID');
-      return;
-    }
-    userId = userId.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
-    if (userId == '') {
-      showToast('请输入用户ID');
-      return;
-    } else if (!new RegExp(r"[A-Za-z0-9_]+$").hasMatch(userId)) {
-      showToast('用户ID只能为数字、字母、下划线，请输入正确的用户ID');
-      return;
-    } else if (userId.length > 10) {
-      showToast('用户ID过长，请输入合法的用户ID');
-      return;
-    }
-    unFocus();
-    if (await Permission.camera.request().isGranted &&
-        await Permission.microphone.request().isGranted) {
-      Navigator.pushNamed(context, "/video", arguments: {
-        "meetId": int.parse(meetId),
-        "userId": userId,
-        "enabledCamera": enabledCamera,
-        "enabledMicrophone": enabledMicrophone,
-        "quality": quality
-      });
-    } else {
-      showToast('需要获取音视频权限才能进入');
-    }
   }
 
   @override
@@ -251,6 +198,17 @@ class IndexPageState extends State<IndexPage> {
                 padding: const EdgeInsets.only(top: 10.0),
                 child: Row(
                   children: <Widget>[
+                    RaisedButton(
+                      child: Text("登录"),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        ActionCallback resValue = await trtcVoiceRoom.login(
+                            GenerateTestUserSig.sdkAppId,
+                            userId,
+                            GenerateTestUserSig.genTestSig(userId));
+                      },
+                    ),
                     Expanded(
                       child: RaisedButton(
                         child: Text("进入会议"),
@@ -276,7 +234,7 @@ class IndexPageState extends State<IndexPage> {
                         textColor: Colors.white,
                         onPressed: () async {
                           ActionCallback res =
-                              await trtcVoiceRoom.agreeToSpeak('122');
+                              await trtcVoiceRoom.agreeToSpeak('223');
                           print("==res code=" + res.code.toString());
                           print("==res desc=" + res.desc.toString());
                         },
@@ -318,10 +276,6 @@ class IndexPageState extends State<IndexPage> {
                           UserListCallback voiceInfo =
                               await trtcVoiceRoom.getArchorInfoList();
                           print("==voiceInfo=" + voiceInfo.list.toString());
-                          print("==voiceInfo userId=" +
-                              voiceInfo.list[0].userId.toString());
-                          print("==voiceInfo mute=" +
-                              voiceInfo.list[0].mute.toString());
                         },
                       ),
                     ),
@@ -338,7 +292,11 @@ class IndexPageState extends State<IndexPage> {
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         onPressed: () async {
-                          trtcVoiceRoom.muteMic(true);
+                          ActionCallback muteRes =
+                              await trtcVoiceRoom.muteMic(true);
+
+                          print("==muteRes=" + muteRes.code.toString());
+                          print("==muteRes data=" + muteRes.desc.toString());
                         },
                       ),
                     ),
@@ -348,6 +306,24 @@ class IndexPageState extends State<IndexPage> {
                       textColor: Colors.white,
                       onPressed: () async {
                         trtcVoiceRoom.muteMic(false);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Row(
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text("sendRoomTextMsg-clavie"),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        ActionCallback res =
+                            await trtcVoiceRoom.sendRoomTextMsg('clavie');
+                        print("==res=" + res.code.toString());
+                        print("==res data=" + res.desc.toString());
                       },
                     ),
                   ],
