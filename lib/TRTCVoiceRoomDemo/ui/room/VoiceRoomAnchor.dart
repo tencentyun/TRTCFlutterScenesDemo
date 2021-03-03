@@ -181,32 +181,47 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   // 弹出退房确认对话框
   Future<bool> showExitConfirmDialog() {
     return showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          //title: Text("提示"),
-          content: Text(userType == UserType.Administrator
-              ? "离开会解散房间，确定离开吗?"
-              : "确定离开房间吗？"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("再等等"),
-              onPressed: () => Navigator.of(context).pop(), // 关闭对话框
+        context: context,
+        builder: (context) {
+          return Theme(
+            data: ThemeData.dark(),
+            child: CupertinoAlertDialog(
+              content: Expanded(
+                child: Container(
+                  child: Text(
+                    userType == UserType.Administrator
+                        ? "离开会解散房间，确定离开吗?"
+                        : "确定离开房间吗？",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text(
+                    "再等等",
+                    style: TextStyle(color: Color.fromRGBO(235, 244, 255, 1)),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text(
+                    "我确定",
+                    style: TextStyle(color: Color.fromRGBO(0, 98, 227, 1)),
+                  ),
+                  onPressed: () {
+                    userType == UserType.Administrator
+                        ? trtcVoiceRoom.destroyRoom()
+                        : trtcVoiceRoom.exitRoom();
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
             ),
-            FlatButton(
-              child: Text("我确定"),
-              onPressed: () {
-                //关闭对话框并返回true
-                userType == UserType.Administrator
-                    ? trtcVoiceRoom.destroyRoom()
-                    : trtcVoiceRoom.exitRoom();
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    );
+          );
+        });
   }
 
   // 显示举手列表
