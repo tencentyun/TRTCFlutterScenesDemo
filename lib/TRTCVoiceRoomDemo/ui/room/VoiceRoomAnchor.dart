@@ -50,6 +50,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   initSDK() async {
     trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+    trtcVoiceRoom.registerListener(onVoiceListener);
     this.initUserInfo();
   }
 
@@ -78,6 +79,16 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     await this.getAudienceList();
   }
 
+  onVoiceListener(type, param) {
+    print("==type=" + type.toString());
+    print("==param=" + param.toString());
+    switch (type) {
+      case '':
+        break;
+    }
+  }
+
+  //获取主播列表
   getAnchorList() async {
     try {
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
@@ -93,6 +104,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     }
   }
 
+  // 获取听众列表
   getAudienceList() async {
     try {
       MemberListCallback _memberList = await trtcVoiceRoom.getRoomMemberList(0);
@@ -108,6 +120,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     }
   }
 
+  //获取举手列表
+  getRaiseHandList() {}
+
   //管理员同意其成为主播
   onAdminAgree() {}
 
@@ -115,13 +130,13 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   applyToBeAnchor() {}
 
   //主播下麦
-  anchorDownWheat() {
+  handleAnchorLeaveMic() {
     trtcVoiceRoom.leaveMic();
     print('anchorDownWheat');
   }
 
   //音频开关
-  handleSoundOff(bool isSpeaking) {
+  handleMuteAudio(bool isSpeaking) {
     setState(() {
       userStatus = isSpeaking ? UserStatus.NoSpeaking : UserStatus.Speaking;
       trtcVoiceRoom.muteLocalAudio(!isSpeaking);
@@ -129,7 +144,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   }
 
   //听众举手
-  handleHandUpClick() {
+  handleRaiseHandClick() {
     trtcVoiceRoom.raiseHand();
     this._showTopMessage("举手成功！等待管理员通过~", false);
   }
@@ -383,18 +398,18 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
             RoomBottomBar(
               userStatus: userStatus,
               userType: userType,
-              onSoundClick: (value) {
-                this.handleSoundOff(value);
+              onMuteAudio: (value) {
+                this.handleMuteAudio(value);
               },
-              onHandUp: () {
-                this.handleHandUpClick();
+              onRaiseHand: () {
+                this.handleRaiseHandClick();
               },
               onShowHandList: () {
                 this.handleShowHandList(context);
               },
-              onDownWheat: () {
+              onAnchorLeaveMic: () {
                 //主播下麦
-                this.anchorDownWheat();
+                this.handleAnchorLeaveMic();
               },
               onLeave: () async {
                 if (userType == UserType.Administrator) {

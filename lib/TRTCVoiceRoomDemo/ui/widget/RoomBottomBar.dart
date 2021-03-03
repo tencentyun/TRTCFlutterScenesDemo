@@ -13,18 +13,18 @@ class RoomBottomBar extends StatefulWidget {
     this.userType,
     this.userStatus,
     this.onLeave,
-    this.onHandUp,
+    this.onRaiseHand,
     this.onShowHandList,
-    this.onSoundClick,
-    this.onDownWheat,
+    this.onMuteAudio,
+    this.onAnchorLeaveMic,
   }) : super(key: key);
   final UserType userType;
   final UserStatus userStatus;
   final Function onLeave;
-  final Function onHandUp;
+  final Function onRaiseHand;
   final Function onShowHandList;
-  final Function onSoundClick;
-  final Function onDownWheat;
+  final Function onMuteAudio;
+  final Function onAnchorLeaveMic;
   @override
   _RoomBottomBarState createState() => _RoomBottomBarState();
 }
@@ -40,11 +40,11 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
     setState(() {
       hadHandUp = true;
     });
-    widget.onHandUp();
+    widget.onRaiseHand();
   }
 
   onSoundClick(bool isSpeaking) {
-    widget.onSoundClick(isSpeaking);
+    widget.onMuteAudio(isSpeaking);
   }
 
   onShowHandList() {
@@ -52,7 +52,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
   }
 
   onDownWheat() {
-    widget.onDownWheat();
+    widget.onAnchorLeaveMic();
   }
 
   onLeave() {
