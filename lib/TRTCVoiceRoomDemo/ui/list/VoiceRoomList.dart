@@ -64,7 +64,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           roomIdls.add(item["roomId"]);
         }
       } else {
-        TxUtils.showToast(data['errorMessage'], context);
+        TxUtils.showErrorToast(data['errorMessage'], context);
       }
       RoomInfoCallback resp = await trtcVoiceRoom.getRoomInfoList(roomIdls);
       if (resp.code == 0) {
@@ -72,7 +72,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           roomInfList = resp.list;
         });
       } else {
-        TxUtils.showToast(resp, context);
+        TxUtils.showErrorToast(resp.desc, context);
       }
     });
   }

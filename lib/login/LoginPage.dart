@@ -26,7 +26,7 @@ class LoginPageState extends State<LoginPage> {
 
   login(context) async {
     if (userId == '') {
-      TxUtils.showToast('请输入用户名', context);
+      TxUtils.showErrorToast('请输入用户名', context);
       return;
     }
     trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
@@ -50,7 +50,7 @@ class LoginPageState extends State<LoginPage> {
         },
       );
     } else {
-      TxUtils.showToast("登录失败！ " + resValue.desc, context);
+      TxUtils.showErrorToast(resValue.desc, context);
     }
   }
 

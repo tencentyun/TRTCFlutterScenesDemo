@@ -61,7 +61,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     if (enterRoomResp.code == 0) {
       TxUtils.showToast('进房成功', context);
     } else {
-      TxUtils.showToast('进房失败。' + enterRoomResp.desc, context);
+      TxUtils.showErrorToast(enterRoomResp.desc, context);
     }
     await this.getAnchorList();
     await this.getAudienceList();
@@ -74,9 +74,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         setState(() {
           _AnchorList = _archorResp.list;
         });
+      } else {
+        TxUtils.showErrorToast(_archorResp.desc, context);
       }
     } catch (ex) {
-      print(ex);
+      TxUtils.showErrorToast(ex.toString(), context);
     }
   }
 
@@ -87,9 +89,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         setState(() {
           _AudienceList = _memberList.list;
         });
+      } else {
+        TxUtils.showErrorToast(_memberList.desc, context);
       }
     } catch (ex) {
-      print(ex);
+      TxUtils.showErrorToast(ex.toString(), context);
     }
   }
 

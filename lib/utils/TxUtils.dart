@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './constants.dart' as constants;
@@ -12,12 +13,25 @@ class TxUtils {
     }
   }
 
+  static showErrorToast(text, context) {
+    Toast.show(
+      text,
+      context,
+      backgroundColor: Colors.red[400],
+      // Color.fromRGBO(156, 31, 59, 1), //Color.fromRGBO(251, 224, 224, 1),
+      //textColor: Color.fromRGBO(156, 31, 59, 1),
+      duration: Toast.LENGTH_SHORT,
+      gravity: Toast.CENTER,
+    );
+  }
+
   static showToast(text, context) {
     Toast.show(
       text,
       context,
+      backgroundColor: Colors.green[400],
       duration: Toast.LENGTH_SHORT,
-      gravity: Toast.CENTER,
+      gravity: Toast.BOTTOM,
     );
   }
 
