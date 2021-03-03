@@ -49,7 +49,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   initSDK() async {
     trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
-    trtcVoiceRoom.registerListener(onVoiceListener);
+
     this.initUserInfo();
   }
 
@@ -60,8 +60,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     final bool isAdmin =
         currentOwnerId.toString() == TxUtils.getLoginUserId() ? true : false;
     setState(() {
-      userType = isAdmin ? UserType.Administrator : widget.userType;
-      title = arguments["roomName"] == null ? '无主题' : arguments["roomName"];
+      userType = isAdmin ? UserType.Administrator : UserType.Audience;
+      title = arguments["roomName"] == null ? '--' : arguments["roomName"];
     });
     if (isAdmin) {
       this.getRaiseHandList();
@@ -69,13 +69,14 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     ActionCallback enterRoomResp = await trtcVoiceRoom.enterRoom(currentRoomId);
     if (enterRoomResp.code == 0) {
       if (currentOwnerId.toString() == TxUtils.getLoginUserId()) {
-        TxUtils.showToast('房主占座成功。', context);
+        TxUtils.showToast('该房间是您创建，重新进入中...', context);
       } else {
         TxUtils.showToast('进房成功', context);
       }
     } else {
       TxUtils.showErrorToast(enterRoomResp.desc, context);
     }
+    trtcVoiceRoom.registerListener(onVoiceListener);
     //sleep(Duration(seconds: 1));
     await this.getAnchorList();
     await this.getAudienceList();
@@ -88,11 +89,20 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       case TRTCVoiceRoomListener.onError:
         break;
       case TRTCVoiceRoomListener.onAgreeToSpeak:
+        //群主同意举手
+        break;
+      case TRTCVoiceRoomListener.onRefuseToSpeak:
+        //onRefuseToSpeak
         break;
       case TRTCVoiceRoomListener.onRaiseHand:
         this._showTopMessage(param.toString() + "申请成为主播", true);
         break;
       case TRTCVoiceRoomListener.onAudienceEnter:
+        break;
+      case TRTCVoiceRoomListener.onAnchorLeave:
+        {}
+        break;
+      case TRTCVoiceRoomListener.onAgreeToSpeak:
         break;
       case TRTCVoiceRoomListener.onEnterRoom:
         break;
@@ -145,7 +155,6 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   //主播下麦
   handleAnchorLeaveMic() {
     trtcVoiceRoom.leaveMic();
-    print('anchorDownWheat');
   }
 
   //音频开关
@@ -216,6 +225,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         ? trtcVoiceRoom.destroyRoom()
                         : trtcVoiceRoom.exitRoom();
                     Navigator.of(context).pop(true);
+                    TxUtils.showToast('退房成功', context);
                   },
                 ),
               ],
@@ -323,7 +333,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title + '的沙龙($currentRoomId)'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios), //color: Colors.black
           onPressed: () async {
@@ -340,7 +350,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       body: ConstrainedBox(
         constraints: BoxConstraints.expand(),
         child: Stack(
-          alignment: Alignment.topLeft, //指定未定位或部分定位widget的对齐方式
+          alignment: Alignment.topLeft,
           fit: StackFit.expand,
           children: <Widget>[
             Container(

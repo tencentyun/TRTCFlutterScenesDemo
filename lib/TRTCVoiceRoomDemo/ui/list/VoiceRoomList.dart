@@ -68,6 +68,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       }
       if (roomIdls.isEmpty) {
         print('no room list');
+        //roomIdls.add('55568185');
         return;
       }
       RoomInfoCallback resp = await trtcVoiceRoom.getRoomInfoList(roomIdls);

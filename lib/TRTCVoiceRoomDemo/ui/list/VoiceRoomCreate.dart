@@ -130,7 +130,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: const Text('创建语聊沙龙'),
+        title: const Text('创建语音沙龙'),
         centerTitle: true,
         elevation: 0,
         // automaticallyImplyLeading: false,
