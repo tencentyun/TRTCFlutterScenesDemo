@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCVoiceRoomListener.dart';
 import '../../../utils/TxUtils.dart';
 import '../widget/RoomBottomBar.dart';
 import '../widget/AnchorItem.dart';
@@ -31,16 +34,12 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   bool topMsgVisible = false;
   bool isShowTopMsgAction = false;
   String topMsg = "";
-
-  List<UserInfo> _AnchorList = [];
-  List<UserInfo> _AudienceList = [];
-
-  List<String> _HandUpList = [
-    '4',
-    '5',
-    '6',
-    '7',
-  ];
+  //主播列表
+  List<UserInfo> _anchorList = [];
+  //听众列表
+  List<UserInfo> _audienceList = [];
+  //举手列表
+  List<UserInfo> _raiseHandListList = [];
 
   @override
   void initState() {
@@ -58,13 +57,15 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     Map arguments = ModalRoute.of(context).settings.arguments;
     currentRoomId = int.parse(arguments['roomId'].toString());
     currentOwnerId = int.parse(arguments['ownerId'].toString());
-
+    final bool isAdmin =
+        currentOwnerId.toString() == TxUtils.getLoginUserId() ? true : false;
     setState(() {
-      userType = currentOwnerId.toString() == TxUtils.getLoginUserId()
-          ? UserType.Administrator
-          : widget.userType;
+      userType = isAdmin ? UserType.Administrator : widget.userType;
       title = arguments["roomName"] == null ? '无主题' : arguments["roomName"];
     });
+    if (isAdmin) {
+      this.getRaiseHandList();
+    }
     ActionCallback enterRoomResp = await trtcVoiceRoom.enterRoom(currentRoomId);
     if (enterRoomResp.code == 0) {
       if (currentOwnerId.toString() == TxUtils.getLoginUserId()) {
@@ -75,15 +76,27 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     } else {
       TxUtils.showErrorToast(enterRoomResp.desc, context);
     }
+    //sleep(Duration(seconds: 1));
     await this.getAnchorList();
     await this.getAudienceList();
   }
 
   onVoiceListener(type, param) {
-    print("==type=" + type.toString());
-    print("==param=" + param.toString());
+    print("=======type====:" + type.toString());
+    print("=======param======:" + param.toString());
     switch (type) {
-      case '':
+      case TRTCVoiceRoomListener.onError:
+        break;
+      case TRTCVoiceRoomListener.onAgreeToSpeak:
+        break;
+      case TRTCVoiceRoomListener.onRaiseHand:
+        this._showTopMessage(param.toString() + "申请成为主播", true);
+        break;
+      case TRTCVoiceRoomListener.onAudienceEnter:
+        break;
+      case TRTCVoiceRoomListener.onEnterRoom:
+        break;
+      case TRTCVoiceRoomListener.onExitRoom:
         break;
     }
   }
@@ -94,7 +107,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
       if (_archorResp.code == 0) {
         setState(() {
-          _AnchorList = _archorResp.list;
+          _anchorList = _archorResp.list;
         });
       } else {
         TxUtils.showErrorToast(_archorResp.desc, context);
@@ -110,7 +123,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       MemberListCallback _memberList = await trtcVoiceRoom.getRoomMemberList(0);
       if (_memberList.code == 0) {
         setState(() {
-          _AudienceList = _memberList.list;
+          _audienceList = _memberList.list;
         });
       } else {
         TxUtils.showErrorToast(_memberList.desc, context);
@@ -172,7 +185,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       builder: (context) {
         return AlertDialog(
           //title: Text("提示"),
-          content: Text("离开会解散房间，确定离开吗?"),
+          content: Text(userType == UserType.Administrator
+              ? "离开会解散房间，确定离开吗?"
+              : "确定离开房间吗？"),
           actions: <Widget>[
             FlatButton(
               child: Text("再等等"),
@@ -182,6 +197,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
               child: Text("我确定"),
               onPressed: () {
                 //关闭对话框并返回true
+                userType == UserType.Administrator
+                    ? trtcVoiceRoom.destroyRoom()
+                    : trtcVoiceRoom.exitRoom();
                 Navigator.of(context).pop(true);
               },
             ),
@@ -192,7 +210,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   }
 
   // 显示举手列表
-  handleShowHandList(content) {
+  handleShowRaiseHandList(content) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -217,6 +235,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                       //创建列表项
+                      UserInfo userInfo = _raiseHandListList[index];
                       return Container(
                         alignment: Alignment.centerLeft,
                         child: Row(
@@ -228,8 +247,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                                   padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(44),
-                                    child: Image.asset(
-                                      'assets/images/headPortrait/1.png',
+                                    child: Image.network(
+                                      userInfo.userAvatar != null &&
+                                              userInfo.userAvatar != ''
+                                          ? userInfo.userAvatar
+                                          : 'https://imgcache.qq.com/operation/dianshi/other/1.724142271f4e811457eee00763e63f454af52d13.png',
                                       height: 44,
                                     ),
                                   )),
@@ -239,7 +261,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                               child: Padding(
                                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                 child: Text(
-                                  "name---" + index.toString(),
+                                  userInfo.userName,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -252,6 +274,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                               child: InkWell(
                                 onTap: () {
                                   //同意or拒绝
+                                  //userInfo
                                   Navigator.pop(context);
                                 },
                                 child: Padding(
@@ -269,7 +292,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         ),
                       );
                     },
-                    childCount: _HandUpList.length,
+                    childCount: _raiseHandListList.length,
                   ),
                 ),
               ],
@@ -286,6 +309,15 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(title),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios), //color: Colors.black
+          onPressed: () async {
+            bool isOk = await this.showExitConfirmDialog();
+            if (isOk != null) {
+              Navigator.pop(context);
+            }
+          },
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Color.fromRGBO(19, 41, 75, 1),
@@ -320,7 +352,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         DescriptionTitle("assets/images/Anchor_ICON.png", "主播"),
                   ),
                   Container(
-                    height: _AnchorList.length == 0 ? 30 : 140,
+                    height: _anchorList.length == 0 ? 30 : 140,
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     width: MediaQuery.of(context).size.width,
                     child: GridView(
@@ -330,8 +362,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         crossAxisSpacing: 15, //水平间隔
                         childAspectRatio: 1.0,
                       ),
-                      children:
-                          _AnchorList.map((UserInfo _anchorItem) => AnchorItem(
+                      children: _anchorList
+                          .map((UserInfo _anchorItem) => AnchorItem(
                                 userName: _anchorItem.userName != null &&
                                         _anchorItem.userAvatar != ''
                                     ? _anchorItem.userName
@@ -348,7 +380,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                                 onKickOutUser: () {
                                   //踢人
                                 },
-                              )).toList(),
+                              ))
+                          .toList(),
                     ),
                   ),
                   DescriptionTitle("assets/images/Audience_ICON.png", "听众"),
@@ -362,8 +395,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         crossAxisSpacing: 15,
                         childAspectRatio: 0.9,
                       ),
-                      children: _AudienceList.map(
-                          (UserInfo _audienceItem) => AudienceItem(
+                      children: _audienceList
+                          .map((UserInfo _audienceItem) => AudienceItem(
                                 userImgUrl: _audienceItem.userAvatar != null &&
                                         _audienceItem.userAvatar != ''
                                     ? _audienceItem.userAvatar
@@ -372,7 +405,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                                         _audienceItem.userName != ''
                                     ? _audienceItem.userName
                                     : '--',
-                              )).toList(),
+                              ))
+                          .toList(),
                     ),
                   ),
                   Expanded(
@@ -405,19 +439,15 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                 this.handleRaiseHandClick();
               },
               onShowHandList: () {
-                this.handleShowHandList(context);
+                this.handleShowRaiseHandList(context);
               },
               onAnchorLeaveMic: () {
                 //主播下麦
                 this.handleAnchorLeaveMic();
               },
               onLeave: () async {
-                if (userType == UserType.Administrator) {
-                  bool isOk = await this.showExitConfirmDialog();
-                  if (isOk != null) {
-                    Navigator.pop(context);
-                  }
-                } else {
+                bool isOk = await this.showExitConfirmDialog();
+                if (isOk != null) {
                   Navigator.pop(context);
                 }
               },
