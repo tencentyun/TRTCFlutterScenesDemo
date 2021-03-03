@@ -84,7 +84,6 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
           code: codeErr, desc: 'im not login yet, create room fail.');
     }
     mOwnerUserId = mUserId;
-    mRoomId = roomId.toString();
     V2TimValueCallback<String> res = await timManager
         .getGroupManager()
         .createGroup(
@@ -120,6 +119,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     }
     //setGroupInfoss
     if (code == 0) {
+      mRoomId = roomId.toString();
       mTRTCCloud.enterRoom(
           TRTCParams(
               sdkAppId: mSdkAppId, //应用Id
@@ -145,9 +145,9 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
 
   @override
   Future<ActionCallback> destroyRoom() async {
-    mTRTCCloud.exitRoom();
     V2TimCallback dismissRes = await timManager.dismissGroup(groupID: mRoomId);
     if (dismissRes.code == 0) {
+      mTRTCCloud.exitRoom();
       return ActionCallback(code: 0, desc: "dismiss room success.");
     } else {
       return ActionCallback(code: codeErr, desc: "dismiss room fail.");
@@ -156,11 +156,11 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
 
   @override
   Future<ActionCallback> enterRoom(int roomId) async {
-    mRoomId = roomId.toString();
     V2TimCallback joinRes =
         await timManager.joinGroup(groupID: roomId.toString(), message: '');
     print("==joinRes=" + joinRes.code.toString());
     if (joinRes.code == 0 || joinRes.code == 10013) {
+      mRoomId = roomId.toString();
       mTRTCCloud.enterRoom(
           TRTCParams(
               sdkAppId: mSdkAppId, //应用Id
@@ -185,9 +185,9 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     if (mRoomId == null) {
       return ActionCallback(code: codeErr, desc: "not enter room yet");
     }
-    mTRTCCloud.exitRoom();
     V2TimCallback quitRes = await timManager.quitGroup(groupID: mRoomId);
     if (quitRes.code == 0) {
+      mTRTCCloud.exitRoom();
       return ActionCallback(code: 0, desc: "quit room success.");
     } else {
       return ActionCallback(code: codeErr, desc: "quit room fail.");
@@ -268,6 +268,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
         for (var i = 0; i < userInfo.length; i++) {
           newInfo.add(UserInfo(
               userId: userInfo[i].userID,
+              mute: attrData[userInfo[i].userID] == "1" ? true : false,
               userName: userInfo[i].nickName,
               userAvatar: userInfo[i].faceUrl));
         }
@@ -462,10 +463,6 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
         .sendC2CCustomMessage(customData: 'agreeToSpeak', userID: userId);
 
     if (res.code == 0) {
-      //更新群属性
-      timManager
-          .getGroupManager()
-          .setGroupAttributes(groupID: mRoomId, attributes: {userId: "1"});
       return ActionCallback(code: 0, desc: 'agreeToSpeak success');
     } else {
       return ActionCallback(code: codeErr, desc: res.desc);
@@ -474,25 +471,56 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
 
   @override
   Future<ActionCallback> kickMic(String userId) async {
-    if (mOwnerUserId == null) {
-      return ActionCallback(code: codeErr, desc: 'mOwnerUserId is not valid');
+    if (mRoomId == null) {
+      return ActionCallback(code: codeErr, desc: 'mRoomId is not valid');
     }
     V2TimValueCallback<V2TimMessage> res = await timManager
         .sendC2CCustomMessage(customData: 'kickMic', userID: userId);
     if (res.code == 0) {
       //删除群属性
-      timManager
+      V2TimCallback setRes = await timManager
           .getGroupManager()
           .deleteGroupAttributes(groupID: mRoomId, keys: [userId]);
-      return ActionCallback(code: 0, desc: 'kickMic success');
+      if (setRes.code == 0) {
+        return ActionCallback(code: 0, desc: 'kickMic success');
+      } else {
+        return ActionCallback(code: setRes.code, desc: setRes.desc);
+      }
     } else {
       return ActionCallback(code: codeErr, desc: res.desc);
     }
   }
 
   @override
-  void leaveMic() {
-    // TODO: implement leaveMic
+  Future<ActionCallback> leaveMic() async {
+    if (mRoomId == null) {
+      return ActionCallback(code: codeErr, desc: 'mRoomId is not valid');
+    }
+
+    //删除群属性
+    V2TimCallback res = await timManager
+        .getGroupManager()
+        .deleteGroupAttributes(groupID: mRoomId, keys: [mUserId]);
+    if (res.code == 0) {
+      return ActionCallback(code: 0, desc: 'leaveMic success');
+    } else {
+      return ActionCallback(code: codeErr, desc: res.desc);
+    }
+  }
+
+  @override
+  Future<ActionCallback> muteMic(bool mute) async {
+    //更新群属性
+    V2TimCallback setRes = await timManager
+        .getGroupManager()
+        .setGroupAttributes(
+            groupID: mRoomId, attributes: {mUserId: mute ? "1" : "0"});
+    if (setRes.code == 0) {
+      mTRTCCloud.muteLocalAudio(mute);
+      return ActionCallback(code: 0, desc: 'muteMic success');
+    } else {
+      return ActionCallback(code: setRes.code, desc: setRes.desc);
+    }
   }
 
   @override

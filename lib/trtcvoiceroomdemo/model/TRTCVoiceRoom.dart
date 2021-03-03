@@ -1,5 +1,3 @@
-import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 import 'package:tencent_trtc_cloud/tx_audio_effect_manager.dart';
 import './impl/TRTCVoiceRoomImpl.dart';
@@ -15,11 +13,6 @@ abstract class TRTCVoiceRoom {
   * @note 可以调用 {@link TRTCVoiceRoom#destroySharedInstance()} 销毁单例对象
   */
   static Future<TRTCVoiceRoom> sharedInstance() async {
-    // if (_trtcVoiceRoom == null) {
-    //   _trtcVoiceRoom = new TRTCVoiceRoom();
-    //   await TRTCCloud.sharedInstance();
-    // }
-    // return _trtcVoiceRoom;
     return TRTCVoiceRoomImpl.sharedInstance();
   }
 
@@ -179,7 +172,12 @@ abstract class TRTCVoiceRoom {
   *
   * @param callback 操作回调
   */
-  void leaveMic();
+  Future<ActionCallback> leaveMic();
+
+  // 主播调用
+
+  // 静音/解除静音某个麦位（主播调用）。
+  Future<ActionCallback> muteMic(bool mute);
 
   /*
   * 踢人下麦(主播调用)
@@ -277,6 +275,3 @@ abstract class TRTCVoiceRoom {
   */
   Future<ActionCallback> sendRoomCustomMsg(String customData);
 }
-
-/// @nodoc
-// typedef ListenerValue<P> = void Function(TRTCVoiceRoomListener type, P params);
