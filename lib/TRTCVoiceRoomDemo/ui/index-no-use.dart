@@ -103,12 +103,16 @@ class IndexPageState extends State<IndexPage> {
     }
 
     RoomInfoCallback roomInfo =
-        await trtcVoiceRoom.getRoomInfoList(['12333', '12334']);
+        await trtcVoiceRoom.getRoomInfoList(['12334', '12335']);
 
     print("==roomInfo ownerId=" + roomInfo.list[0].ownerId.toString());
+    print("==roomInfo ownerId=" + roomInfo.list[1].ownerId.toString());
 
     UserListCallback voiceInfo = await trtcVoiceRoom.getArchorInfoList();
-    print("==voiceInfo=" + voiceInfo.toString());
+    print("==voiceInfo=" + voiceInfo.list.toString());
+
+    MemberListCallback memberInfo = await trtcVoiceRoom.getRoomMemberList(0);
+    print("==memberInfo=" + memberInfo.list.toString());
   }
 
   onVoiceListener(type, param) {
@@ -231,90 +235,125 @@ class IndexPageState extends State<IndexPage> {
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    ListTile(
-                        contentPadding: EdgeInsets.all(0),
-                        title: Text("开启摄像头",
-                            style: TextStyle(color: Colors.white)),
-                        trailing: Switch(
-                            value: enabledCamera,
-                            onChanged: (value) =>
-                                // this.setState(() => enabledCamera = value),
-                                trtcVoiceRoom.exitRoom())),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title:
-                          Text("开启麦克风", style: TextStyle(color: Colors.white)),
-                      trailing: Switch(
-                        value: enabledMicrophone,
-                        onChanged: (value) =>
-                            this.setState(() => isOwner = value),
-                      ),
+                child: Column(children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.all(0),
+                    title:
+                        Text("主播or观众", style: TextStyle(color: Colors.white)),
+                    trailing: Switch(
+                      value: isOwner,
+                      onChanged: (value) =>
+                          this.setState(() => isOwner = value),
                     ),
-                    ListTile(
-                      contentPadding: EdgeInsets.all(0),
-                      title:
-                          Text("音质选择", style: TextStyle(color: Colors.white)),
-                      subtitle: Row(
-                        children: [
-                          {
-                            "text": "语音",
-                            "value": TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH
-                          },
-                          {
-                            "text": "标准",
-                            "value": TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT
-                          },
-                          {
-                            "text": "音乐",
-                            "value": TRTCCloudDef.TRTC_AUDIO_QUALITY_MUSIC
-                          },
-                        ]
-                            .map(
-                              (e) => Expanded(
-                                child: Row(
-                                  children: [
-                                    Theme(
-                                      data: ThemeData(
-                                          unselectedWidgetColor:
-                                              Color.fromRGBO(102, 102, 102, 1)),
-                                      child: Radio(
-                                        hoverColor: Colors.white,
-                                        value: e["value"],
-                                        groupValue: this.quality,
-                                        onChanged: (value) => this.setState(
-                                            () => this.quality = value),
-                                      ),
-                                    ),
-                                    Text(e["text"],
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ]),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 30.0),
+                padding: const EdgeInsets.only(top: 10.0),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: RaisedButton(
-                        padding: EdgeInsets.all(15.0),
                         child: Text("进入会议"),
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         onPressed: enterTest,
                       ),
                     ),
+                    Expanded(
+                      child: RaisedButton(
+                        child: Text("举手"),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () {
+                          trtcVoiceRoom.raiseHand();
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RaisedButton(
+                        child: Text("同意举手"),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          ActionCallback res =
+                              await trtcVoiceRoom.agreeToSpeak('122');
+                          print("==res code=" + res.code.toString());
+                          print("==res desc=" + res.desc.toString());
+                        },
+                      ),
+                    ),
                   ],
                 ),
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        child: Text("踢下麦"),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () {
+                          trtcVoiceRoom.kickMic('122');
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RaisedButton(
+                        child: Text("leaveMic"),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () {
+                          trtcVoiceRoom.leaveMic();
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RaisedButton(
+                        child: Text("ArchorInfo"),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          UserListCallback voiceInfo =
+                              await trtcVoiceRoom.getArchorInfoList();
+                          print("==voiceInfo=" + voiceInfo.list.toString());
+                          print("==voiceInfo userId=" +
+                              voiceInfo.list[0].userId.toString());
+                          print("==voiceInfo mute=" +
+                              voiceInfo.list[0].mute.toString());
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        child: Text("mute-true"),
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          trtcVoiceRoom.muteMic(true);
+                        },
+                      ),
+                    ),
+                    RaisedButton(
+                      child: Text("mute-false"),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        trtcVoiceRoom.muteMic(false);
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

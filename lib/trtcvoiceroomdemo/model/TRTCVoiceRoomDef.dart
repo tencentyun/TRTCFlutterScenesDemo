@@ -104,5 +104,8 @@ class UserInfo {
   /// 【字段含义】用户头像
   String userAvatar;
 
-  UserInfo({this.userId, this.userName, this.userAvatar});
+  /// 主播是否开麦
+  bool mute;
+
+  UserInfo({this.userId, this.userName, this.userAvatar, this.mute});
 }
