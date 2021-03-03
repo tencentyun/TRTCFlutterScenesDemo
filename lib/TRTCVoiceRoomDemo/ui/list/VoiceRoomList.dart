@@ -66,6 +66,10 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       } else {
         TxUtils.showErrorToast(data['errorMessage'], context);
       }
+      if (roomIdls.isEmpty) {
+        print('no room list');
+        return;
+      }
       RoomInfoCallback resp = await trtcVoiceRoom.getRoomInfoList(roomIdls);
       if (resp.code == 0) {
         setState(() {
@@ -98,7 +102,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
         "ownerId": roomInfo.ownerId,
         "roomName": roomInfo.roomName,
         'roomId': roomInfo.roomId,
-        'isAdmin': true,
+        'isAdmin': false,
       },
     );
   }
@@ -168,24 +172,16 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                   : "https://imgcache.qq.com/operation/dianshi/other/5.ca48acfebc4dfb68c6c463c9f33e60cb8d7c9565.png",
                             ),
                             Positioned(
-                              bottom: 10,
                               left: 10,
-                              child: Column(
+                              right: 8,
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     info.roomName == null
                                         ? "无主题"
                                         : info.roomName,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    info.ownerName == null
-                                        ? "--"
-                                        : info.ownerName,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       color: Colors.white,
                                     ),
@@ -195,12 +191,33 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                             ),
                             Positioned(
                               bottom: 10,
-                              right: 10,
+                              left: 8,
+                              width: 90,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    info.ownerName == null
+                                        ? "--"
+                                        : info.ownerName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              right: 8,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
                                     info.memberCount.toString() + '人在线',
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       color: Colors.white,
                                     ),

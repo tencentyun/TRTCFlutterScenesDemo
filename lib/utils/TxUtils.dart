@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './constants.dart' as constants;
+import 'dart:math';
 
 class TxUtils {
   static String _loginUserId = '';
@@ -18,11 +19,20 @@ class TxUtils {
       text,
       context,
       backgroundColor: Colors.red[400],
-      // Color.fromRGBO(156, 31, 59, 1), //Color.fromRGBO(251, 224, 224, 1),
-      //textColor: Color.fromRGBO(156, 31, 59, 1),
       duration: Toast.LENGTH_SHORT,
       gravity: Toast.CENTER,
     );
+    print(text);
+  }
+
+  static getRandomNumber() {
+    Random rng = new Random();
+    //2147483647
+    String numStr = '';
+    for (var i = 0; i < 9; i++) {
+      numStr += rng.nextInt(9).toString();
+    }
+    return int.tryParse(numStr);
   }
 
   static showToast(text, context) {

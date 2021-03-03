@@ -4,7 +4,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
-import 'package:toast/toast.dart';
+import '../../../utils/TxUtils.dart';
+import '../../../utils/constants.dart' as constants;
 import 'package:permission_handler/permission_handler.dart';
 import '../../../debug/GenerateTestUserSig.dart';
 import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
@@ -33,18 +34,11 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   final meetIdFocusNode = FocusNode();
   final userFocusNode = FocusNode();
 
-  // 提示浮层
-  showToast(text) {
-    Toast.show(
-      text,
-      context,
-      duration: Toast.LENGTH_SHORT,
-      gravity: Toast.CENTER,
-    );
-  }
-
   @override
   initState() {
+    TRTCVoiceRoom.sharedInstance().then((value) {
+      trtcVoiceRoom = value;
+    });
     super.initState();
   }
 
@@ -63,55 +57,73 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     unFocus();
   }
 
-  createVoiceRoom() async {
+  _isVerifyInputOk() {
     if (GenerateTestUserSig.sdkAppId == 0) {
-      showToast('请填写SDKAPPID');
-      return;
+      TxUtils.showErrorToast('请填写SDKAPPID', context);
+      return false;
     }
     if (GenerateTestUserSig.secretKey == '') {
-      showToast('请填写密钥');
-      return;
+      TxUtils.showErrorToast('请填写密钥', context);
+      return false;
     }
     meetTitle = meetTitle.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     if (meetTitle == '') {
-      showToast('请输入房间主题');
-      return;
+      TxUtils.showErrorToast('请输入房间主题', context);
+      return false;
     } else if (meetTitle.toString().length > 250) {
-      showToast('房间主题过长，请输入合法的房间主题');
-      return;
+      TxUtils.showErrorToast('房间主题过长，请输入合法的房间主题', context);
+      return false;
     }
     userName = userName.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     if (userName == '') {
-      showToast('请输入用户ID');
-      return;
+      TxUtils.showErrorToast('请输入用户名', context);
+      return false;
     } else if (userName.length > 10) {
-      showToast('用户名过长，请输入合法的用户名');
-      return;
+      TxUtils.showErrorToast('用户名过长，请输入合法的用户名', context);
+      return false;
     }
+    return true;
+  }
+
+  createVoiceRoom() async {
+    if (!_isVerifyInputOk()) return;
     unFocus();
+    int roomId = TxUtils.getRandomNumber();
     if (await Permission.camera.request().isGranted &&
         await Permission.microphone.request().isGranted) {
-      trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
-      String avatarURL =
-          "https://imgcache.qq.com/operation/dianshi/other/2.4c958e11852b2caa75da6c2726f9248108d6ec8a.png";
-      await trtcVoiceRoom.setSelfProfile(userName, avatarURL);
-      ActionCallback resp = await trtcVoiceRoom.createRoom(
-        2405,
-        RoomParam(coverUrl: avatarURL, roomName: meetTitle),
-      );
-      if (resp.code == 0) {
-        Navigator.pushNamed(context, "/voiceRoom/roomAnchor", arguments: {
-          "meetTitle": int.parse(meetTitle),
-          "userName": userName,
-          "enabledCamera": false,
-          "enabledMicrophone": true,
-          "quality": TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH
-        });
-      } else {
-        showToast("创建房间失败。" + resp.desc);
+      try {
+        await trtcVoiceRoom.setSelfProfile(
+          userName,
+          constants.DEFAULT_AVATAR_URL,
+        );
+        ActionCallback resp = await trtcVoiceRoom.createRoom(
+          roomId,
+          RoomParam(
+            coverUrl: constants.DEFAULT_AVATAR_URL,
+            roomName: meetTitle,
+          ),
+        );
+        if (resp.code == 0) {
+          TxUtils.showToast("创建聊天室成功", context);
+
+          Navigator.pushNamed(
+            context,
+            "/voiceRoom/roomAnchor",
+            arguments: {
+              "roomName": meetTitle,
+              "roomId": roomId,
+              "ownerId": TxUtils.getLoginUserId(),
+              'isAdmin': true,
+            },
+          );
+        } else {
+          TxUtils.showErrorToast(resp.desc, context);
+        }
+      } catch (ex) {
+        TxUtils.showErrorToast(ex.toString(), context);
       }
     } else {
-      showToast('需要获取音视频权限才能进入');
+      TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
     }
   }
 

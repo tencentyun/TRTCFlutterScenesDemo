@@ -36,9 +36,9 @@ class LoginPageState extends State<LoginPage> {
       userId,
       GenerateTestUserSig.genTestSig(userId),
     );
-    String avatarURL =
-        "https://imgcache.qq.com/operation/dianshi/other/2.4c958e11852b2caa75da6c2726f9248108d6ec8a.png";
-    await trtcVoiceRoom.setSelfProfile('test--' + userId, avatarURL);
+
+    await trtcVoiceRoom.setSelfProfile(
+        'test--' + userId, constants.DEFAULT_AVATAR_URL);
     if (resValue.code == 0) {
       TxUtils.showToast('登录成功', context);
       TxUtils.setStorageByKey(constants.USERID_KEY, userId);

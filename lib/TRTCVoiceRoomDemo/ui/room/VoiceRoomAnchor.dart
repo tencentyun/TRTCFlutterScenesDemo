@@ -41,8 +41,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   @override
   void initState() {
-    this.initSDK();
     super.initState();
+    this.initSDK();
   }
 
   initSDK() async {
@@ -145,7 +145,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("提示"),
+          //title: Text("提示"),
           content: Text("离开会解散房间，确定离开吗?"),
           actions: <Widget>[
             FlatButton(
