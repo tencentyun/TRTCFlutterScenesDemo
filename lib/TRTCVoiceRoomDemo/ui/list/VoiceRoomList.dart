@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart';
-import 'package:dio/dio.dart';
-import '../../../debug/Config.dart';
 import '../../../utils/TxUtils.dart';
-import '../../../debug/GenerateTestUserSig.dart';
 import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
 import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
+import '../../../base/YunApiHelper.dart';
 
 /*
  * 房间列表
@@ -45,41 +43,21 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
 
   getRoomList() async {
     trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
-
-    Dio dio = new Dio();
-    dio.get(
-      "https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/forTest",
-      queryParameters: {
-        "method": "getRoomList",
-        "appId": Config.sdkAppId,
-        "type": 'voiceRoom'
-      },
-    ).then((value) async {
-      var data = value.data;
-      List<String> roomIdls = new List<String>();
-      if (data["errorCode"] == 0) {
-        List<dynamic> resList = data["data"] as List<dynamic>;
-        for (int i = 0; i < resList.length; i++) {
-          dynamic item = resList[i];
-          roomIdls.add(item["roomId"]);
-        }
-      } else {
-        TxUtils.showErrorToast(data['errorMessage'], context);
-      }
-      if (roomIdls.isEmpty) {
-        print('no room list');
-        //roomIdls.add('55568185');
-        return;
-      }
-      RoomInfoCallback resp = await trtcVoiceRoom.getRoomInfoList(roomIdls);
-      if (resp.code == 0) {
-        setState(() {
-          roomInfList = resp.list;
-        });
-      } else {
-        TxUtils.showErrorToast(resp.desc, context);
-      }
-    });
+    var roomIdls = await YunApiHelper.getRoomList();
+    print(roomIdls);
+    if (roomIdls.isEmpty) {
+      print('no room list');
+      //roomIdls.add('55568185');
+      return;
+    }
+    RoomInfoCallback resp = await trtcVoiceRoom.getRoomInfoList(roomIdls);
+    if (resp.code == 0) {
+      setState(() {
+        roomInfList = resp.list;
+      });
+    } else {
+      TxUtils.showErrorToast(resp.desc, context);
+    }
   }
 
   goRoomInfoPage(RoomInfo roomInfo) {

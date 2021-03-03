@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCVoiceRoomListener.dart';
+import 'package:trtc_scenes_demo/base/YunApiHelper.dart';
 import '../../../utils/TxUtils.dart';
 import '../widget/RoomBottomBar.dart';
 import '../widget/AnchorItem.dart';
@@ -92,15 +93,19 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         //群主同意举手
         break;
       case TRTCVoiceRoomListener.onRefuseToSpeak:
-        //onRefuseToSpeak
+        //群主拒绝举手
         break;
       case TRTCVoiceRoomListener.onRaiseHand:
+        //有观众举手，申请上麦
         this._showTopMessage(param.toString() + "申请成为主播", true);
         break;
       case TRTCVoiceRoomListener.onAudienceEnter:
+        //观众进入房间
         break;
       case TRTCVoiceRoomListener.onAnchorLeave:
-        {}
+        {
+          //有成员下麦
+        }
         break;
       case TRTCVoiceRoomListener.onAgreeToSpeak:
         break;
@@ -220,10 +225,13 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                     "我确定",
                     style: TextStyle(color: Color.fromRGBO(0, 98, 227, 1)),
                   ),
-                  onPressed: () {
-                    userType == UserType.Administrator
-                        ? trtcVoiceRoom.destroyRoom()
-                        : trtcVoiceRoom.exitRoom();
+                  onPressed: () async {
+                    if (userType == UserType.Administrator) {
+                      trtcVoiceRoom.destroyRoom();
+                      await YunApiHelper.destroyRoom(currentRoomId.toString());
+                    } else {
+                      trtcVoiceRoom.exitRoom();
+                    }
                     Navigator.of(context).pop(true);
                     TxUtils.showToast('退房成功', context);
                   },

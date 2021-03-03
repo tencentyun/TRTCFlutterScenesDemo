@@ -3,13 +3,13 @@
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 import '../../../utils/TxUtils.dart';
 import '../../../utils/constants.dart' as constants;
 import 'package:permission_handler/permission_handler.dart';
 import '../../../debug/GenerateTestUserSig.dart';
 import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
 import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
+import '../../../base/YunApiHelper.dart';
 
 // 多人视频会议首页
 class VoiceRoomCreatePage extends StatefulWidget {
@@ -89,13 +89,13 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     if (!_isVerifyInputOk()) return;
     unFocus();
     int roomId = TxUtils.getRandomNumber();
-    if (await Permission.camera.request().isGranted &&
-        await Permission.microphone.request().isGranted) {
+    if (await Permission.microphone.request().isGranted) {
       try {
         await trtcVoiceRoom.setSelfProfile(
           userName,
           constants.DEFAULT_AVATAR_URL,
         );
+
         ActionCallback resp = await trtcVoiceRoom.createRoom(
           roomId,
           RoomParam(
@@ -104,6 +104,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
           ),
         );
         if (resp.code == 0) {
+          await YunApiHelper.createRoom(roomId.toString());
           Navigator.pushNamed(
             context,
             "/voiceRoom/roomAnchor",
