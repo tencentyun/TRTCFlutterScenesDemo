@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCVoiceRoomListener.dart';
@@ -84,6 +82,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   }
 
   onVoiceListener(type, param) {
+    TxUtils.showToast(type.toString(), context);
     print("=======type====:" + type.toString());
     print("=======param======:" + param.toString());
     switch (type) {
@@ -112,6 +111,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       case TRTCVoiceRoomListener.onEnterRoom:
         break;
       case TRTCVoiceRoomListener.onExitRoom:
+        break;
+      case TRTCVoiceRoomListener.onRoomDestroy:
+        //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
         break;
     }
   }
@@ -227,8 +229,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                   ),
                   onPressed: () async {
                     if (userType == UserType.Administrator) {
-                      trtcVoiceRoom.destroyRoom();
                       await YunApiHelper.destroyRoom(currentRoomId.toString());
+                      trtcVoiceRoom.destroyRoom();
                     } else {
                       trtcVoiceRoom.exitRoom();
                     }

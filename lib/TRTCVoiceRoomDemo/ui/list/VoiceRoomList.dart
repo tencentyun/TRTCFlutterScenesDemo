@@ -61,7 +61,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
   }
 
   goRoomInfoPage(RoomInfo roomInfo) {
-    if (roomInfo.roomId.toString() == TxUtils.getLoginUserId()) {
+    if (roomInfo.ownerId.toString() == TxUtils.getLoginUserId()) {
       Navigator.pushNamed(
         context,
         "/voiceRoom/roomAudience",
