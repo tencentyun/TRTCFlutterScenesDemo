@@ -22,7 +22,7 @@ class RoomBottomBar extends StatefulWidget {
   final UserType userType;
   final UserStatus userStatus;
   final Function onLeave;
-  final Map<int, UserInfo> raiseHandLis;
+  final List<UserInfo> raiseHandLis;
   final Function onRaiseHand;
   final Function onMuteAudio;
   final Function onAnchorLeaveMic;
@@ -74,7 +74,6 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                     (BuildContext context, int index) {
                       //创建列表项
                       UserInfo userInfo = widget.raiseHandLis[index];
-
                       return Container(
                         alignment: Alignment.centerLeft,
                         child: Row(
@@ -86,7 +85,6 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                                   padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(44),
-                                    //child: Text('url'),
                                     child: Image.network(
                                       userInfo.userAvatar != null &&
                                               userInfo.userAvatar != ''
@@ -133,7 +131,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                         ),
                       );
                     },
-                    childCount: widget.raiseHandLis.values.length,
+                    childCount: widget.raiseHandLis.length,
                   ),
                 ),
               ],

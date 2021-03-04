@@ -247,10 +247,15 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   }
 
   //管理员同意其成为主播
-  handleAdminAgree() {
-    if (_lastRaiseHandUser != null) {
+  handleAdminAgree({userId}) {
+    if (userId != null) {
       trtcVoiceRoom.agreeToSpeak(_lastRaiseHandUser.userId);
       this._closeTopMessage();
+    } else {
+      if (_lastRaiseHandUser != null) {
+        trtcVoiceRoom.agreeToSpeak(_lastRaiseHandUser.userId);
+        this._closeTopMessage();
+      }
     }
   }
 
@@ -473,7 +478,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
             RoomBottomBar(
               userStatus: userStatus,
               userType: userType,
-              raiseHandLis: _raiseHandList,
+              raiseHandLis: _raiseHandList.values.toList(),
               onMuteAudio: (mute) {
                 this.handleMuteAudio(mute);
               },
