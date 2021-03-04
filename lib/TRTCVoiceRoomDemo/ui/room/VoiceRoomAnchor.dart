@@ -158,8 +158,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   ////被群主踢下麦
   doOnKickMic(param) async {
-    this.getAnchorList();
     this._showTopMessage("你已被主播踢下麦", false);
+    trtcVoiceRoom.leaveMic();
+    this.getAnchorList();
     this.setState(() {
       userStatus = UserStatus.Mute;
       userType = UserType.Audience;
@@ -171,7 +172,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     int _currentRoomId = int.parse(arguments['roomId'].toString());
     int _currentRoomOwnerId = int.parse(arguments['ownerId'].toString());
     final bool isAdmin =
-        currentRoomOwnerId.toString() == TxUtils.getLoginUserId()
+        _currentRoomOwnerId.toString() == TxUtils.getLoginUserId()
             ? true
             : false;
     setState(() {
