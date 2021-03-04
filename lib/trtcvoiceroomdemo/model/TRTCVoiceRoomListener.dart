@@ -90,11 +90,11 @@ enum TRTCVoiceRoomListener {
   ///
   /// 参数：
   ///
-  /// userID：用户id
+  /// userId：用户id
   ///
-  /// nickName：用户昵称
+  /// userName：用户昵称
   ///
-  /// faceUrl：用户头像地址
+  /// userAvatar：用户头像地址
   onAudienceEnter,
 
   /// 观众离开房间
@@ -197,7 +197,15 @@ class VoiceRoomListener {
       type = TRTCVoiceRoomListener.onAudienceEnter;
       V2TimMemberEnter data = event.data;
       List<V2TimGroupMemberInfo> memberList = data.memberList;
-      emitEvent(type, memberList);
+      List newList = [];
+      for (var i = 0; i < memberList.length; i++) {
+        newList.add({
+          'userId': memberList[i].userID,
+          'userName': memberList[i].nickName,
+          'userAvatar': memberList[i].faceUrl
+        });
+      }
+      emitEvent(type, newList);
     } else if (event.type == 'onMemberLeave') {
       type = TRTCVoiceRoomListener.onAudienceExit;
       V2TimMemberLeave data = event.data;
