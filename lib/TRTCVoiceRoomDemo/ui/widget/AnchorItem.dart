@@ -145,7 +145,7 @@ class _AnchorItemState extends State<AnchorItem> {
                 margin: EdgeInsets.only(left: widget.isAdministrator ? 10 : 0),
                 width: 70,
                 child: Text(
-                  widget.userName * 50,
+                  widget.userName,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: TextStyle(
