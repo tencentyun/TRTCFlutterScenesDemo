@@ -46,41 +46,18 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     this.initSDK();
   }
 
+  @override
+  dispose() {
+    trtcVoiceRoom.unRegisterListener(onVoiceListener);
+    //销毁房间todo
+    TRTCVoiceRoom.destroySharedInstance();
+    super.dispose();
+  }
+
   initSDK() async {
     trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
 
     this.initUserInfo();
-  }
-
-  initUserInfo() async {
-    Map arguments = ModalRoute.of(context).settings.arguments;
-    currentRoomId = int.parse(arguments['roomId'].toString());
-    currentOwnerId = int.parse(arguments['ownerId'].toString());
-    print('-------------------:' + currentOwnerId.toString());
-    print('-------------------:' + currentOwnerId.toString());
-    final bool isAdmin =
-        currentOwnerId.toString() == TxUtils.getLoginUserId() ? true : false;
-    setState(() {
-      userType = isAdmin ? UserType.Administrator : UserType.Audience;
-      title = arguments["roomName"] == null ? '--' : arguments["roomName"];
-    });
-    if (isAdmin) {
-      this.getRaiseHandList();
-    }
-    ActionCallback enterRoomResp = await trtcVoiceRoom.enterRoom(currentRoomId);
-    if (enterRoomResp.code == 0) {
-      if (currentOwnerId.toString() == TxUtils.getLoginUserId()) {
-        TxUtils.showToast('该房间是您创建，重新进入中...', context);
-      } else {
-        TxUtils.showToast('进房成功', context);
-      }
-    } else {
-      TxUtils.showErrorToast(enterRoomResp.desc, context);
-    }
-    trtcVoiceRoom.registerListener(onVoiceListener);
-    //sleep(Duration(seconds: 1));
-    await this.getAnchorList();
-    await this.getAudienceList();
   }
 
   onVoiceListener(type, param) {
@@ -118,6 +95,37 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
         break;
     }
+  }
+
+  initUserInfo() async {
+    Map arguments = ModalRoute.of(context).settings.arguments;
+    currentRoomId = int.parse(arguments['roomId'].toString());
+    currentOwnerId = int.parse(arguments['ownerId'].toString());
+    print('-------------------:' + currentOwnerId.toString());
+    print('-------------------:' + currentOwnerId.toString());
+    final bool isAdmin =
+        currentOwnerId.toString() == TxUtils.getLoginUserId() ? true : false;
+    setState(() {
+      userType = isAdmin ? UserType.Administrator : UserType.Audience;
+      title = arguments["roomName"] == null ? '--' : arguments["roomName"];
+    });
+    if (isAdmin) {
+      this.getRaiseHandList();
+    }
+    ActionCallback enterRoomResp = await trtcVoiceRoom.enterRoom(currentRoomId);
+    if (enterRoomResp.code == 0) {
+      if (currentOwnerId.toString() == TxUtils.getLoginUserId()) {
+        TxUtils.showToast('该房间是您创建，重新进入中...', context);
+      } else {
+        TxUtils.showToast('进房成功', context);
+      }
+    } else {
+      TxUtils.showErrorToast(enterRoomResp.desc, context);
+    }
+    trtcVoiceRoom.registerListener(onVoiceListener);
+    //sleep(Duration(seconds: 1));
+    await this.getAnchorList();
+    await this.getAudienceList();
   }
 
   //获取主播列表
