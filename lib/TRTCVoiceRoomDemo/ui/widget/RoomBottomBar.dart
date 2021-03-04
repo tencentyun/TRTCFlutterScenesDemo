@@ -74,6 +74,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                     (BuildContext context, int index) {
                       //创建列表项
                       UserInfo userInfo = widget.raiseHandLis[index];
+
                       return Container(
                         alignment: Alignment.centerLeft,
                         child: Row(
@@ -85,6 +86,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                                   padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(44),
+                                    //child: Text('url'),
                                     child: Image.network(
                                       userInfo.userAvatar != null &&
                                               userInfo.userAvatar != ''
@@ -131,7 +133,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                         ),
                       );
                     },
-                    childCount: widget.raiseHandLis.length,
+                    childCount: widget.raiseHandLis.values.length,
                   ),
                 ),
               ],
@@ -142,7 +144,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
     );
   }
 
-  onDownWheat() {
+  anchorLeaveMic() {
     widget.onAnchorLeaveMic();
   }
 
@@ -158,7 +160,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
           ? "assets/images/raiseHand.png"
           : "assets/images/noRaiseHand.png";
     } else {
-      lastBtnUrl = widget.userStatus == UserStatus.NoSpeaking
+      lastBtnUrl = widget.userStatus == UserStatus.Mute
           ? "assets/images/no-speaking.png"
           : "assets/images/speaking.png";
     }
@@ -203,9 +205,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                       this.onHandUp();
                     } else {
                       this.onSoundClick(
-                          widget.userStatus == UserStatus.NoSpeaking
-                              ? false
-                              : true);
+                          widget.userStatus == UserStatus.Mute ? false : true);
                     }
                   },
                   child: Image.asset(
@@ -224,7 +224,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                           if (UserType.Administrator == widget.userType)
                             this.onShowHandList();
                           else
-                            this.onDownWheat();
+                            this.anchorLeaveMic();
                         },
                         child: Image.asset(
                           secondBtnUrl,

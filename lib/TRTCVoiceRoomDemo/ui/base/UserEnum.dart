@@ -5,5 +5,5 @@ enum UserType {
 }
 enum UserStatus {
   Speaking, //讲话中
-  NoSpeaking, //静音中
+  Mute, //静音中
 }

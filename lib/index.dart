@@ -17,27 +17,26 @@ class IndexPageState extends State<IndexPage> {
   TRTCVoiceRoom trtcVoiceRoom;
   @override
   void initState() {
-    TRTCVoiceRoom.sharedInstance().then((value) {
-      trtcVoiceRoom = value;
-    });
     super.initState();
-    TRTCVoiceRoom.sharedInstance().then((trtcVoiceRoomObj) async {
-      trtcVoiceRoom = trtcVoiceRoomObj;
-      String userId = await TxUtils.getStorageByKey(constants.USERID_KEY);
-      if (userId == null || userId == '') {
-        Navigator.pushNamed(
-          context,
-          "/login",
-        );
-      } else {
-        TxUtils.setStorageByKey(constants.USERID_KEY, userId);
-        trtcVoiceRoom.login(
-          GenerateTestUserSig.sdkAppId,
-          userId,
-          GenerateTestUserSig.genTestSig(userId),
-        );
-      }
-    });
+    this.initSDK();
+  }
+
+  initSDK() async {
+    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+    String userId = await TxUtils.getStorageByKey(constants.USERID_KEY);
+    if (userId == null || userId == '') {
+      Navigator.pushNamed(
+        context,
+        "/login",
+      );
+    } else {
+      TxUtils.setStorageByKey(constants.USERID_KEY, userId);
+      trtcVoiceRoom.login(
+        GenerateTestUserSig.sdkAppId,
+        userId,
+        GenerateTestUserSig.genTestSig(userId),
+      );
+    }
   }
 
   Future<bool> logout() {

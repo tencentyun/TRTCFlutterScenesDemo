@@ -27,7 +27,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   int currentOwnerId;
 
   TRTCVoiceRoom trtcVoiceRoom;
-  UserStatus userStatus = UserStatus.NoSpeaking;
+  UserStatus userStatus = UserStatus.Mute;
   String title = "";
   UserType userType = UserType.Administrator;
   bool topMsgVisible = false;
@@ -69,7 +69,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   }
 
   //trtc的所有事件监听
-  onVoiceListener(type, param) {
+  onVoiceListener(type, param) async {
     switch (type) {
       case TRTCVoiceRoomListener.onError:
         TxUtils.showErrorToast(type.toString(), context);
@@ -91,13 +91,16 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         {
           //观众进入房间
           ////观众离开房间
+          await this.getAnchorList();
           this.getAudienceList();
         }
         break;
       case TRTCVoiceRoomListener.onAnchorLeave:
       case TRTCVoiceRoomListener.onAnchorEnter:
         {
-          this.getAnchorList();
+          //有成员上麦(主动上麦/主播抱人上麦)
+          await this.getAnchorList();
+          this.getAudienceList();
         }
         break;
       case TRTCVoiceRoomListener.onMicMute:
@@ -109,6 +112,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       case TRTCVoiceRoomListener.onUserVolumeUpdate:
         {
           //上麦成员的音量变化
+          //_volumeUpdateList
           print(param);
         }
         break;
@@ -137,7 +141,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     this._closeTopMessage();
     setState(() {
       userType = UserType.Audience;
-      userStatus = UserStatus.NoSpeaking;
+      userStatus = UserStatus.Mute;
     });
   }
 
@@ -156,20 +160,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   doOnKickMic(param) {
     this._showTopMessage("你已被主播踢下麦", false);
     this.setState(() {
-      userStatus = UserStatus.NoSpeaking;
+      userStatus = UserStatus.Mute;
       userType = UserType.Audience;
     });
   }
 
-  // Map<TRTCVoiceRoomListener, Function> _trtcEventHandle = {
-  //   TRTCVoiceRoomListener.onAudienceEnter: (param) {
-  //     //do
-  //   },
-  //   TRTCVoiceRoomListener.onRaiseHand: (param) {
-  //     //有观众举手，申请上麦
-  //     this._showTopMessage(param.toString() + "申请成为主播", true);
-  //   },
-  // };
   initUserInfo() async {
     Map arguments = ModalRoute.of(context).settings.arguments;
     currentRoomId = int.parse(arguments['roomId'].toString());
@@ -182,9 +177,6 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       userType = isAdmin ? UserType.Administrator : UserType.Audience;
       title = arguments["roomName"] == null ? '--' : arguments["roomName"];
     });
-    if (isAdmin) {
-      this.getRaiseHandList();
-    }
     ActionCallback enterRoomResp = await trtcVoiceRoom.enterRoom(currentRoomId);
     if (enterRoomResp.code == 0) {
       if (currentOwnerId.toString() == TxUtils.getLoginUserId()) {
@@ -210,6 +202,13 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
           if (item.userId != null && item.userId != '')
             userList[int.tryParse(item.userId)] = item;
         });
+        if (userType != UserType.Administrator) {
+          setState(() {
+            userType = userList.containsKey(int.parse(TxUtils.getLoginUserId()))
+                ? UserType.Anchor
+                : UserType.Audience;
+          });
+        }
         setState(() {
           _anchorList = userList;
         });
@@ -247,9 +246,6 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     }
   }
 
-  //获取举手列表
-  getRaiseHandList() {}
-
   //管理员同意其成为主播
   handleAdminAgree() {
     if (_lastRaiseHandUser != null) {
@@ -264,11 +260,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   }
 
   //音频开关
-  handleMuteAudio(bool isSpeaking) {
+  handleMuteAudio(bool mute) {
     setState(() {
-      userStatus = isSpeaking ? UserStatus.NoSpeaking : UserStatus.Speaking;
-      trtcVoiceRoom.muteLocalAudio(!isSpeaking);
-      trtcVoiceRoom.muteMic(!isSpeaking);
+      userStatus = mute ? UserStatus.Mute : UserStatus.Speaking;
+      trtcVoiceRoom.muteLocalAudio(mute);
+      trtcVoiceRoom.muteMic(mute);
     });
   }
 
@@ -478,8 +474,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
               userStatus: userStatus,
               userType: userType,
               raiseHandLis: _raiseHandList,
-              onMuteAudio: (value) {
-                this.handleMuteAudio(value);
+              onMuteAudio: (mute) {
+                this.handleMuteAudio(mute);
               },
               onRaiseHand: () {
                 this.handleRaiseHandClick();
