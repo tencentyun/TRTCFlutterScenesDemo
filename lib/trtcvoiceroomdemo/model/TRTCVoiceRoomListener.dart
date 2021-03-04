@@ -26,6 +26,9 @@ enum TRTCVoiceRoomListener {
   //群主拒绝举手
   onRefuseToSpeak,
 
+  //被群主踢下麦
+  onKickMic,
+
   //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
   onRoomDestroy,
 
@@ -41,7 +44,6 @@ enum TRTCVoiceRoomListener {
 
   /*
   * 有成员下麦(主动下麦/主播踢人下麦)
-  * @param index 下麦的麦位
   * @param user  用户详细信息
   */
   onAnchorLeave,
@@ -168,9 +170,12 @@ class VoiceRoomListener {
 
   simpleMsgListener(V2TimEventCallback data) {
     print("==simpleMsgListener type heh=" + data.type.toString());
+    print("==simpleMsgListener data=" + data.data.toString());
 
     TRTCVoiceRoomListener type;
     if (data.type == "onRecvC2CCustomMessage") {
+      print("==simpleMsgListener data customData=" +
+          data.data.customData.toString());
       if (data.data.customData == "raiseHand") {
         type = TRTCVoiceRoomListener.onRaiseHand;
         emitEvent(type, data.data.sender.userID);
@@ -179,6 +184,9 @@ class VoiceRoomListener {
         emitEvent(type, data.data.sender.userID);
       } else if (data.data.customData == "refuseToSpeak") {
         type = TRTCVoiceRoomListener.onRefuseToSpeak;
+        emitEvent(type, data.data.sender.userID);
+      } else if (data.data.customData == "onKickMic") {
+        type = TRTCVoiceRoomListener.onKickMic;
         emitEvent(type, data.data.sender.userID);
       }
     } else if (data.type == "onRecvGroupTextMessage") {

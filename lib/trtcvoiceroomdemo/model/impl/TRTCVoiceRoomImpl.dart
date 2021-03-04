@@ -482,17 +482,29 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     V2TimValueCallback<V2TimMessage> res = await timManager
         .sendC2CCustomMessage(customData: 'kickMic', userID: userId);
     if (res.code == 0) {
-      //删除群属性
-      V2TimCallback setRes = await timManager
-          .getGroupManager()
-          .deleteGroupAttributes(groupID: mRoomId, keys: [userId]);
-      if (setRes.code == 0) {
-        return ActionCallback(code: 0, desc: 'kickMic success');
-      } else {
-        return ActionCallback(code: setRes.code, desc: setRes.desc);
-      }
+      return ActionCallback(code: 0, desc: 'kickMic success');
     } else {
       return ActionCallback(code: codeErr, desc: res.desc);
+    }
+  }
+
+  @override
+  Future<ActionCallback> enterMic() async {
+    if (mRoomId == null) {
+      return ActionCallback(code: codeErr, desc: 'mRoomId is not valid');
+    }
+
+    //设置群属性
+    V2TimCallback setRes = await timManager
+        .getGroupManager()
+        .setGroupAttributes(groupID: mRoomId, attributes: {mUserId: "1"});
+    if (setRes.code == 0) {
+      //切换trtc角色为主播
+      await mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAnchor);
+      mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
+      return ActionCallback(code: 0, desc: 'enterMic success');
+    } else {
+      return ActionCallback(code: codeErr, desc: setRes.desc);
     }
   }
 
@@ -507,6 +519,9 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
         .getGroupManager()
         .deleteGroupAttributes(groupID: mRoomId, keys: [mUserId]);
     if (res.code == 0) {
+      //切换trtc角色为观众
+      await mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAudience);
+      mTRTCCloud.stopLocalAudio();
       return ActionCallback(code: 0, desc: 'leaveMic success');
     } else {
       return ActionCallback(code: codeErr, desc: res.desc);

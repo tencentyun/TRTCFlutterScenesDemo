@@ -1,4 +1,4 @@
-library my_app;
+// 关键类定义
 
 class ActionCallback {
   /// 错误码
@@ -8,13 +8,6 @@ class ActionCallback {
   String desc;
 
   ActionCallback({this.code = 0, this.desc = ''});
-
-  // Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> data = new Map<String, dynamic>();
-  //   data['code'] = this.code;
-  //   data['msg'] = this.msg;
-  //   return data;
-  // }
 }
 
 class RoomInfo {
@@ -58,10 +51,10 @@ class RoomInfoCallback {
 }
 
 class RoomParam {
-  /// 【字段含义】房间名称
+  /// 房间名称
   String roomName;
 
-  /// 【字段含义】房间封面图
+  /// 房间封面图
   String coverUrl;
 
   RoomParam({this.roomName, this.coverUrl});
@@ -74,6 +67,7 @@ class MemberListCallback {
   /// 信息描述
   String desc;
 
+  /// nextSeq	分页拉取标志，第一次拉取填0，回调成功如果 nextSeq 不为零，需要分页，传入再次拉取，直至为0。
   int nextSeq;
 
   List<UserInfo> list;
@@ -89,19 +83,20 @@ class UserListCallback {
   /// 信息描述
   String desc;
 
+  /// 用户信息列表
   List<UserInfo> list;
 
   UserListCallback({this.code = 0, this.desc = '', this.list});
 }
 
 class UserInfo {
-  /// 【字段含义】用户唯一标识
+  /// 用户唯一标识
   String userId;
 
-  /// 【字段含义】用户昵称
+  /// 用户昵称
   String userName;
 
-  /// 【字段含义】用户头像
+  /// 用户头像
   String userAvatar;
 
   /// 主播是否开麦
