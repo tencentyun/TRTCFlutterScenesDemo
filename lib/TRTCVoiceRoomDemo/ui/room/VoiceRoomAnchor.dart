@@ -34,11 +34,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   bool isShowTopMsgAction = false;
   String topMsg = "";
   //主播列表
-  List<UserInfo> _anchorList = [];
+  Map<int, UserInfo> _anchorList = {};
   //听众列表
-  List<UserInfo> _audienceList = [];
+  Map<int, UserInfo> _audienceList = {};
   //举手列表
-  List<UserInfo> _raiseHandListList = [];
+  Map<int, UserInfo> _raiseHandList = {};
 
   @override
   void initState() {
@@ -56,7 +56,6 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   initSDK() async {
     trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
-
     this.initUserInfo();
   }
 
@@ -133,8 +132,13 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     try {
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
       if (_archorResp.code == 0) {
+        Map<int, UserInfo> userList = {};
+        _archorResp.list.forEach((item) {
+          if (item.userId != null && item.userId != '')
+            userList[int.tryParse(item.userId)] = item;
+        });
         setState(() {
-          _anchorList = _archorResp.list;
+          _anchorList = userList;
         });
       } else {
         TxUtils.showErrorToast(_archorResp.desc, context);
@@ -147,13 +151,23 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   // 获取听众列表
   getAudienceList() async {
     try {
-      MemberListCallback _memberList = await trtcVoiceRoom.getRoomMemberList(0);
-      if (_memberList.code == 0) {
+      MemberListCallback _memberResp = await trtcVoiceRoom.getRoomMemberList(0);
+      if (_memberResp.code == 0) {
+        Map<int, UserInfo> userList = {};
+        _memberResp.list.forEach((item) {
+          if (item.userId != null && item.userId != '') {
+            int userId = int.tryParse(item.userId);
+            //非主播
+            if (!_anchorList.containsKey(userId)) {
+              userList[userId] = item;
+            }
+          }
+        });
         setState(() {
-          _audienceList = _memberList.list;
+          _audienceList = userList;
         });
       } else {
-        TxUtils.showErrorToast(_memberList.desc, context);
+        TxUtils.showErrorToast(_memberResp.desc, context);
       }
     } catch (ex) {
       TxUtils.showErrorToast(ex.toString(), context);
@@ -254,101 +268,6 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         });
   }
 
-  // 显示举手列表
-  handleShowRaiseHandList(content) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) => Container(
-            color: Color.fromRGBO(19, 35, 63, 1),
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  leading: Text(''),
-                  pinned: true,
-                  //expandedHeight: 40.0,
-                  backgroundColor: Color.fromRGBO(19, 35, 63, 1),
-                  shadowColor: Color.fromRGBO(19, 35, 63, 1),
-                  title: Text(
-                    '举手列表',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                SliverFixedExtentList(
-                  itemExtent: 75.0,
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                      //创建列表项
-                      UserInfo userInfo = _raiseHandListList[index];
-                      return Container(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              flex: 0,
-                              child: Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(44),
-                                    child: Image.network(
-                                      userInfo.userAvatar != null &&
-                                              userInfo.userAvatar != ''
-                                          ? userInfo.userAvatar
-                                          : 'https://imgcache.qq.com/operation/dianshi/other/1.724142271f4e811457eee00763e63f454af52d13.png',
-                                      height: 44,
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                  )),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                child: Text(
-                                  userInfo.userName,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 0,
-                              child: InkWell(
-                                onTap: () {
-                                  //同意or拒绝
-                                  //userInfo
-                                  Navigator.pop(context);
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                  child: Image.asset(
-                                    index % 2 == 0
-                                        ? "assets/images/after-HandUp.png"
-                                        : "assets/images/before-HandUp.png",
-                                    height: 30,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    childCount: _raiseHandListList.length,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -408,7 +327,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         crossAxisSpacing: 15, //水平间隔
                         childAspectRatio: 1.0,
                       ),
-                      children: _anchorList
+                      children: _anchorList.values
                           .map((UserInfo _anchorItem) => AnchorItem(
                                 userName: _anchorItem.userName != null &&
                                         _anchorItem.userAvatar != ''
@@ -441,7 +360,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                         crossAxisSpacing: 15,
                         childAspectRatio: 0.9,
                       ),
-                      children: _audienceList
+                      children: _audienceList.values
                           .map((UserInfo _audienceItem) => AudienceItem(
                                 userImgUrl: _audienceItem.userAvatar != null &&
                                         _audienceItem.userAvatar != ''
@@ -478,14 +397,12 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
             RoomBottomBar(
               userStatus: userStatus,
               userType: userType,
+              raiseHandLis: _raiseHandList,
               onMuteAudio: (value) {
                 this.handleMuteAudio(value);
               },
               onRaiseHand: () {
                 this.handleRaiseHandClick();
-              },
-              onShowHandList: () {
-                this.handleShowRaiseHandList(context);
               },
               onAnchorLeaveMic: () {
                 //主播下麦
