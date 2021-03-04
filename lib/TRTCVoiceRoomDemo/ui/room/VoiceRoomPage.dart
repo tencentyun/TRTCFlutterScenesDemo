@@ -9,20 +9,20 @@ import '../widget/AudienceItem.dart';
 import '../widget/RoomTopMsg.dart';
 import '../widget/DescriptionTitle.dart';
 import '../base/UserEnum.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
+import '../../model/TRTCChatSalon.dart';
+import '../../model/TRTCChatSalonDef.dart';
 
 /*
  *  主播界面
  */
-class VoiceRoomAnchorPage extends StatefulWidget {
-  VoiceRoomAnchorPage(this.userType, {Key key}) : super(key: key);
+class VoiceRoomPage extends StatefulWidget {
+  VoiceRoomPage(this.userType, {Key key}) : super(key: key);
   final UserType userType;
   @override
-  State<StatefulWidget> createState() => VoiceRoomAnchorPageState();
+  State<StatefulWidget> createState() => VoiceRoomPageState();
 }
 
-class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
+class VoiceRoomPageState extends State<VoiceRoomPage>
     with TickerProviderStateMixin {
   int currentRoomId;
   int currentRoomOwnerId;

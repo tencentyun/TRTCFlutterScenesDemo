@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import './TRTCVoiceRoomDemo/ui/list/VoiceRoomList.dart';
 import './TRTCVoiceRoomDemo/ui/list/VoiceRoomCreate.dart';
 import './TRTCVoiceRoomDemo/ui/room/VoiceRoomAnchor.dart';
-import './TRTCVoiceRoomDemo/ui/room/VoiceRoomAudience.dart';
 import './index.dart';
 import './login/LoginPage.dart';
 import './TRTCVoiceRoomDemo/ui/base/UserEnum.dart';
@@ -36,7 +35,6 @@ class _MyAppState extends State<MyApp> {
         "/voiceRoom/roomCreate": (context) => VoiceRoomCreatePage(),
         "/voiceRoom/roomAnchor": (context) =>
             VoiceRoomAnchorPage(UserType.Anchor),
-        //"/voiceRoom/roomAudience": (context) => VoiceRoomAudiencePage(),
         "/voiceRoom/roomAudience": (context) =>
             VoiceRoomAnchorPage(UserType.Audience),
       },
