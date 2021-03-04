@@ -7,8 +7,8 @@ import '../../../utils/TxUtils.dart';
 import '../../../utils/constants.dart' as constants;
 import 'package:permission_handler/permission_handler.dart';
 import '../../../debug/GenerateTestUserSig.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
 import '../../../base/YunApiHelper.dart';
 
 // 多人视频会议首页
@@ -20,7 +20,7 @@ class VoiceRoomCreatePage extends StatefulWidget {
 }
 
 class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
-  TRTCVoiceRoom trtcVoiceRoom;
+  TRTCChatSalon trtcVoiceRoom;
 
   /// 用户id
   String userName = '';
@@ -36,7 +36,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
 
   @override
   initState() {
-    TRTCVoiceRoom.sharedInstance().then((value) {
+    TRTCChatSalon.sharedInstance().then((value) {
       trtcVoiceRoom = value;
     });
     super.initState();

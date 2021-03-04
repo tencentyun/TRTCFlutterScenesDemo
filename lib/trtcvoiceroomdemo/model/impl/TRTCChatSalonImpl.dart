@@ -9,9 +9,9 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_info_result.dar
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 
-import '../TRTCVoiceRoom.dart';
-import '../TRTCVoiceRoomDef.dart';
-import '../TRTCVoiceRoomListener.dart';
+import '../TRTCChatSalon.dart';
+import '../TRTCChatSalonDef.dart';
+import '../TRTCChatSalonDelegate.dart';
 
 //trtc sdk
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
@@ -26,9 +26,9 @@ import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 
-class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
+class TRTCChatSalonImpl extends TRTCChatSalon {
   String logTag = "VoiceRoomFlutterSdk";
-  static TRTCVoiceRoomImpl sInstance;
+  static TRTCChatSalonImpl sInstance;
   static VoiceRoomListener listener;
 
   int codeErr = -1;
@@ -46,7 +46,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
   TXAudioEffectManager txAudioManager;
   TXDeviceManager txDeviceManager;
 
-  TRTCVoiceRoomImpl() {
+  TRTCChatSalonImpl() {
     initVar();
   }
 
@@ -58,7 +58,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
 
   static sharedInstance() {
     if (sInstance == null) {
-      sInstance = new TRTCVoiceRoomImpl();
+      sInstance = new TRTCChatSalonImpl();
     }
     return sInstance;
   }
@@ -67,6 +67,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     if (sInstance != null) {
       sInstance = null;
     }
+    TRTCCloud.destroySharedInstance();
   }
 
   @override

@@ -1,27 +1,26 @@
-import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 import 'package:tencent_trtc_cloud/tx_audio_effect_manager.dart';
-import './impl/TRTCVoiceRoomImpl.dart';
-import 'TRTCVoiceRoomDef.dart';
-import 'TRTCVoiceRoomListener.dart';
+import 'impl/TRTCChatSalonImpl.dart';
+import 'TRTCChatSalonDef.dart';
+import 'TRTCChatSalonDelegate.dart';
 
-abstract class TRTCVoiceRoom {
+abstract class TRTCChatSalon {
   /*
-  * 获取 TRTCVoiceRoom 单例对象
+  * 获取 TRTCChatSalon 单例对象
   *
-  * @return TRTCVoiceRoom 实例
-  * @note 可以调用 {@link TRTCVoiceRoom.destroySharedInstance()} 销毁单例对象
+  * @return TRTCChatSalon 实例
+  * @note 可以调用 {@link TRTCChatSalon.destroySharedInstance()} 销毁单例对象
   */
-  static Future<TRTCVoiceRoom> sharedInstance() async {
-    return TRTCVoiceRoomImpl.sharedInstance();
+  static Future<TRTCChatSalon> sharedInstance() async {
+    return TRTCChatSalonImpl.sharedInstance();
   }
 
   /*
-  * 销毁 TRTCVoiceRoom 单例对象
+  * 销毁 TRTCChatSalon 单例对象
   *
-  * @note 销毁实例后，外部缓存的 TRTCVoiceRoom 实例不能再使用，需要重新调用 {@link TRTCVoiceRoom.sharedInstance()} 获取新实例
+  * @note 销毁实例后，外部缓存的 TRTCChatSalon 实例不能再使用，需要重新调用 {@link TRTCChatSalon.sharedInstance()} 获取新实例
   */
   static void destroySharedInstance() async {
-    await TRTCCloud.destroySharedInstance();
+    TRTCChatSalonImpl.destroySharedInstance();
   }
 
   //////////////////////////////////////////////////////////
@@ -32,7 +31,7 @@ abstract class TRTCVoiceRoom {
   /*
   * 设置组件事件监听接口
   *
-  * 您可以通过 registerListener 获得 TRTCVoiceRoom 的各种状态通知
+  * 您可以通过 registerListener 获得 TRTCChatSalon 的各种状态通知
   *
   * @param VoiceListenerFunc func 回调接口
   */

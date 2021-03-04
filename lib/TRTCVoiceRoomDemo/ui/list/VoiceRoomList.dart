@@ -4,8 +4,8 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart';
 import '../../../utils/TxUtils.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
 import '../../../base/YunApiHelper.dart';
 
 /*
@@ -19,7 +19,7 @@ class VoiceRoomListPage extends StatefulWidget {
 }
 
 class VoiceRoomListPageState extends State<VoiceRoomListPage> {
-  TRTCVoiceRoom trtcVoiceRoom;
+  TRTCChatSalon trtcVoiceRoom;
   List<RoomInfo> roomInfList = new List<RoomInfo>();
   openUrl(String url) async {
     if (await canLaunch(url)) {
@@ -42,7 +42,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
   }
 
   getRoomList() async {
-    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+    trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
     var roomIdls = await YunApiHelper.getRoomList();
     print(roomIdls);
     if (roomIdls.isEmpty) {
