@@ -330,22 +330,6 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
   }
 
   @override
-  Future<ActionCallback> sendRoomCustomMsg(String customData) async {
-    V2TimValueCallback<V2TimMessage> res =
-        await timManager.sendGroupCustomMessage(
-            customData: customData,
-            groupID: mRoomId.toString(),
-            priority: MessagePriority.V2TIM_PRIORITY_NORMAL);
-    if (res.code == 0) {
-      return ActionCallback(code: 0, desc: "send group message success.");
-    } else {
-      return ActionCallback(
-          code: res.code,
-          desc: "send room custom msg fail, not enter room yet.");
-    }
-  }
-
-  @override
   Future<ActionCallback> sendRoomTextMsg(String message) async {
     V2TimValueCallback<V2TimMessage> res =
         await timManager.sendGroupTextMessage(

@@ -272,13 +272,4 @@ abstract class TRTCVoiceRoom {
   * @param callback 发送结果回调
   */
   Future<ActionCallback> sendRoomTextMsg(String message);
-
-  /*
-  * 在房间中广播自定义（信令）消息，一般用于广播点赞和礼物消息
-  *
-  * @param cmd 命令字，由开发者自定义，主要用于区分不同消息类型
-  * @param message 文本消息
-  * @param callback 发送结果回调
-  */
-  Future<ActionCallback> sendRoomCustomMsg(String customData);
 }
