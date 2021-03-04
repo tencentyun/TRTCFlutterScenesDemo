@@ -74,8 +74,6 @@ class _AnchorItemState extends State<AnchorItem> {
                 )));
       },
     );
-
-    widget.onKickOutUser();
   }
 
   @override
@@ -95,7 +93,6 @@ class _AnchorItemState extends State<AnchorItem> {
                       child: InkWell(
                         onTap: () {
                           if (!widget.isAdministrator) {
-                            //bug 需要判断当前用户是否为管理员才可以调用
                             this.handleShowKickOutUser(context);
                           }
                         },
@@ -134,25 +131,43 @@ class _AnchorItemState extends State<AnchorItem> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              widget.isAdministrator
-                  ? Image.asset(
-                      "assets/images/Administrator.png",
-                      height: 14,
-                    )
-                  : Text(''),
               Container(
-                margin: EdgeInsets.only(left: widget.isAdministrator ? 10 : 0),
-                width: 70,
-                child: Text(
-                  widget.userName,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
+                width: 80,
+                child: widget.isAdministrator
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/Administrator.png",
+                            height: 14,
+                          ),
+                          Expanded(
+                            flex: 0,
+                            child: Text(
+                              ' ' + widget.userName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text(
+                        widget.userName,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
               ),
             ],
           ),

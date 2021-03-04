@@ -158,8 +158,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   ////被群主踢下麦
   doOnKickMic(param) async {
-    this.getAnchorList();
     this._showTopMessage("你已被主播踢下麦", false);
+    trtcVoiceRoom.leaveMic();
+    this.getAnchorList();
     this.setState(() {
       userStatus = UserStatus.Mute;
       userType = UserType.Audience;
@@ -171,7 +172,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     int _currentRoomId = int.parse(arguments['roomId'].toString());
     int _currentRoomOwnerId = int.parse(arguments['ownerId'].toString());
     final bool isAdmin =
-        currentRoomOwnerId.toString() == TxUtils.getLoginUserId()
+        _currentRoomOwnerId.toString() == TxUtils.getLoginUserId()
             ? true
             : false;
     setState(() {
@@ -180,10 +181,14 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       userType = isAdmin ? UserType.Administrator : UserType.Audience;
       title = arguments["roomName"] == null ? '--' : arguments["roomName"];
     });
+
     ActionCallback enterRoomResp =
         await trtcVoiceRoom.enterRoom(_currentRoomId);
     if (enterRoomResp.code == 0) {
-      if (_currentRoomOwnerId.toString() == TxUtils.getLoginUserId()) {
+      if (isAdmin) {
+        setState(() {
+          userStatus = UserStatus.Speaking;
+        });
         TxUtils.showToast('房主占座成功。', context);
       } else {
         TxUtils.showToast('进房成功', context);
