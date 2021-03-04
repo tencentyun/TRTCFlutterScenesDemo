@@ -259,6 +259,19 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     }
   }
 
+  //管理员拒绝其成为主播
+  handleAdminRefuseToSpeak({userId}) {
+    if (userId != null) {
+      trtcVoiceRoom.refuseToSpeak(_lastRaiseHandUser.userId);
+      this._closeTopMessage();
+    } else {
+      if (_lastRaiseHandUser != null) {
+        trtcVoiceRoom.refuseToSpeak(_lastRaiseHandUser.userId);
+        this._closeTopMessage();
+      }
+    }
+  }
+
   //主播下麦
   handleAnchorLeaveMic() {
     trtcVoiceRoom.leaveMic();
@@ -385,7 +398,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                     okTitle: '欢迎',
                     cancelTitle: '拒绝',
                     onCancelTab: () {
-                      this._closeTopMessage();
+                      this.handleAdminRefuseToSpeak();
                     },
                     onOkTab: () {
                       this.handleAdminAgree();
