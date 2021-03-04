@@ -36,10 +36,13 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
 
   @override
   initState() {
-    TRTCChatSalon.sharedInstance().then((value) {
-      trtcVoiceRoom = value;
-    });
+    this.initSDK();
     super.initState();
+  }
+
+  initSDK() async {
+    trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
+    //TxUtils.getLoginUserId();
   }
 
   // 隐藏底部输入框

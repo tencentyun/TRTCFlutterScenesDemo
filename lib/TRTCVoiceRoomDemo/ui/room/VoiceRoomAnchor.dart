@@ -118,7 +118,6 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
         {
           //上麦成员的音量变化
           //_volumeUpdateList
-
           print(param);
         }
         break;
@@ -175,8 +174,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
 
   initUserInfo() async {
     Map arguments = ModalRoute.of(context).settings.arguments;
-    int _currentRoomId = int.parse(arguments['roomId'].toString());
-    int _currentRoomOwnerId = int.parse(arguments['ownerId'].toString());
+    int _currentRoomId = int.tryParse(arguments['roomId'].toString());
+    int _currentRoomOwnerId = int.tryParse(arguments['ownerId'].toString());
     final bool isAdmin =
         _currentRoomOwnerId.toString() == TxUtils.getLoginUserId()
             ? true
