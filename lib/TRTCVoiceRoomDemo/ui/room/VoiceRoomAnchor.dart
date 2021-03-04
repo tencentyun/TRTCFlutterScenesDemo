@@ -40,7 +40,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   Map<int, UserInfo> _audienceList = {};
   //举手列表
   Map<int, UserInfo> _raiseHandList = {};
-
+  UserInfo _lastRaiseHandUser;
+  //大声列表
+  Map<int, UserInfo> _volumeUpdateList = {};
   @override
   void initState() {
     super.initState();
@@ -68,10 +70,6 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   //trtc的所有事件监听
   onVoiceListener(type, param) {
-    // TxUtils.showToast(type.toString(), context);
-    // if (_trtcEventHandle.containsKey(type)) {
-    //   _trtcEventHandle[type].call(param);
-    // }
     switch (type) {
       case TRTCVoiceRoomListener.onError:
         TxUtils.showErrorToast(type.toString(), context);
@@ -84,6 +82,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         break;
       case TRTCVoiceRoomListener.onRaiseHand:
         this.donRaiseHand(param);
+        break;
+      case TRTCVoiceRoomListener.onKickMic:
+        this.doOnKickMic(param);
         break;
       case TRTCVoiceRoomListener.onAudienceEnter:
       case TRTCVoiceRoomListener.onAudienceExit:
@@ -99,7 +100,6 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
           this.getAnchorList();
         }
         break;
-
       case TRTCVoiceRoomListener.onMicMute:
         {
           //主播是否禁麦
@@ -125,9 +125,10 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   //群主同意举手
   doAgreeToSpeak(param) {
     this._closeTopMessage();
+    trtcVoiceRoom.enterMic();
     setState(() {
       userType = UserType.Anchor;
-      userStatus = UserStatus.NoSpeaking;
+      userStatus = UserStatus.Speaking;
     });
   }
 
@@ -147,10 +148,20 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     if (raiseUser != null) {
       this._showTopMessage(raiseUser.userName + "申请成为主播", true);
       _raiseHandList[userId] = raiseUser;
+      _lastRaiseHandUser = raiseUser;
     }
   }
 
-  // final Map<TRTCVoiceRoomListener, Function> _trtcEventHandle = {
+  ////被群主踢下麦
+  doOnKickMic(param) {
+    this._showTopMessage("你已被主播踢下麦", false);
+    this.setState(() {
+      userStatus = UserStatus.NoSpeaking;
+      userType = UserType.Audience;
+    });
+  }
+
+  // Map<TRTCVoiceRoomListener, Function> _trtcEventHandle = {
   //   TRTCVoiceRoomListener.onAudienceEnter: (param) {
   //     //do
   //   },
@@ -240,10 +251,12 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   getRaiseHandList() {}
 
   //管理员同意其成为主播
-  onAdminAgree() {}
-
-  //申请为主播
-  applyToBeAnchor() {}
+  handleAdminAgree() {
+    if (_lastRaiseHandUser != null) {
+      trtcVoiceRoom.agreeToSpeak(_lastRaiseHandUser.userId);
+      this._closeTopMessage();
+    }
+  }
 
   //主播下麦
   handleAnchorLeaveMic() {
@@ -374,7 +387,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                       this._closeTopMessage();
                     },
                     onOkTab: () {
-                      this.onAdminAgree();
+                      this.handleAdminAgree();
                     },
                   ),
                   Container(
