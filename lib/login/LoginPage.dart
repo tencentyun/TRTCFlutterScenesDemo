@@ -38,7 +38,7 @@ class LoginPageState extends State<LoginPage> {
     );
 
     await trtcVoiceRoom.setSelfProfile(
-        'ID:' + userId, constants.DEFAULT_AVATAR_URL);
+        'ID:' + userId, constants.DEFAULT_ROOM_IMAGE);
     if (resValue.code == 0) {
       TxUtils.showToast('登录成功', context);
       TxUtils.setStorageByKey(constants.USERID_KEY, userId);

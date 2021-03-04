@@ -457,7 +457,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                                 userImgUrl: _anchorItem.userAvatar != null &&
                                         _anchorItem.userAvatar != ''
                                     ? _anchorItem.userAvatar
-                                    : 'https://imgcache.qq.com/operation/dianshi/other/7.157d962fa53be4107d6258af6e6d83f33d45fba4.png',
+                                    : TxUtils.getRandoAvatarUrl(),
                                 isAdministrator: _anchorItem.userId ==
                                         currentRoomOwnerId.toString()
                                     ? true
@@ -487,7 +487,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                                 userImgUrl: _audienceItem.userAvatar != null &&
                                         _audienceItem.userAvatar != ''
                                     ? _audienceItem.userAvatar
-                                    : 'https://imgcache.qq.com/operation/dianshi/other/6.1b984e741cc2275cda3451fa44515e018cc49cb5.png',
+                                    : TxUtils.getRandoAvatarUrl(),
                                 userName: _audienceItem.userName != null &&
                                         _audienceItem.userName != ''
                                     ? _audienceItem.userName
@@ -519,7 +519,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
             RoomBottomBar(
               userStatus: userStatus,
               userType: userType,
-              raiseHandLis: _raiseHandList.values.toList(),
+              raiseHandList: _raiseHandList.values.toList(),
               onMuteAudio: (mute) {
                 this.handleMuteAudio(mute);
               },

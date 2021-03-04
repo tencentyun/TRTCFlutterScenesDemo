@@ -149,7 +149,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                             Image.network(
                               info.coverUrl != null && info.coverUrl != ''
                                   ? info.coverUrl
-                                  : "https://imgcache.qq.com/operation/dianshi/other/5.ca48acfebc4dfb68c6c463c9f33e60cb8d7c9565.png",
+                                  : TxUtils.getRandoAvatarUrl(),
                               fit: BoxFit.fitWidth,
                             ),
                             Positioned(

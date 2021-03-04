@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import '../base/UserEnum.dart';
 import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
+import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 import 'package:badges/badges.dart';
-
-enum BootomEvenType {
-  LeavingAction,
-  SpeakingAction,
-  NoSpeakingAction,
-}
 
 class RoomBottomBar extends StatefulWidget {
   RoomBottomBar({
@@ -15,7 +10,7 @@ class RoomBottomBar extends StatefulWidget {
     this.userType,
     this.userStatus,
     this.onLeave,
-    this.raiseHandLis,
+    this.raiseHandList,
     this.onRaiseHand,
     this.onMuteAudio,
     this.onAnchorLeaveMic,
@@ -23,7 +18,7 @@ class RoomBottomBar extends StatefulWidget {
   final UserType userType;
   final UserStatus userStatus;
   final Function onLeave;
-  final List<UserInfo> raiseHandLis;
+  final List<UserInfo> raiseHandList;
   final Function onRaiseHand;
   final Function onMuteAudio;
   final Function onAnchorLeaveMic;
@@ -74,7 +69,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                       //创建列表项
-                      UserInfo userInfo = widget.raiseHandLis[index];
+                      UserInfo userInfo = widget.raiseHandList[index];
                       return Container(
                         alignment: Alignment.centerLeft,
                         child: Row(
@@ -90,7 +85,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                                       userInfo.userAvatar != null &&
                                               userInfo.userAvatar != ''
                                           ? userInfo.userAvatar
-                                          : 'https://imgcache.qq.com/operation/dianshi/other/1.724142271f4e811457eee00763e63f454af52d13.png',
+                                          : TxUtils.getRandoAvatarUrl(),
                                       height: 44,
                                       fit: BoxFit.fitHeight,
                                     ),
@@ -132,7 +127,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                         ),
                       );
                     },
-                    childCount: widget.raiseHandLis.length,
+                    childCount: widget.raiseHandList.length,
                   ),
                 ),
               ],
@@ -227,8 +222,8 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                         },
                         child: Badge(
                           position: BadgePosition.topStart(),
-                          badgeContent: Text(widget.raiseHandLis.length > 0
-                              ? widget.raiseHandLis.length.toString()
+                          badgeContent: Text(widget.raiseHandList.length > 0
+                              ? widget.raiseHandList.length.toString()
                               : ""),
                           child: Image.asset(
                             secondBtnUrl,

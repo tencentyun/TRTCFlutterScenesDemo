@@ -96,13 +96,13 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
       try {
         await trtcVoiceRoom.setSelfProfile(
           userName,
-          constants.DEFAULT_AVATAR_URL,
+          TxUtils.getRandoAvatarUrl(),
         );
 
         ActionCallback resp = await trtcVoiceRoom.createRoom(
           roomId,
           RoomParam(
-            coverUrl: constants.DEFAULT_AVATAR_URL,
+            coverUrl: constants.DEFAULT_ROOM_IMAGE,
             roomName: meetTitle,
           ),
         );
