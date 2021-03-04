@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../base/UserEnum.dart';
 import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
+import 'package:badges/badges.dart';
 
 enum BootomEvenType {
   LeavingAction,
@@ -224,9 +225,15 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                           else
                             this.anchorLeaveMic();
                         },
-                        child: Image.asset(
-                          secondBtnUrl,
-                          width: 48.0,
+                        child: Badge(
+                          position: BadgePosition.topStart(),
+                          badgeContent: Text(widget.raiseHandLis.length > 0
+                              ? widget.raiseHandLis.length.toString()
+                              : ""),
+                          child: Image.asset(
+                            secondBtnUrl,
+                            width: 48.0,
+                          ),
                         ),
                       ),
                     ),
