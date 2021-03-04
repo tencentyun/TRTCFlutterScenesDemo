@@ -22,7 +22,8 @@ class VoiceRoomAnchorPage extends StatefulWidget {
   State<StatefulWidget> createState() => VoiceRoomAnchorPageState();
 }
 
-class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
+class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
+    with TickerProviderStateMixin {
   int currentRoomId;
   int currentRoomOwnerId;
 
@@ -41,8 +42,10 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   //举手列表
   Map<int, UserInfo> _raiseHandList = {};
   UserInfo _lastRaiseHandUser;
+
   //大声列表
   Map<int, UserInfo> _volumeUpdateList = {};
+
   @override
   void initState() {
     super.initState();
@@ -95,9 +98,11 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
           this.getAudienceList();
         }
         break;
+      case TRTCVoiceRoomListener.onAnchorListChange:
       case TRTCVoiceRoomListener.onAnchorLeave:
       case TRTCVoiceRoomListener.onAnchorEnter:
         {
+          //onAnchorListChange
           //有成员上麦(主动上麦/主播抱人上麦)
           await this.getAnchorList();
           this.getAudienceList();
@@ -113,6 +118,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
         {
           //上麦成员的音量变化
           //_volumeUpdateList
+
           print(param);
         }
         break;
@@ -442,6 +448,10 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                       children: _anchorList.values
                           .map((UserInfo _anchorItem) => AnchorItem(
                                 roomOwnerId: currentRoomOwnerId,
+                                isVolumeUpdate: _anchorItem.mute
+                                    ? false
+                                    : _volumeUpdateList
+                                        .containsKey(_anchorItem.userId),
                                 userName: _anchorItem.userName != null &&
                                         _anchorItem.userAvatar != ''
                                     ? _anchorItem.userName

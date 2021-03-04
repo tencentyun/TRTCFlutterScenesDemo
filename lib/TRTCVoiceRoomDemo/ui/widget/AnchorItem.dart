@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../utils/TxUtils.dart';
 
 class AnchorItem extends StatefulWidget {
   AnchorItem({
@@ -11,6 +10,7 @@ class AnchorItem extends StatefulWidget {
     this.onKickOutUser,
     this.roomOwnerId,
     this.isMute,
+    this.isVolumeUpdate,
   }) : super(key: key);
 
   final String userName;
@@ -19,11 +19,13 @@ class AnchorItem extends StatefulWidget {
   final int roomOwnerId;
   final Function onKickOutUser;
   final bool isMute;
+  final bool isVolumeUpdate;
   @override
   State<StatefulWidget> createState() => _AnchorItemState();
 }
 
-class _AnchorItemState extends State<AnchorItem> {
+class _AnchorItemState extends State<AnchorItem>
+    with SingleTickerProviderStateMixin {
   handleShowKickOutUser(context) {
     showModalBottomSheet(
       context: context,
@@ -79,6 +81,31 @@ class _AnchorItemState extends State<AnchorItem> {
     );
   }
 
+  Animation<double> animation;
+  AnimationController _controller;
+  @override
+  initState() {
+    super.initState();
+    _controller =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    animation = Tween(begin: 4.0, end: 0.0).animate(_controller);
+    animation.addStatusListener((status) {
+      ///dismissed	动画在起始点停止
+      ///forward	动画正在正向执行
+      ///reverse	动画正在反向执行
+      ///completed	动画在终点停止
+      if (status == AnimationStatus.completed) {
+        //动画执行结束时反向执行动画
+        _controller.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        //动画恢复到初始状态时执行动画（正向）
+        _controller.forward();
+      }
+    });
+    //启动动画（正向）
+    _controller.forward();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -90,25 +117,39 @@ class _AnchorItemState extends State<AnchorItem> {
             children: [
               Stack(
                 children: [
-                  Container(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(32),
-                      child: InkWell(
-                        onTap: () {
-                          if (!widget.isAdministrator &&
-                              widget.roomOwnerId.toString() ==
-                                  TxUtils.getLoginUserId()) {
-                            this.handleShowKickOutUser(context);
-                          }
-                        },
-                        child: Image.network(
-                          widget.userImgUrl,
+                  widget.isVolumeUpdate
+                      ? AnimatedBuilder(
+                          animation: animation,
+                          builder: (BuildContext context, Widget child) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: new Border.all(
+                                  color: Color.fromRGBO(15, 169, 104,
+                                      1), //_colorsTween.evaluate(animation),
+                                  width: animation.value,
+                                ),
+                                image: DecorationImage(
+                                  image: NetworkImage(widget.userImgUrl),
+                                  fit: BoxFit.fitWidth,
+                                ),
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              width: 80,
+                              height: 80,
+                            );
+                          },
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(widget.userImgUrl),
+                              fit: BoxFit.fitWidth,
+                            ),
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          width: 80,
                           height: 80,
-                          fit: BoxFit.fitHeight,
                         ),
-                      ),
-                    ),
-                  ),
                   Positioned(
                     left: 55,
                     top: 55,
