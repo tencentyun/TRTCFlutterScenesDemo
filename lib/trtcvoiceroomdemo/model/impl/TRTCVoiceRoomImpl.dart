@@ -109,7 +109,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
         msg = joinRes.desc;
       }
     }
-    //setGroupInfoss
+    //setGroupInfos
     if (code == 0) {
       mRoomId = roomId.toString();
       mTRTCCloud.enterRoom(
@@ -120,6 +120,9 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
               role: TRTCCloudDef.TRTCRoleAnchor,
               roomId: roomId),
           TRTCCloudDef.TRTC_APP_SCENE_VOICE_CHATROOM);
+      // 默认打开麦克风
+      await mTRTCCloud.enableAudioVolumeEvaluation(300);
+      mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
       // 设置群信息
       timManager.getGroupManager().setGroupInfo(
           addOpt: GroupAddOptType.V2TIM_GROUP_ADD_ANY,
@@ -151,7 +154,6 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
   Future<ActionCallback> enterRoom(int roomId) async {
     V2TimCallback joinRes =
         await timManager.joinGroup(groupID: roomId.toString(), message: '');
-    print("==joinRes=" + joinRes.code.toString());
     if (joinRes.code == 0 || joinRes.code == 10013) {
       mRoomId = roomId.toString();
       mTRTCCloud.enterRoom(
@@ -167,7 +169,6 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
           .getGroupsInfo(groupIDList: [roomId.toString()]);
       List<V2TimGroupInfoResult> groupResult = res.data;
       mOwnerUserId = groupResult[0].groupInfo.owner;
-      print("==mOwnerUserId=" + mOwnerUserId.toString());
     }
 
     return ActionCallback(code: joinRes.code, desc: joinRes.desc);
