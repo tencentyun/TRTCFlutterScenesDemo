@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCVoiceRoomListener.dart';
+import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCChatSalonDelegate.dart';
 import 'package:trtc_scenes_demo/base/YunApiHelper.dart';
 import '../../../utils/TxUtils.dart';
 import '../widget/RoomBottomBar.dart';
@@ -9,8 +9,8 @@ import '../widget/AudienceItem.dart';
 import '../widget/RoomTopMsg.dart';
 import '../widget/DescriptionTitle.dart';
 import '../base/UserEnum.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
+import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
 
 /*
  *  主播界面
@@ -27,7 +27,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
   int currentRoomId;
   int currentRoomOwnerId;
 
-  TRTCVoiceRoom trtcVoiceRoom;
+  TRTCChatSalon trtcVoiceRoom;
   UserStatus userStatus = UserStatus.Mute;
   String title = "";
   UserType userType = UserType.Administrator;
@@ -56,12 +56,12 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
   dispose() {
     trtcVoiceRoom.unRegisterListener(onVoiceListener);
     //销毁房间todo
-    TRTCVoiceRoom.destroySharedInstance();
+    TRTCChatSalon.destroySharedInstance();
     super.dispose();
   }
 
   initSDK() async {
-    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+    trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
     this.initUserInfo();
   }
 
@@ -74,23 +74,23 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
   //trtc的所有事件监听
   onVoiceListener(type, param) async {
     switch (type) {
-      case TRTCVoiceRoomListener.onError:
+      case TRTCChatSalonDelegate.onError:
         TxUtils.showErrorToast(type.toString(), context);
         break;
-      case TRTCVoiceRoomListener.onAgreeToSpeak:
+      case TRTCChatSalonDelegate.onAgreeToSpeak:
         this.doAgreeToSpeak(param);
         break;
-      case TRTCVoiceRoomListener.onRefuseToSpeak:
+      case TRTCChatSalonDelegate.onRefuseToSpeak:
         this.doRefuseToSpeak(param);
         break;
-      case TRTCVoiceRoomListener.onRaiseHand:
+      case TRTCChatSalonDelegate.onRaiseHand:
         this.donRaiseHand(param);
         break;
-      case TRTCVoiceRoomListener.onKickMic:
+      case TRTCChatSalonDelegate.onKickMic:
         this.doOnKickMic(param);
         break;
-      case TRTCVoiceRoomListener.onAudienceEnter:
-      case TRTCVoiceRoomListener.onAudienceExit:
+      case TRTCChatSalonDelegate.onAudienceEnter:
+      case TRTCChatSalonDelegate.onAudienceExit:
         {
           //观众进入房间
           ////观众离开房间
@@ -98,9 +98,9 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
           this.getAudienceList();
         }
         break;
-      case TRTCVoiceRoomListener.onAnchorListChange:
-      case TRTCVoiceRoomListener.onAnchorLeave:
-      case TRTCVoiceRoomListener.onAnchorEnter:
+      case TRTCChatSalonDelegate.onAnchorListChange:
+      case TRTCChatSalonDelegate.onAnchorLeave:
+      case TRTCChatSalonDelegate.onAnchorEnter:
         {
           //onAnchorListChange
           //有成员上麦(主动上麦/主播抱人上麦)
@@ -108,13 +108,13 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
           this.getAudienceList();
         }
         break;
-      case TRTCVoiceRoomListener.onMicMute:
+      case TRTCChatSalonDelegate.onMicMute:
         {
           //主播是否禁麦
           this.getAnchorList();
         }
         break;
-      case TRTCVoiceRoomListener.onUserVolumeUpdate:
+      case TRTCChatSalonDelegate.onUserVolumeUpdate:
         {
           //上麦成员的音量变化
           //_volumeUpdateList
@@ -122,7 +122,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage>
           print(param);
         }
         break;
-      case TRTCVoiceRoomListener.onRoomDestroy:
+      case TRTCChatSalonDelegate.onRoomDestroy:
         {
           TxUtils.showErrorToast('已结束。', context);
           //房间被销毁，当主播调用destroyRoom后，观众会收到该回调

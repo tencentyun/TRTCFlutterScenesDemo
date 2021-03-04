@@ -7,7 +7,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_member_leave.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_recv_group_text_message.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 
-enum TRTCVoiceRoomListener {
+enum TRTCChatSalonDelegate {
   /// 错误回调，表示 SDK 不可恢复的错误，一定要监听并分情况给用户适当的界面提示
   ///
   /// 参数param：
@@ -64,6 +64,12 @@ enum TRTCVoiceRoomListener {
   onRoomDestroy,
 
   /// 主播列表发生变化的通知
+  ///
+  /// 参数：
+  ///
+  /// userId：用户id
+  ///
+  /// mute：静音状态
   onAnchorListChange,
 
   /// 有成员上麦(主动上麦/主播抱人上麦)
@@ -146,13 +152,13 @@ class VoiceRoomListener {
 
   void addListener(VoiceListenerFunc func) {
     listeners.add(func);
+    //监听trtc事件
     mTRTCCloud.registerListener(rtcListener);
+    //监听im事件
     timManager.addSimpleMsgListener(
       listener: simpleMsgListener,
     );
-    print("==setGroupListener1==");
     timManager.setGroupListener(listener: groupListener);
-    print("==setGroupListener2==");
   }
 
   void removeListener(VoiceListenerFunc func, mTRTCCloud, timManager) {
@@ -161,40 +167,44 @@ class VoiceRoomListener {
     timManager.removeSimpleMsgListener(simpleMsgListener);
   }
 
+  groupAttriChange(V2TimGroupAttributeChanged data) {
+    Map<String, String> groupAttributeMap = data.groupAttributeMap;
+    TRTCChatSalonDelegate type = TRTCChatSalonDelegate.onAnchorListChange;
+
+    List newGroupList = [];
+    groupAttributeMap.forEach((key, value) {
+      newGroupList.add({'userId': key, 'mute': value == "1" ? true : false});
+      if (mOldAttributeMap.containsKey(key) && mOldAttributeMap[key] != value) {
+        //有成员改变了麦的状态
+        type = TRTCChatSalonDelegate.onMicMute;
+        emitEvent(type, {'userId': key, 'mute': value == "1" ? true : false});
+      } else if (!mOldAttributeMap.containsKey(key)) {
+        //有成员上麦
+        type = TRTCChatSalonDelegate.onAnchorEnter;
+        emitEvent(type, {'userId': key});
+      }
+    });
+    emitEvent(type, newGroupList);
+
+    mOldAttributeMap.forEach((key, value) {
+      if (!groupAttributeMap.containsKey(key)) {
+        //有成员下麦
+        type = TRTCChatSalonDelegate.onAnchorLeave;
+        emitEvent(type, {'userId': key});
+      }
+    });
+
+    mOldAttributeMap = groupAttributeMap;
+  }
+
   groupListener(V2TimEventCallback event) {
     print("==groupListener type heh=" + event.type.toString());
-    TRTCVoiceRoomListener type;
+    TRTCChatSalonDelegate type;
     if (event.type == 'onGroupAttributeChanged') {
-      V2TimGroupAttributeChanged data = event.data;
-      Map<String, String> groupAttributeMap = data.groupAttributeMap;
-      print("==groupListener type data=" + groupAttributeMap.toString());
-      type = TRTCVoiceRoomListener.onAnchorListChange;
-      emitEvent(type, data.groupAttributeMap);
-
-      groupAttributeMap.forEach((key, value) {
-        if (mOldAttributeMap.containsKey(key) &&
-            mOldAttributeMap[key] != value) {
-          //有成员改变了麦的状态
-          type = TRTCVoiceRoomListener.onMicMute;
-          emitEvent(type, {'userId': key, 'mute': value == "1" ? true : false});
-        } else if (!mOldAttributeMap.containsKey(key)) {
-          //有成员上麦
-          type = TRTCVoiceRoomListener.onAnchorEnter;
-          emitEvent(type, {'userId': key});
-        }
-      });
-
-      mOldAttributeMap.forEach((key, value) {
-        if (!groupAttributeMap.containsKey(key)) {
-          //有成员下麦
-          type = TRTCVoiceRoomListener.onAnchorLeave;
-          emitEvent(type, {'userId': key});
-        }
-      });
-
-      mOldAttributeMap = groupAttributeMap;
+      //群属性发生变更
+      groupAttriChange(event.data);
     } else if (event.type == 'onMemberEnter') {
-      type = TRTCVoiceRoomListener.onAudienceEnter;
+      type = TRTCChatSalonDelegate.onAudienceEnter;
       V2TimMemberEnter data = event.data;
       List<V2TimGroupMemberInfo> memberList = data.memberList;
       List newList = [];
@@ -207,40 +217,38 @@ class VoiceRoomListener {
       }
       emitEvent(type, newList);
     } else if (event.type == 'onMemberLeave') {
-      type = TRTCVoiceRoomListener.onAudienceExit;
+      type = TRTCChatSalonDelegate.onAudienceExit;
       V2TimMemberLeave data = event.data;
       emitEvent(type, {'userId': data.member.userID});
     } else if (event.type == 'onGroupDismissed') {
       //房间被群主解散
-      type = TRTCVoiceRoomListener.onRoomDestroy;
+      type = TRTCChatSalonDelegate.onRoomDestroy;
       emitEvent(type, {});
     }
   }
 
   simpleMsgListener(V2TimEventCallback data) {
-    print("==simpleMsgListener type heh=" + data.type.toString());
-    print("==simpleMsgListener data=" + data.data.toString());
+    TRTCChatSalonDelegate type;
 
-    TRTCVoiceRoomListener type;
     if (data.type == "onRecvC2CCustomMessage") {
-      print("==simpleMsgListener data customData=" +
-          data.data.customData.toString());
+      // C2C自定义消息
       if (data.data.customData == "raiseHand") {
-        type = TRTCVoiceRoomListener.onRaiseHand;
+        type = TRTCChatSalonDelegate.onRaiseHand;
         emitEvent(type, data.data.sender.userID);
       } else if (data.data.customData == "agreeToSpeak") {
-        type = TRTCVoiceRoomListener.onAgreeToSpeak;
+        type = TRTCChatSalonDelegate.onAgreeToSpeak;
         emitEvent(type, data.data.sender.userID);
       } else if (data.data.customData == "refuseToSpeak") {
-        type = TRTCVoiceRoomListener.onRefuseToSpeak;
+        type = TRTCChatSalonDelegate.onRefuseToSpeak;
         emitEvent(type, data.data.sender.userID);
       } else if (data.data.customData == "kickMic") {
-        type = TRTCVoiceRoomListener.onKickMic;
+        type = TRTCChatSalonDelegate.onKickMic;
         emitEvent(type, data.data.sender.userID);
       }
     } else if (data.type == "onRecvGroupTextMessage") {
+      //群文本消息
       V2TimRecvGroupTextMessage message = data.data;
-      type = TRTCVoiceRoomListener.onRecvRoomTextMsg;
+      type = TRTCChatSalonDelegate.onRecvRoomTextMsg;
       emitEvent(type, {
         "text": message.text,
         "sendId": message.sender.userID,
@@ -252,30 +260,22 @@ class VoiceRoomListener {
 
   rtcListener(rtcType, param) {
     String typeStr = rtcType.toString();
-    TRTCVoiceRoomListener type;
-    // for (var item in TRTCVoiceRoomListener.values) {
-    //   String newItem =
-    //       item.toString().replaceFirst("TRTCVoiceRoomListener.", "");
-    //   if (newItem == typeStr.replaceFirst("TRTCCloudListener.", "")) {
-    //     type = item;
-    //     break;
-    //   }
-    // }
+    TRTCChatSalonDelegate type;
     typeStr = typeStr.replaceFirst("TRTCCloudListener.", "");
     if (typeStr == "onEnterRoom") {
-      type = TRTCVoiceRoomListener.onEnterRoom;
+      type = TRTCChatSalonDelegate.onEnterRoom;
       emitEvent(type, param);
     } else if (typeStr == "onExitRoom") {
-      type = TRTCVoiceRoomListener.onExitRoom;
+      type = TRTCChatSalonDelegate.onExitRoom;
       emitEvent(type, param);
     } else if (typeStr == "onError") {
-      type = TRTCVoiceRoomListener.onError;
+      type = TRTCChatSalonDelegate.onError;
       emitEvent(type, param);
     } else if (typeStr == "onWarning") {
-      type = TRTCVoiceRoomListener.onWarning;
+      type = TRTCChatSalonDelegate.onWarning;
       emitEvent(type, param);
     } else if (typeStr == "onUserVoiceVolume") {
-      type = TRTCVoiceRoomListener.onUserVolumeUpdate;
+      type = TRTCChatSalonDelegate.onUserVolumeUpdate;
       emitEvent(type, param);
     }
   }
@@ -289,4 +289,4 @@ class VoiceRoomListener {
 
 /// @nodoc
 typedef VoiceListenerFunc<P> = void Function(
-    TRTCVoiceRoomListener type, P params);
+    TRTCChatSalonDelegate type, P params);

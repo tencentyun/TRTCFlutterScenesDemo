@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../utils/TxUtils.dart';
 import '../utils/constants.dart' as constants;
 import '../debug/GenerateTestUserSig.dart';
-import '../TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
-import '../TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
+import '../TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
+import '../TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
 
 /*
  *  登录界面
@@ -17,7 +17,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  TRTCVoiceRoom trtcVoiceRoom;
+  TRTCChatSalon trtcVoiceRoom;
 
   final userFocusNode = FocusNode();
 
@@ -29,7 +29,7 @@ class LoginPageState extends State<LoginPage> {
       TxUtils.showErrorToast('请输入用户名', context);
       return;
     }
-    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+    trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
 
     ActionCallback resValue = await trtcVoiceRoom.login(
       GenerateTestUserSig.sdkAppId,

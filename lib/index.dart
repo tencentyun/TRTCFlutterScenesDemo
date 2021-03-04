@@ -4,7 +4,7 @@ import './utils/TxUtils.dart';
 import 'utils/constants.dart' as constants;
 import './base/TestFlowDelegate.dart';
 import './debug/GenerateTestUserSig.dart';
-import './TRTCVoiceRoomDemo/model/TRTCVoiceRoom.dart';
+import './TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage({Key key}) : super(key: key);
@@ -14,7 +14,7 @@ class IndexPage extends StatefulWidget {
 }
 
 class IndexPageState extends State<IndexPage> {
-  TRTCVoiceRoom trtcVoiceRoom;
+  TRTCChatSalon trtcVoiceRoom;
   @override
   void initState() {
     super.initState();
@@ -22,7 +22,7 @@ class IndexPageState extends State<IndexPage> {
   }
 
   initSDK() async {
-    trtcVoiceRoom = await TRTCVoiceRoom.sharedInstance();
+    trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
     String userId = await TxUtils.getStorageByKey(constants.USERID_KEY);
     if (userId == null || userId == '') {
       Navigator.pushNamed(

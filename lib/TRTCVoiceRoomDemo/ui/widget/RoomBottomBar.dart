@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../base/UserEnum.dart';
-import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCVoiceRoomDef.dart';
+import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
 import 'package:badges/badges.dart';
 
 enum BootomEvenType {
