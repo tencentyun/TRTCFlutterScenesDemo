@@ -134,24 +134,27 @@ class _AnchorItemState extends State<AnchorItem> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
+                width: 80,
                 child: widget.isAdministrator
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Image.asset(
                             "assets/images/Administrator.png",
                             height: 14,
                           ),
-                          Text(
-                            '  ' + widget.userName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
+                          Expanded(
+                            flex: 0,
+                            child: Text(
+                              ' ' + widget.userName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ],

@@ -181,10 +181,14 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
       userType = isAdmin ? UserType.Administrator : UserType.Audience;
       title = arguments["roomName"] == null ? '--' : arguments["roomName"];
     });
+
     ActionCallback enterRoomResp =
         await trtcVoiceRoom.enterRoom(_currentRoomId);
     if (enterRoomResp.code == 0) {
-      if (_currentRoomOwnerId.toString() == TxUtils.getLoginUserId()) {
+      if (isAdmin) {
+        setState(() {
+          userStatus = UserStatus.Speaking;
+        });
         TxUtils.showToast('房主占座成功。', context);
       } else {
         TxUtils.showToast('进房成功', context);
