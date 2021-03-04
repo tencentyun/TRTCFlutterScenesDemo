@@ -173,13 +173,13 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   }
 
   initUserInfo() async {
+    String loginUserId = await TxUtils.getLoginUserId();
     Map arguments = ModalRoute.of(context).settings.arguments;
     int _currentRoomId = int.tryParse(arguments['roomId'].toString());
     int _currentRoomOwnerId = int.tryParse(arguments['ownerId'].toString());
+
     final bool isAdmin =
-        _currentRoomOwnerId.toString() == TxUtils.getLoginUserId()
-            ? true
-            : false;
+        _currentRoomOwnerId.toString() == loginUserId ? true : false;
     setState(() {
       currentRoomId = _currentRoomId;
       currentRoomOwnerId = _currentRoomOwnerId;
@@ -209,6 +209,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   //获取主播列表
   getAnchorList() async {
     try {
+      String loginUserId = await TxUtils.getLoginUserId();
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
       if (_archorResp.code == 0) {
         Map<int, UserInfo> _archorList = {};
@@ -218,14 +219,12 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         });
         if (userType != UserType.Administrator) {
           setState(() {
-            userType =
-                _archorList.containsKey(int.parse(TxUtils.getLoginUserId()))
-                    ? UserType.Anchor
-                    : UserType.Audience;
-            userStatus =
-                _archorList.containsKey(int.parse(TxUtils.getLoginUserId()))
-                    ? UserStatus.Speaking
-                    : UserStatus.Mute;
+            userType = _archorList.containsKey(int.parse(loginUserId))
+                ? UserType.Anchor
+                : UserType.Audience;
+            userStatus = _archorList.containsKey(int.parse(loginUserId))
+                ? UserStatus.Speaking
+                : UserStatus.Mute;
           });
         }
         setState(() {

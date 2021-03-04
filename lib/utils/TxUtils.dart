@@ -60,12 +60,10 @@ class TxUtils {
     return sharedPreferences.getString(key);
   }
 
-  static String getLoginUserId() {
+  static Future<String> getLoginUserId() {
     if (_loginUserId == '') {
-      getStorageByKey(constants.USERID_KEY).then((value) {
-        _loginUserId = value;
-      });
+      return getStorageByKey(constants.USERID_KEY);
     }
-    return _loginUserId;
+    return Future.value(_loginUserId);
   }
 }
