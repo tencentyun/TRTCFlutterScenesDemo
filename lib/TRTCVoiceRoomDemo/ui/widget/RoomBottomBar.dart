@@ -45,9 +45,13 @@ class RoomBottomBar extends StatefulWidget {
 
 class _RoomBottomBarState extends State<RoomBottomBar> {
   bool hadHandUp = false;
+  Map<String, bool> hadAgreeMap = {};
   @override
   void initState() {
     super.initState();
+    // this.setState(() {
+    //   hadAgree=
+    // });
   }
 
   onHandUp() {
@@ -128,15 +132,21 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                                   //同意or拒绝
                                   //userInfo
                                   Navigator.pop(context);
-                                  if (userInfo.isCanAgree)
+                                  if (userInfo.isCanAgree) {
                                     widget.onAgreeToSpeak(userInfo.userId);
+                                    this.setState(() {
+                                      hadAgreeMap[userInfo.userId] = true;
+                                    });
+                                  }
                                 },
                                 child: Padding(
                                   padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                   child: Image.asset(
-                                    userInfo.isCanAgree
-                                        ? "assets/images/before-HandUp.png"
-                                        : "assets/images/after-HandUp.png",
+                                    hadAgreeMap.containsKey(userInfo.userId)
+                                        ? "assets/images/after-HandUp.png"
+                                        : userInfo.isCanAgree
+                                            ? "assets/images/before-HandUp.png"
+                                            : "assets/images/after-HandUp.png",
                                     height: 30,
                                   ),
                                 ),
