@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 
 class AnchorItem extends StatefulWidget {
   AnchorItem({
@@ -10,6 +11,7 @@ class AnchorItem extends StatefulWidget {
     this.onKickOutUser,
     this.roomOwnerId,
     this.isMute,
+    this.userId,
     this.isVolumeUpdate,
   }) : super(key: key);
 
@@ -19,6 +21,7 @@ class AnchorItem extends StatefulWidget {
   final int roomOwnerId;
   final Function onKickOutUser;
   final bool isMute;
+  final String userId;
   final bool isVolumeUpdate;
   @override
   State<StatefulWidget> createState() => _AnchorItemState();
@@ -106,6 +109,14 @@ class _AnchorItemState extends State<AnchorItem>
     _controller.forward();
   }
 
+  _isCanShowKicUser(userId) async {
+    String loginUserId = await TxUtils.getLoginUserId();
+    if (!widget.isAdministrator &&
+        widget.roomOwnerId.toString() == loginUserId) {
+      this.handleShowKickOutUser(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -121,34 +132,44 @@ class _AnchorItemState extends State<AnchorItem>
                       ? AnimatedBuilder(
                           animation: animation,
                           builder: (BuildContext context, Widget child) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: new Border.all(
-                                  color: Color.fromRGBO(15, 169, 104,
-                                      1), //_colorsTween.evaluate(animation),
-                                  width: animation.value,
+                            return InkWell(
+                              onTap: () {
+                                this._isCanShowKicUser(widget.userId);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: new Border.all(
+                                    color: Color.fromRGBO(15, 169, 104,
+                                        1), //_colorsTween.evaluate(animation),
+                                    width: animation.value,
+                                  ),
+                                  image: DecorationImage(
+                                    image: NetworkImage(widget.userImgUrl),
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                  borderRadius: BorderRadius.circular(32),
                                 ),
-                                image: DecorationImage(
-                                  image: NetworkImage(widget.userImgUrl),
-                                  fit: BoxFit.fitWidth,
-                                ),
-                                borderRadius: BorderRadius.circular(32),
+                                width: 80,
+                                height: 80,
                               ),
-                              width: 80,
-                              height: 80,
                             );
                           },
                         )
-                      : Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(widget.userImgUrl),
-                              fit: BoxFit.fitWidth,
+                      : InkWell(
+                          onTap: () {
+                            this._isCanShowKicUser(widget.userId);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(widget.userImgUrl),
+                                fit: BoxFit.fitWidth,
+                              ),
+                              borderRadius: BorderRadius.circular(32),
                             ),
-                            borderRadius: BorderRadius.circular(32),
+                            width: 80,
+                            height: 80,
                           ),
-                          width: 80,
-                          height: 80,
                         ),
                   Positioned(
                     left: 55,

@@ -92,17 +92,18 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     if (!_isVerifyInputOk()) return;
     unFocus();
     int roomId = TxUtils.getRandomNumber();
+    String _avatarUrl = TxUtils.getRandoAvatarUrl();
     if (await Permission.microphone.request().isGranted) {
       try {
         await trtcVoiceRoom.setSelfProfile(
           userName,
-          TxUtils.getRandoAvatarUrl(),
+          _avatarUrl,
         );
 
         ActionCallback resp = await trtcVoiceRoom.createRoom(
           roomId,
           RoomParam(
-            coverUrl: constants.DEFAULT_ROOM_IMAGE,
+            coverUrl: _avatarUrl,
             roomName: meetTitle,
           ),
         );

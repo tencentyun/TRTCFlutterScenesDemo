@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import '../base/UserEnum.dart';
-import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 import 'package:badges/badges.dart';
+
+class RaiseHandInfo {
+  /// 用户唯一标识
+  String userId;
+
+  /// 用户昵称
+  String userName;
+
+  /// 用户头像
+  String userAvatar;
+
+  //是否可以通过
+  bool isCanAgree;
+
+  RaiseHandInfo({this.userId, this.userName, this.userAvatar, this.isCanAgree});
+}
 
 class RoomBottomBar extends StatefulWidget {
   RoomBottomBar({
@@ -14,14 +29,16 @@ class RoomBottomBar extends StatefulWidget {
     this.onRaiseHand,
     this.onMuteAudio,
     this.onAnchorLeaveMic,
+    this.onAgreeToSpeak,
   }) : super(key: key);
   final UserType userType;
   final UserStatus userStatus;
   final Function onLeave;
-  final List<UserInfo> raiseHandList;
+  final List<RaiseHandInfo> raiseHandList;
   final Function onRaiseHand;
   final Function onMuteAudio;
   final Function onAnchorLeaveMic;
+  final Function onAgreeToSpeak;
   @override
   _RoomBottomBarState createState() => _RoomBottomBarState();
 }
@@ -44,7 +61,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
     widget.onMuteAudio(isSpeaking);
   }
 
-  onShowHandList() {
+  onShowHandList(raiseHandList) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -69,7 +86,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                       //创建列表项
-                      UserInfo userInfo = widget.raiseHandList[index];
+                      RaiseHandInfo userInfo = raiseHandList[index];
                       return Container(
                         alignment: Alignment.centerLeft,
                         child: Row(
@@ -111,13 +128,15 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                                   //同意or拒绝
                                   //userInfo
                                   Navigator.pop(context);
+                                  if (userInfo.isCanAgree)
+                                    widget.onAgreeToSpeak(userInfo.userId);
                                 },
                                 child: Padding(
                                   padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                                   child: Image.asset(
-                                    index % 2 == 0
-                                        ? "assets/images/after-HandUp.png"
-                                        : "assets/images/before-HandUp.png",
+                                    userInfo.isCanAgree
+                                        ? "assets/images/before-HandUp.png"
+                                        : "assets/images/after-HandUp.png",
                                     height: 30,
                                   ),
                                 ),
@@ -127,7 +146,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                         ),
                       );
                     },
-                    childCount: widget.raiseHandList.length,
+                    childCount: raiseHandList.length,
                   ),
                 ),
               ],
@@ -216,7 +235,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                       child: InkWell(
                         onTap: () {
                           if (UserType.Administrator == widget.userType)
-                            this.onShowHandList();
+                            this.onShowHandList(widget.raiseHandList);
                           else
                             this.anchorLeaveMic();
                         },

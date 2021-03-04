@@ -40,8 +40,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   //听众列表
   Map<int, UserInfo> _audienceList = {};
   //举手列表
-  Map<int, UserInfo> _raiseHandList = {};
-  UserInfo _lastRaiseHandUser;
+  Map<int, RaiseHandInfo> _raiseHandList = {};
+  RaiseHandInfo _lastRaiseHandUser;
 
   //大声列表
   Map<int, UserInfo> _volumeUpdateList = {};
@@ -156,8 +156,13 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     UserInfo raiseUser = this._finUserInfo(userId);
     if (raiseUser != null) {
       this._showTopMessage(raiseUser.userName + "申请成为主播", true);
-      _raiseHandList[userId] = raiseUser;
-      _lastRaiseHandUser = raiseUser;
+      RaiseHandInfo tem = new RaiseHandInfo(
+          isCanAgree: true,
+          userAvatar: raiseUser.userAvatar,
+          userId: raiseUser.userId,
+          userName: raiseUser.userName);
+      _raiseHandList[userId] = tem;
+      _lastRaiseHandUser = tem;
     }
   }
 
@@ -266,26 +271,38 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //管理员同意其成为主播
   handleAdminAgree({userId}) {
+    String tmpUserId = '';
     if (userId != null) {
-      trtcVoiceRoom.agreeToSpeak(_lastRaiseHandUser.userId);
-      this._closeTopMessage();
+      tmpUserId = userId;
     } else {
       if (_lastRaiseHandUser != null) {
-        trtcVoiceRoom.agreeToSpeak(_lastRaiseHandUser.userId);
-        this._closeTopMessage();
+        tmpUserId = _lastRaiseHandUser.userId;
+      }
+    }
+    if (tmpUserId != null && tmpUserId != '') {
+      trtcVoiceRoom.agreeToSpeak(userId);
+      this._closeTopMessage();
+      if (_raiseHandList.containsKey(userId)) {
+        _raiseHandList[userId].isCanAgree = false;
       }
     }
   }
 
   //管理员拒绝其成为主播
   handleAdminRefuseToSpeak({userId}) {
+    String tmpUserId = '';
     if (userId != null) {
-      trtcVoiceRoom.refuseToSpeak(_lastRaiseHandUser.userId);
-      this._closeTopMessage();
+      tmpUserId = userId;
     } else {
       if (_lastRaiseHandUser != null) {
-        trtcVoiceRoom.refuseToSpeak(_lastRaiseHandUser.userId);
-        this._closeTopMessage();
+        tmpUserId = _lastRaiseHandUser.userId;
+      }
+    }
+    if (tmpUserId != null && tmpUserId != '') {
+      trtcVoiceRoom.refuseToSpeak(_lastRaiseHandUser.userId);
+      this._closeTopMessage();
+      if (_raiseHandList.containsKey(userId)) {
+        _raiseHandList[userId].isCanAgree = false;
       }
     }
   }
@@ -463,6 +480,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                                     ? true
                                     : false,
                                 isMute: _anchorItem.mute,
+                                userId: _anchorItem.userId,
                                 onKickOutUser: () {
                                   //踢人
                                   trtcVoiceRoom.kickMic(_anchorItem.userId);
@@ -522,6 +540,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
               raiseHandList: _raiseHandList.values.toList(),
               onMuteAudio: (mute) {
                 this.handleMuteAudio(mute);
+              },
+              onAgreeToSpeak: (String userId) {
+                this.handleAdminAgree(userId: userId);
               },
               onRaiseHand: () {
                 this.handleRaiseHandClick();
