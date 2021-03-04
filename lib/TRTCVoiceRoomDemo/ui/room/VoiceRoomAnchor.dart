@@ -24,7 +24,7 @@ class VoiceRoomAnchorPage extends StatefulWidget {
 
 class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   int currentRoomId;
-  int currentOwnerId;
+  int currentRoomOwnerId;
 
   TRTCVoiceRoom trtcVoiceRoom;
   UserStatus userStatus = UserStatus.Mute;
@@ -157,7 +157,8 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
   }
 
   ////被群主踢下麦
-  doOnKickMic(param) {
+  doOnKickMic(param) async {
+    this.getAnchorList();
     this._showTopMessage("你已被主播踢下麦", false);
     this.setState(() {
       userStatus = UserStatus.Mute;
@@ -167,20 +168,23 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
 
   initUserInfo() async {
     Map arguments = ModalRoute.of(context).settings.arguments;
-    currentRoomId = int.parse(arguments['roomId'].toString());
-    currentOwnerId = int.parse(arguments['ownerId'].toString());
-    print('-------------------:' + currentOwnerId.toString());
-    print('-------------------:' + currentOwnerId.toString());
+    int _currentRoomId = int.parse(arguments['roomId'].toString());
+    int _currentRoomOwnerId = int.parse(arguments['ownerId'].toString());
     final bool isAdmin =
-        currentOwnerId.toString() == TxUtils.getLoginUserId() ? true : false;
+        currentRoomOwnerId.toString() == TxUtils.getLoginUserId()
+            ? true
+            : false;
     setState(() {
+      currentRoomId = _currentRoomId;
+      currentRoomOwnerId = _currentRoomOwnerId;
       userType = isAdmin ? UserType.Administrator : UserType.Audience;
       title = arguments["roomName"] == null ? '--' : arguments["roomName"];
     });
-    ActionCallback enterRoomResp = await trtcVoiceRoom.enterRoom(currentRoomId);
+    ActionCallback enterRoomResp =
+        await trtcVoiceRoom.enterRoom(_currentRoomId);
     if (enterRoomResp.code == 0) {
-      if (currentOwnerId.toString() == TxUtils.getLoginUserId()) {
-        TxUtils.showToast('该房间是您创建，重新进入中...', context);
+      if (_currentRoomOwnerId.toString() == TxUtils.getLoginUserId()) {
+        TxUtils.showToast('房主占座成功。', context);
       } else {
         TxUtils.showToast('进房成功', context);
       }
@@ -351,8 +355,13 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                     } else {
                       trtcVoiceRoom.exitRoom();
                     }
-                    Navigator.of(context).pop(true);
-                    TxUtils.showToast('退房成功', context);
+                    Navigator.pushNamed(
+                      context,
+                      "/voiceRoom/list",
+                      arguments: {
+                        "userId": 'test',
+                      },
+                    );
                   },
                 ),
               ],
@@ -431,7 +440,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                                     ? _anchorItem.userAvatar
                                     : 'https://imgcache.qq.com/operation/dianshi/other/7.157d962fa53be4107d6258af6e6d83f33d45fba4.png',
                                 isAdministrator: _anchorItem.userId ==
-                                        TxUtils.getLoginUserId()
+                                        currentRoomOwnerId.toString()
                                     ? true
                                     : false,
                                 isMute: _anchorItem.mute,

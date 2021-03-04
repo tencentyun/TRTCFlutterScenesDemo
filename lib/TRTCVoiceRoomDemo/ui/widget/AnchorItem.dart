@@ -133,6 +133,7 @@ class _AnchorItemState extends State<AnchorItem> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               widget.isAdministrator
                   ? Image.asset(
@@ -141,10 +142,10 @@ class _AnchorItemState extends State<AnchorItem> {
                     )
                   : Text(''),
               Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                width: 75,
+                margin: EdgeInsets.only(left: widget.isAdministrator ? 10 : 0),
+                width: 70,
                 child: Text(
-                  widget.userName,
+                  widget.userName * 50,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: TextStyle(
