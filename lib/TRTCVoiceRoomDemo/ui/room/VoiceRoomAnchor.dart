@@ -206,20 +206,25 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
     try {
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
       if (_archorResp.code == 0) {
-        Map<int, UserInfo> userList = {};
+        Map<int, UserInfo> _archorList = {};
         _archorResp.list.forEach((item) {
           if (item.userId != null && item.userId != '')
-            userList[int.tryParse(item.userId)] = item;
+            _archorList[int.tryParse(item.userId)] = item;
         });
         if (userType != UserType.Administrator) {
           setState(() {
-            userType = userList.containsKey(int.parse(TxUtils.getLoginUserId()))
-                ? UserType.Anchor
-                : UserType.Audience;
+            userType =
+                _archorList.containsKey(int.parse(TxUtils.getLoginUserId()))
+                    ? UserType.Anchor
+                    : UserType.Audience;
+            userStatus =
+                _archorList.containsKey(int.parse(TxUtils.getLoginUserId()))
+                    ? UserStatus.Speaking
+                    : UserStatus.Mute;
           });
         }
         setState(() {
-          _anchorList = userList;
+          _anchorList = _archorList;
         });
       } else {
         TxUtils.showErrorToast(_archorResp.desc, context);
@@ -436,6 +441,7 @@ class VoiceRoomAnchorPageState extends State<VoiceRoomAnchorPage> {
                       ),
                       children: _anchorList.values
                           .map((UserInfo _anchorItem) => AnchorItem(
+                                roomOwnerId: currentRoomOwnerId,
                                 userName: _anchorItem.userName != null &&
                                         _anchorItem.userAvatar != ''
                                     ? _anchorItem.userName

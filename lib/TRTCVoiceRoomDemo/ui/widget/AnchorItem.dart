@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../utils/TxUtils.dart';
 
 class AnchorItem extends StatefulWidget {
   AnchorItem({
@@ -8,12 +9,14 @@ class AnchorItem extends StatefulWidget {
     this.userImgUrl = "",
     this.isAdministrator = false,
     this.onKickOutUser,
+    this.roomOwnerId,
     this.isMute,
   }) : super(key: key);
 
   final String userName;
   final String userImgUrl;
   final bool isAdministrator;
+  final int roomOwnerId;
   final Function onKickOutUser;
   final bool isMute;
   @override
@@ -92,7 +95,9 @@ class _AnchorItemState extends State<AnchorItem> {
                       borderRadius: BorderRadius.circular(32),
                       child: InkWell(
                         onTap: () {
-                          if (!widget.isAdministrator) {
+                          if (!widget.isAdministrator &&
+                              widget.roomOwnerId.toString() ==
+                                  TxUtils.getLoginUserId()) {
                             this.handleShowKickOutUser(context);
                           }
                         },
