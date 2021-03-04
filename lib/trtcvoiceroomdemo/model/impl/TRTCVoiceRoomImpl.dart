@@ -485,6 +485,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     if (setRes.code == 0) {
       //切换trtc角色为主播
       await mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAnchor);
+      await mTRTCCloud.enableAudioVolumeEvaluation(300);
       mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
       return ActionCallback(code: 0, desc: 'enterMic success');
     } else {
@@ -505,6 +506,7 @@ class TRTCVoiceRoomImpl extends TRTCVoiceRoom {
     if (res.code == 0) {
       //切换trtc角色为观众
       await mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAudience);
+      await mTRTCCloud.enableAudioVolumeEvaluation(0);
       mTRTCCloud.stopLocalAudio();
       return ActionCallback(code: 0, desc: 'leaveMic success');
     } else {
