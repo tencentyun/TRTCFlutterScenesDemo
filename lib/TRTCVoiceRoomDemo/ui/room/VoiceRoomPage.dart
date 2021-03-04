@@ -78,13 +78,13 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         TxUtils.showErrorToast(type.toString(), context);
         break;
       case TRTCChatSalonDelegate.onAgreeToSpeak:
-        this.doAgreeToSpeak(param);
+        this.doOnAgreeToSpeak(param);
         break;
       case TRTCChatSalonDelegate.onRefuseToSpeak:
-        this.doRefuseToSpeak(param);
+        this.doOnRefuseToSpeak(param);
         break;
       case TRTCChatSalonDelegate.onRaiseHand:
-        this.donRaiseHand(param);
+        this.doOnRaiseHand(param);
         break;
       case TRTCChatSalonDelegate.onKickMic:
         this.doOnKickMic(param);
@@ -132,7 +132,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //事件处理
   //群主同意举手
-  doAgreeToSpeak(param) {
+  doOnAgreeToSpeak(param) {
     this._closeTopMessage();
     trtcVoiceRoom.enterMic();
     setState(() {
@@ -142,7 +142,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   }
 
   //群主拒绝举手
-  doRefuseToSpeak(param) {
+  doOnRefuseToSpeak(param) {
     this._closeTopMessage();
     setState(() {
       userType = UserType.Audience;
@@ -151,7 +151,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   }
 
   //有观众举手，申请上麦
-  donRaiseHand(param) {
+  doOnRaiseHand(param) {
     int userId = int.parse(param);
     UserInfo raiseUser = this._finUserInfo(userId);
     if (raiseUser != null) {
