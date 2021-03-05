@@ -46,13 +46,7 @@ class LoginPageState extends State<LoginPage> {
     if (resValue.code == 0) {
       TxUtils.showToast('登录成功', context);
       TxUtils.setStorageByKey(constants.USERID_KEY, userId);
-      Navigator.pushNamed(
-        context,
-        "/index",
-        arguments: {
-          "userId": userId,
-        },
-      );
+      Navigator.pushNamed(context, "/index");
     } else {
       TxUtils.showErrorToast(resValue.desc, context);
     }

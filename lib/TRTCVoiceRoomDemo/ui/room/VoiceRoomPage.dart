@@ -128,7 +128,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
               });
             }
           });
-          print(param);
         }
         break;
       case TRTCChatSalonDelegate.onKickedOffline:
