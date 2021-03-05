@@ -273,7 +273,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
         for (var i = 0; i < userInfo.length; i++) {
           newInfo.add(UserInfo(
               userId: userInfo[i].userID,
-              mute: attrData[userInfo[i].userID] == "1" ? true : false,
+              mute: attrData[userInfo[i].userID] == "1" ? false : true,
               userName: userInfo[i].nickName,
               userAvatar: userInfo[i].faceUrl));
         }
@@ -413,11 +413,12 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (!mIsInitIMSDK) {
       //获取腾讯即时通信IM manager;
       timManager = TencentImSDKPlugin.v2TIMManager;
+      listener = VoiceRoomListener(mTRTCCloud, timManager);
       //初始化SDK
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
         sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
         loglevel: LogLevel.V2TIM_LOG_DEBUG,
-        listener: initImLisener,
+        listener: listener.initImLisener,
       );
       if (initRes.code != 0) {
         //初始化sdk错误
@@ -441,14 +442,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       return ActionCallback(code: 0, desc: 'login im success');
     } else {
       return ActionCallback(code: codeErr, desc: loginRes.desc);
-    }
-  }
-
-  initImLisener(V2TimEventCallback data) {
-    if (data.type == "onConnectFailed") {
-      print(logTag + "=onConnectFailed");
-    } else if (data.type == "onKickedOffline") {
-      print(logTag + "=onKickedOffline");
     }
   }
 
@@ -526,7 +519,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     V2TimCallback setRes = await timManager
         .getGroupManager()
         .setGroupAttributes(
-            groupID: mRoomId, attributes: {mUserId: mute ? "1" : "0"});
+            groupID: mRoomId, attributes: {mUserId: mute ? "0" : "1"});
     if (setRes.code == 0) {
       mTRTCCloud.muteLocalAudio(mute);
       return ActionCallback(code: 0, desc: 'muteMic success');

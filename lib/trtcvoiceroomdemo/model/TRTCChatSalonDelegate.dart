@@ -135,6 +135,9 @@ enum TRTCChatSalonDelegate {
   ///
   /// userName：发送者用户昵称
   onRecvRoomTextMsg,
+
+  //其他用户登录了同一账号，被踢下线
+  onKickedOffline
 }
 
 /// @nodoc
@@ -148,6 +151,13 @@ class VoiceRoomListener {
   VoiceRoomListener(TRTCCloud _mTRTCCloud, V2TIMManager _timManager) {
     mTRTCCloud = _mTRTCCloud;
     timManager = _timManager;
+  }
+
+  void initImLisener(V2TimEventCallback data) {
+    if (data.type == "onKickedOffline") {
+      TRTCChatSalonDelegate type = TRTCChatSalonDelegate.onKickedOffline;
+      emitEvent(type, {});
+    }
   }
 
   void addListener(VoiceListenerFunc func) {
@@ -165,6 +175,7 @@ class VoiceRoomListener {
     listeners.remove(func);
     mTRTCCloud.unRegisterListener(rtcListener);
     timManager.removeSimpleMsgListener(simpleMsgListener);
+    timManager.unInitSDK();
   }
 
   groupAttriChange(V2TimGroupAttributeChanged data) {
@@ -173,11 +184,11 @@ class VoiceRoomListener {
 
     List newGroupList = [];
     groupAttributeMap.forEach((key, value) {
-      newGroupList.add({'userId': key, 'mute': value == "1" ? true : false});
+      newGroupList.add({'userId': key, 'mute': value == "1" ? false : true});
       if (mOldAttributeMap.containsKey(key) && mOldAttributeMap[key] != value) {
         //有成员改变了麦的状态
         type = TRTCChatSalonDelegate.onMicMute;
-        emitEvent(type, {'userId': key, 'mute': value == "1" ? true : false});
+        emitEvent(type, {'userId': key, 'mute': value == "1" ? false : true});
       } else if (!mOldAttributeMap.containsKey(key)) {
         //有成员上麦
         type = TRTCChatSalonDelegate.onAnchorEnter;
