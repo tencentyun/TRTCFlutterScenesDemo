@@ -209,8 +209,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //观众进入房间
   doOnAudienceEnter(param) {
-    print('-----');
-    print(param);
     List<dynamic> list = param as List<dynamic>;
     Map<int, UserInfo> newAudienceList = Map.from(_audienceList);
     list.forEach((element) {
