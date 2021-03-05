@@ -144,7 +144,8 @@ enum TRTCChatSalonDelegate {
 /// 监听器对象
 class VoiceRoomListener {
   Map<String, String> mOldAttributeMap = {};
-  Set<VoiceListenerFunc> listeners = Set();
+  // Set<VoiceListenerFunc> listeners = Set();
+  VoiceListenerFunc listenersSet;
   TRTCCloud mTRTCCloud;
   V2TIMManager timManager;
 
@@ -161,18 +162,22 @@ class VoiceRoomListener {
   }
 
   void addListener(VoiceListenerFunc func) {
-    listeners.add(func);
-    //监听trtc事件
-    mTRTCCloud.registerListener(rtcListener);
-    //监听im事件
-    timManager.addSimpleMsgListener(
-      listener: simpleMsgListener,
-    );
-    timManager.setGroupListener(listener: groupListener);
+    // listeners.add(func);
+    if (listenersSet == null) {
+      listenersSet = func;
+      //监听trtc事件
+      mTRTCCloud.registerListener(rtcListener);
+      //监听im事件
+      timManager.addSimpleMsgListener(
+        listener: simpleMsgListener,
+      );
+      timManager.setGroupListener(listener: groupListener);
+    }
   }
 
   void removeListener(VoiceListenerFunc func, mTRTCCloud, timManager) {
-    listeners.remove(func);
+    // listeners.remove(func);
+    listenersSet = null;
     mTRTCCloud.unRegisterListener(rtcListener);
     timManager.removeSimpleMsgListener(simpleMsgListener);
     timManager.unInitSDK();
@@ -292,9 +297,10 @@ class VoiceRoomListener {
   }
 
   emitEvent(type, param) {
-    for (var item in listeners) {
-      item(type, param);
-    }
+    listenersSet(type, param);
+    // for (var item in listeners) {
+    //   item(type, param);
+    // }
   }
 }
 

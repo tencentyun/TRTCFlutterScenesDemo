@@ -300,6 +300,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     }
     List<V2TimGroupMemberFullInfo> memberInfoList =
         memberRes.data.memberInfoList;
+    print("==memberInfoList=" + memberInfoList.toString());
     List<UserInfo> newInfo = [];
     for (var i = 0; i < memberInfoList.length; i++) {
       newInfo.add(UserInfo(
@@ -307,6 +308,9 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           userName: memberInfoList[i].nickName,
           userAvatar: memberInfoList[i].faceUrl));
     }
+    print("==memberRes.data.nextSeq=" + memberRes.data.nextSeq.toString());
+    print("==memberRes new=" + newInfo.toString());
+    print("==memberRes new=" + newInfo[0].userName.toString());
     return MemberListCallback(
         code: 0,
         desc: 'get member list success',
@@ -417,7 +421,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       //初始化SDK
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
         sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
-        loglevel: LogLevel.V2TIM_LOG_DEBUG,
+        loglevel: LogLevel.V2TIM_LOG_ERROR,
         listener: listener.initImLisener,
       );
       if (initRes.code != 0) {

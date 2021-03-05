@@ -60,7 +60,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Bugly: fd066c75c4a0eca1440f9b6a84bd37d51bfc85ac
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
   HydraAsync: 6b74390f143e7edfb8bd3c706262b67bbefc09df
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c

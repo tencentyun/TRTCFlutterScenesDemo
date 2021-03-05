@@ -20,7 +20,7 @@ class TxUtils {
       text,
       context,
       backgroundColor: Colors.red[400],
-      duration: Toast.LENGTH_SHORT,
+      duration: Toast.LENGTH_LONG,
       gravity: Toast.CENTER,
     );
     print(text);
