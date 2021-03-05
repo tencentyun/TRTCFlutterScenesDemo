@@ -122,7 +122,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
               roomId: roomId),
           TRTCCloudDef.TRTC_APP_SCENE_VOICE_CHATROOM);
       // 默认打开麦克风
-      await mTRTCCloud.enableAudioVolumeEvaluation(300);
+      await enableAudioVolumeEvaluation(true);
       mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
       // 设置群信息
       timManager.getGroupManager().setGroupInfo(
@@ -138,6 +138,10 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       print("==initRes code=" + initRes.code.toString());
     }
     return ActionCallback(code: code, desc: msg);
+  }
+
+  enableAudioVolumeEvaluation(bool enable) async {
+    await mTRTCCloud.enableAudioVolumeEvaluation(enable ? 500 : 0);
   }
 
   @override
@@ -487,7 +491,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (setRes.code == 0) {
       //切换trtc角色为主播
       await mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAnchor);
-      await mTRTCCloud.enableAudioVolumeEvaluation(300);
+      await enableAudioVolumeEvaluation(true);
       mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
       return ActionCallback(code: 0, desc: 'enterMic success');
     } else {
@@ -508,7 +512,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (res.code == 0) {
       //切换trtc角色为观众
       await mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAudience);
-      await mTRTCCloud.enableAudioVolumeEvaluation(0);
+      await enableAudioVolumeEvaluation(true);
       mTRTCCloud.stopLocalAudio();
       return ActionCallback(code: 0, desc: 'leaveMic success');
     } else {
