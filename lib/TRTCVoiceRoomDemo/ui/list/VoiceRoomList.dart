@@ -91,6 +91,8 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
 
   @override
   Widget build(BuildContext context) {
+    int roomCount = roomInfList.length;
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -131,13 +133,14 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           ),
         ),
         child: EasyRefresh(
-          // emptyWidget: Center(
-          //   child: Text(
-          //     '暂无语音沙龙',
-          //     style: TextStyle(color: Colors.white),
-          //   ),
-          // ),
-
+          emptyWidget: roomCount <= 0
+              ? Center(
+                  child: Text(
+                    '暂无语音沙龙',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              : null,
           onRefresh: () async {
             print('onRefresh');
             getRoomList();
@@ -227,7 +230,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                         ),
                       );
                     },
-                    childCount: roomInfList.length,
+                    childCount: roomCount,
                   ),
                 ),
               ),
