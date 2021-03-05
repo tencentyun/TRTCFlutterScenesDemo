@@ -209,21 +209,23 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //观众进入房间
   doOnAudienceEnter(param) {
+    print('-----');
+    print(param);
     List<dynamic> list = param as List<dynamic>;
+    Map<int, UserInfo> newAudienceList = Map.from(_audienceList);
     list.forEach((element) {
       int userId = int.tryParse(element['userId']);
       String userName = element['userName'] as String;
       String userAvatar = element['userAvatar'] as String;
-      if (!_audienceList.containsKey(userId)) {
-        Map<int, UserInfo> ls = Map.from(_audienceList);
-        ls[userId] = new UserInfo(
+      if (!newAudienceList.containsKey(userId)) {
+        newAudienceList[userId] = new UserInfo(
             userId: userId.toString(),
             userAvatar: userAvatar,
             userName: userName);
-        setState(() {
-          _audienceList = ls;
-        });
       }
+    });
+    setState(() {
+      _audienceList = newAudienceList;
     });
   }
 
