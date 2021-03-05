@@ -96,6 +96,15 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       appBar: AppBar(
           title: const Text('语音聊天室'),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios), //color: Colors.black
+            onPressed: () async {
+              Navigator.pushNamed(
+                context,
+                "/index",
+              );
+            },
+          ),
           elevation: 0,
           // automaticallyImplyLeading: false,
           backgroundColor: Color.fromRGBO(14, 25, 44, 1),
@@ -231,7 +240,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          Navigator.popAndPushNamed(
+          Navigator.pushNamed(
             context,
             "/voiceRoom/roomCreate",
           )

@@ -25,7 +25,7 @@ class IndexPageState extends State<IndexPage> {
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
     String userId = await TxUtils.getStorageByKey(constants.USERID_KEY);
     if (userId == null || userId == '') {
-      Navigator.pushNamed(
+      Navigator.popAndPushNamed(
         context,
         "/login",
       );
@@ -57,7 +57,7 @@ class IndexPageState extends State<IndexPage> {
                 //关闭对话框并返回true
                 trtcVoiceRoom.logout();
                 TxUtils.setStorageByKey(constants.USERID_KEY, '');
-                Navigator.pushNamed(
+                Navigator.popAndPushNamed(
                   context,
                   "/login",
                 );
@@ -70,12 +70,9 @@ class IndexPageState extends State<IndexPage> {
   }
 
   goVoiceRoomDemo() {
-    Navigator.pushNamed(
+    Navigator.popAndPushNamed(
       context,
       "/voiceRoom/list",
-      arguments: {
-        "userId": 'test',
-      },
     );
   }
 

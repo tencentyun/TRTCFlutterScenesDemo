@@ -411,7 +411,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                     } else {
                       trtcVoiceRoom.exitRoom();
                     }
-
                     Navigator.popAndPushNamed(
                       context,
                       "/voiceRoom/list",
