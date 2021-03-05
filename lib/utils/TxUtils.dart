@@ -42,7 +42,8 @@ class TxUtils {
     'https://imgcache.qq.com/operation/dianshi/other/1.724142271f4e811457eee00763e63f454af52d13.png',
     'https://imgcache.qq.com/operation/dianshi/other/4.67f22bd6d283d942d06e69c6b8a2c819c0e11af5.png',
     'https://imgcache.qq.com/operation/dianshi/other/6.1b984e741cc2275cda3451fa44515e018cc49cb5.png',
-    'https://imgcache.qq.com/operation/dianshi/other/2.4c958e11852b2caa75da6c2726f9248108d6ec8a.png',
+    //先不用这种图片，或者和白色字体不搭配
+    //'https://imgcache.qq.com/operation/dianshi/other/2.4c958e11852b2caa75da6c2726f9248108d6ec8a.png',
   ];
   static getRandoAvatarUrl() {
     Random rng = new Random();
