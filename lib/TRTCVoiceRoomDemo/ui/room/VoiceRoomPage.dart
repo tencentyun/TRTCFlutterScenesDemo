@@ -168,7 +168,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //群主拒绝举手
   doOnRefuseToSpeak(param) {
-    this._closeTopMessage();
+    this._showTopMessage("抱歉，管理员没有同意您上麦", false);
+    Future.delayed(Duration(seconds: 5), () {
+      this._closeTopMessage();
+    });
     setState(() {
       userType = UserType.Audience;
       userStatus = UserStatus.Mute;
@@ -281,23 +284,23 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       String loginUserId = await TxUtils.getLoginUserId();
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
       if (_archorResp.code == 0) {
-        Map<int, UserInfo> _archorList = {};
+        Map<int, UserInfo> _newArchorList = {};
         _archorResp.list.forEach((item) {
           if (item.userId != null && item.userId != '')
-            _archorList[int.tryParse(item.userId)] = item;
+            _newArchorList[int.tryParse(item.userId)] = item;
         });
         if (userType != UserType.Administrator) {
           setState(() {
-            userType = _archorList.containsKey(int.parse(loginUserId))
+            userType = _newArchorList.containsKey(int.parse(loginUserId))
                 ? UserType.Anchor
                 : UserType.Audience;
-            userStatus = _archorList.containsKey(int.parse(loginUserId))
+            userStatus = _newArchorList.containsKey(int.parse(loginUserId))
                 ? UserStatus.Speaking
                 : UserStatus.Mute;
           });
         }
         setState(() {
-          _anchorList = _archorList;
+          _anchorList = _newArchorList;
         });
       } else {
         TxUtils.showErrorToast(_archorResp.desc, context);
