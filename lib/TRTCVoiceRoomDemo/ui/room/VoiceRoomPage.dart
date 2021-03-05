@@ -75,7 +75,13 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   onVoiceListener(type, param) async {
     switch (type) {
       case TRTCChatSalonDelegate.onError:
-        TxUtils.showErrorToast(type.toString(), context);
+        {
+          TxUtils.showErrorToast(type.toString(), context);
+          TxUtils.uploadException(
+            "onVoiceListener-error",
+            param.toString(),
+          );
+        }
         break;
       case TRTCChatSalonDelegate.onAgreeToSpeak:
         this.doOnAgreeToSpeak(param);

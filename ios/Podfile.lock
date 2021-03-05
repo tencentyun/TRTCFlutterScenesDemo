@@ -1,5 +1,9 @@
 PODS:
+  - Bugly (2.5.71)
   - Flutter (1.0.0)
+  - flutter_bugly (0.0.1):
+    - Bugly
+    - Flutter
   - HydraAsync (2.0.5)
   - path_provider (0.0.1):
     - Flutter
@@ -21,6 +25,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_bugly (from `.symlinks/plugins/flutter_bugly/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -30,6 +35,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Bugly
     - HydraAsync
     - TXIMSDK_Smart_iOS
     - TXLiteAVSDK_TRTC
@@ -37,6 +43,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_bugly:
+    :path: ".symlinks/plugins/flutter_bugly/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   permission_handler:
@@ -51,7 +59,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
+  Bugly: fd066c75c4a0eca1440f9b6a84bd37d51bfc85ac
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
   HydraAsync: 6b74390f143e7edfb8bd3c706262b67bbefc09df
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6

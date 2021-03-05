@@ -6,12 +6,16 @@ import 'TRTCVoiceRoomDemo/ui/room/VoiceRoomPage.dart';
 import './index.dart';
 import './login/LoginPage.dart';
 import './TRTCVoiceRoomDemo/ui/base/UserEnum.dart';
+import 'package:flutter_bugly/flutter_bugly.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
-    runApp(MyApp());
+    FlutterBugly.postCatchedException(() {
+      runApp(MyApp());
+    });
+    FlutterBugly.init(androidAppId: "cf07d686e1", iOSAppId: "cf07d686e1");
   });
 }
 

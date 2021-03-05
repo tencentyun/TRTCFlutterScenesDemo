@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,5 +77,15 @@ class TxUtils {
       return getStorageByKey(constants.USERID_KEY);
     }
     return Future.value(_loginUserId);
+  }
+
+  static Future<Null> uploadException(
+      String title, //标题
+      String detail, //内容
+      {Map data} //data为文本附件, Android 错误分析=>跟踪数据=>extraMessage.txt
+      //iOS 错误分析=>跟踪数据=>crash_attach.log
+      ) {
+    return FlutterBugly.uploadException(
+        message: title, detail: detail, data: data);
   }
 }
