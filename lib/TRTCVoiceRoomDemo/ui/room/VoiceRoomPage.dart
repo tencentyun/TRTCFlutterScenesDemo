@@ -124,10 +124,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onRoomDestroy:
         {
           TxUtils.showErrorToast('沙龙已结束。', context);
-          // Navigator.popAndPushNamed(
-          //   context,
-          //   "/voiceRoom/list",
-          // );
+          Navigator.popAndPushNamed(
+            context,
+            "/voiceRoom/list",
+          );
           //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
         }
         break;
@@ -175,6 +175,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   ////被群主踢下麦
   doOnKickMic(param) async {
     this._showTopMessage("你已被主播踢下麦", false);
+    Future.delayed(Duration(seconds: 5), () {
+      this._closeTopMessage();
+    });
     trtcVoiceRoom.leaveMic();
     await this.getAnchorList();
     this.setState(() {
@@ -309,8 +312,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     if (tmpUserId != null && tmpUserId != '') {
       trtcVoiceRoom.refuseToSpeak(tmpUserId);
       this._closeTopMessage();
-      if (_raiseHandList.containsKey(int.parse(userId))) {
-        _raiseHandList[int.parse(userId)].isCanAgree = false;
+      if (_raiseHandList.containsKey(int.parse(tmpUserId))) {
+        _raiseHandList.remove(int.parse(tmpUserId));
+        //_raiseHandList[int.parse(userId)].isCanAgree = false;
       }
     }
   }
