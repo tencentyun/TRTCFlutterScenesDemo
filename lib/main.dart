@@ -15,7 +15,7 @@ void main() {
     FlutterBugly.postCatchedException(() {
       runApp(MyApp());
     });
-    FlutterBugly.init(androidAppId: "cf07d686e1", iOSAppId: "cf07d686e1");
+    FlutterBugly.init(androidAppId: "d43b0e0efa", iOSAppId: "cf07d686e1");
   });
 }
 
