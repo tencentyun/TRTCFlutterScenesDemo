@@ -40,6 +40,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
   String mSelfUserName;
   bool mIsInitIMSDK = false;
   bool mIsLogin = false;
+  String mRole = "audience"; //默认为观众，archor为主播
   V2TIMManager timManager;
   TRTCCloud mTRTCCloud;
   TXAudioEffectManager txAudioManager;
@@ -183,13 +184,23 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (mRoomId == null) {
       return ActionCallback(code: codeErr, desc: "not enter room yet");
     }
-    V2TimCallback quitRes = await timManager.quitGroup(groupID: mRoomId);
-    if (quitRes.code == 0) {
-      mTRTCCloud.exitRoom();
-      return ActionCallback(code: 0, desc: "quit room success.");
-    } else {
-      return ActionCallback(code: codeErr, desc: "quit room fail.");
+    //角色为主播，需要删除群属性，删除主播列表
+    if (mRole == "archor") {
+      //删除群属性
+      V2TimCallback deleteRes = await timManager
+          .getGroupManager()
+          .deleteGroupAttributes(groupID: mRoomId, keys: [mUserId]);
+      if (deleteRes.code != 0) {
+        return ActionCallback(code: codeErr, desc: deleteRes.desc);
+      }
     }
+    V2TimCallback quitRes = await timManager.quitGroup(groupID: mRoomId);
+    if (quitRes.code != 0) {
+      return ActionCallback(code: codeErr, desc: quitRes.desc);
+    }
+
+    mTRTCCloud.exitRoom();
+    return ActionCallback(code: 0, desc: "quit room success.");
   }
 
   @override
@@ -483,6 +494,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
         .getGroupManager()
         .setGroupAttributes(groupID: mRoomId, attributes: {mUserId: "1"});
     if (setRes.code == 0) {
+      mRole = "archor";
       //切换trtc角色为主播
       await mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAnchor);
       await enableAudioVolumeEvaluation(true);
@@ -504,9 +516,10 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
         .getGroupManager()
         .deleteGroupAttributes(groupID: mRoomId, keys: [mUserId]);
     if (res.code == 0) {
+      mRole = "audience";
       //切换trtc角色为观众
       await mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAudience);
-      await enableAudioVolumeEvaluation(true);
+      await enableAudioVolumeEvaluation(false);
       mTRTCCloud.stopLocalAudio();
       return ActionCallback(code: 0, desc: 'leaveMic success');
     } else {
