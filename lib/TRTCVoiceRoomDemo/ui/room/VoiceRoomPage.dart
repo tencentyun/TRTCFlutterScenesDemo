@@ -383,21 +383,19 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   }
 
   // 弹出退房确认对话框
-  Future<bool> showExitConfirmDialog() {
+  Future<bool> showExitConfirmDialog(context) {
     return showDialog<bool>(
         context: context,
         builder: (context) {
           return Theme(
             data: ThemeData.dark(),
             child: CupertinoAlertDialog(
-              content: Expanded(
-                child: Container(
-                  child: Text(
-                    userType == UserType.Administrator
-                        ? "离开会解散房间，确定离开吗?"
-                        : "确定离开房间吗？",
-                    textAlign: TextAlign.center,
-                  ),
+              content: Container(
+                child: Text(
+                  userType == UserType.Administrator
+                      ? "离开会解散房间，确定离开吗?"
+                      : "确定离开房间吗？",
+                  textAlign: TextAlign.center,
                 ),
               ),
               actions: <Widget>[
@@ -443,7 +441,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios), //color: Colors.black
           onPressed: () async {
-            this.showExitConfirmDialog();
+            await this.showExitConfirmDialog(context);
           },
         ),
         centerTitle: true,
@@ -582,7 +580,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                 this.handleAnchorLeaveMic();
               },
               onLeave: () async {
-                this.showExitConfirmDialog();
+                await this.showExitConfirmDialog(context);
               },
             ),
           ],
