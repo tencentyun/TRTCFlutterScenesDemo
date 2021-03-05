@@ -5,6 +5,7 @@ import 'utils/constants.dart' as constants;
 import './base/TestFlowDelegate.dart';
 import './debug/GenerateTestUserSig.dart';
 import './TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
+import './i10n/localization_intl.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage({Key key}) : super(key: key);
@@ -88,7 +89,7 @@ class IndexPageState extends State<IndexPage> {
             await logout();
           },
         ),
-        title: const Text('TRTC'),
+        title: Text(Languages.of(context).title),
         centerTitle: true,
         elevation: 0,
         // automaticallyImplyLeading: false,
