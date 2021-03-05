@@ -71,7 +71,7 @@ class IndexPageState extends State<IndexPage> {
   }
 
   goVoiceRoomDemo() {
-    Navigator.popAndPushNamed(
+    Navigator.pushReplacementNamed(
       context,
       "/voiceRoom/list",
     );

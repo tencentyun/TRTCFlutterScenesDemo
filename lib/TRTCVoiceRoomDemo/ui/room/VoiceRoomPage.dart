@@ -139,7 +139,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onKickedOffline:
         {
           TxUtils.showErrorToast('已在其他地方登陆，请重新登录', context);
-          Navigator.popAndPushNamed(
+          Navigator.pushReplacementNamed(
             context,
             "/login",
           );
@@ -148,7 +148,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onRoomDestroy:
         {
           TxUtils.showErrorToast('沙龙已结束。', context);
-          Navigator.popAndPushNamed(
+          Navigator.pushReplacementNamed(
             context,
             "/voiceRoom/list",
           );
@@ -383,9 +383,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   }
 
   // 弹出退房确认对话框
-  Future<bool> showExitConfirmDialog(context) {
+  Future<bool> showExitConfirmDialog(fatherContext) {
     return showDialog<bool>(
-        context: context,
+        context: fatherContext,
         builder: (context) {
           return Theme(
             data: ThemeData.dark(),
@@ -405,7 +405,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                     style: TextStyle(color: Color.fromRGBO(235, 244, 255, 1)),
                   ),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(fatherContext).pop();
                   },
                 ),
                 CupertinoDialogAction(
@@ -420,10 +420,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                     } else {
                       trtcVoiceRoom.exitRoom();
                     }
-                    Navigator.popAndPushNamed(
-                      context,
-                      "/voiceRoom/list",
-                    );
+                    Navigator.of(fatherContext)
+                        .pushReplacementNamed('/voiceRoom/list');
                   },
                 ),
               ],

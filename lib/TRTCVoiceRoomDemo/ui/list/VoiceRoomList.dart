@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
@@ -43,6 +41,11 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
     this.getRoomList();
   }
 
+  @override
+  dispose() {
+    super.dispose();
+  }
+
   getRoomList() async {
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
     var roomIdls = await YunApiHelper.getRoomList();
@@ -65,7 +68,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
   goRoomInfoPage(RoomInfo roomInfo) async {
     String loginUserId = await TxUtils.getLoginUserId();
     if (roomInfo.ownerId.toString() == loginUserId) {
-      Navigator.popAndPushNamed(
+      Navigator.pushReplacementNamed(
         context,
         "/voiceRoom/roomAudience",
         arguments: {
@@ -77,7 +80,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       );
       return;
     }
-    Navigator.popAndPushNamed(
+    Navigator.pushReplacementNamed(
       context,
       "/voiceRoom/roomAnchor",
       arguments: {
@@ -101,7 +104,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios), //color: Colors.black
             onPressed: () async {
-              Navigator.pushNamed(
+              Navigator.pushReplacementNamed(
                 context,
                 "/index",
               );
@@ -240,7 +243,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          Navigator.pushNamed(
+          Navigator.pushReplacementNamed(
             context,
             "/voiceRoom/roomCreate",
           )
