@@ -1,4 +1,4 @@
-# trtcscenesdemo
+# trtc_scenes_demo
 
 A new Flutter project.
 
