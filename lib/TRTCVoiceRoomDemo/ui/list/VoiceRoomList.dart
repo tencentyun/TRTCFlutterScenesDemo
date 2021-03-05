@@ -63,7 +63,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
   goRoomInfoPage(RoomInfo roomInfo) async {
     String loginUserId = await TxUtils.getLoginUserId();
     if (roomInfo.ownerId.toString() == loginUserId) {
-      Navigator.pushNamed(
+      Navigator.popAndPushNamed(
         context,
         "/voiceRoom/roomAudience",
         arguments: {
@@ -75,7 +75,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       );
       return;
     }
-    Navigator.pushNamed(
+    Navigator.popAndPushNamed(
       context,
       "/voiceRoom/roomAnchor",
       arguments: {
@@ -220,7 +220,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          Navigator.pushNamed(
+          Navigator.popAndPushNamed(
             context,
             "/voiceRoom/roomCreate",
           )

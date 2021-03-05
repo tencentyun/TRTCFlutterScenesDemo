@@ -123,7 +123,11 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         break;
       case TRTCChatSalonDelegate.onRoomDestroy:
         {
-          TxUtils.showErrorToast('已结束。', context);
+          TxUtils.showErrorToast('沙龙已结束。', context);
+          // Navigator.popAndPushNamed(
+          //   context,
+          //   "/voiceRoom/list",
+          // );
           //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
         }
         break;
@@ -161,8 +165,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           userAvatar: raiseUser.userAvatar,
           userId: raiseUser.userId,
           userName: raiseUser.userName);
-      _raiseHandList[userId] = tem;
-      _lastRaiseHandUser = tem;
+      setState(() {
+        _raiseHandList[userId] = tem;
+        _lastRaiseHandUser = tem;
+      });
     }
   }
 
@@ -170,7 +176,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   doOnKickMic(param) async {
     this._showTopMessage("你已被主播踢下麦", false);
     trtcVoiceRoom.leaveMic();
-    this.getAnchorList();
+    await this.getAnchorList();
     this.setState(() {
       userStatus = UserStatus.Mute;
       userType = UserType.Audience;
@@ -270,7 +276,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   }
 
   //管理员同意其成为主播
-  handleAdminAgree({userId}) {
+  agreeToSpeackClick({userId}) {
     String tmpUserId = '';
     if (userId != null) {
       tmpUserId = userId;
@@ -280,10 +286,12 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       }
     }
     if (tmpUserId != null && tmpUserId != '') {
-      trtcVoiceRoom.agreeToSpeak(userId);
+      trtcVoiceRoom.agreeToSpeak(tmpUserId);
       this._closeTopMessage();
-      if (_raiseHandList.containsKey(userId)) {
-        _raiseHandList[userId].isCanAgree = false;
+      if (_raiseHandList.containsKey(int.parse(tmpUserId))) {
+        this.setState(() {
+          _raiseHandList[int.parse(tmpUserId)].isCanAgree = false;
+        });
       }
     }
   }
@@ -299,10 +307,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       }
     }
     if (tmpUserId != null && tmpUserId != '') {
-      trtcVoiceRoom.refuseToSpeak(_lastRaiseHandUser.userId);
+      trtcVoiceRoom.refuseToSpeak(tmpUserId);
       this._closeTopMessage();
-      if (_raiseHandList.containsKey(userId)) {
-        _raiseHandList[userId].isCanAgree = false;
+      if (_raiseHandList.containsKey(int.parse(userId))) {
+        _raiseHandList[int.parse(userId)].isCanAgree = false;
       }
     }
   }
@@ -386,12 +394,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                     } else {
                       trtcVoiceRoom.exitRoom();
                     }
-                    Navigator.pushNamed(
+
+                    Navigator.popAndPushNamed(
                       context,
                       "/voiceRoom/list",
-                      arguments: {
-                        "userId": 'test',
-                      },
                     );
                   },
                 ),
@@ -410,10 +416,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios), //color: Colors.black
           onPressed: () async {
-            bool isOk = await this.showExitConfirmDialog();
-            if (isOk != null) {
-              Navigator.pop(context);
-            }
+            this.showExitConfirmDialog();
           },
         ),
         centerTitle: true,
@@ -441,7 +444,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                       this.handleAdminRefuseToSpeak();
                     },
                     onOkTab: () {
-                      this.handleAdminAgree();
+                      this.agreeToSpeackClick();
                     },
                   ),
                   Container(
@@ -542,7 +545,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                 this.handleMuteAudio(mute);
               },
               onAgreeToSpeak: (String userId) {
-                this.handleAdminAgree(userId: userId);
+                this.agreeToSpeackClick(userId: userId);
               },
               onRaiseHand: () {
                 this.handleRaiseHandClick();
@@ -552,10 +555,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                 this.handleAnchorLeaveMic();
               },
               onLeave: () async {
-                bool isOk = await this.showExitConfirmDialog();
-                if (isOk != null) {
-                  Navigator.pop(context);
-                }
+                this.showExitConfirmDialog();
               },
             ),
           ],

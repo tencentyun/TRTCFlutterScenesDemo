@@ -193,6 +193,10 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
         : widget.userType == UserType.Anchor
             ? "assets/images/DownWheat.png"
             : "";
+    int validRaiseHandCount = 0;
+    widget.raiseHandList.forEach((element) {
+      if (element.isCanAgree) validRaiseHandCount = validRaiseHandCount + 1;
+    });
     return Positioned(
         bottom: 10,
         left: 0,
@@ -249,16 +253,21 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                           else
                             this.anchorLeaveMic();
                         },
-                        child: Badge(
-                          position: BadgePosition.topStart(),
-                          badgeContent: Text(widget.raiseHandList.length > 0
-                              ? widget.raiseHandList.length.toString()
-                              : ""),
-                          child: Image.asset(
-                            secondBtnUrl,
-                            width: 48.0,
-                          ),
-                        ),
+                        child: validRaiseHandCount > 0
+                            ? Badge(
+                                position: BadgePosition.topStart(),
+                                badgeContent: Text(
+                                  validRaiseHandCount.toString(),
+                                ),
+                                child: Image.asset(
+                                  secondBtnUrl,
+                                  width: 48.0,
+                                ),
+                              )
+                            : Image.asset(
+                                secondBtnUrl,
+                                width: 48.0,
+                              ),
                       ),
                     ),
                   )

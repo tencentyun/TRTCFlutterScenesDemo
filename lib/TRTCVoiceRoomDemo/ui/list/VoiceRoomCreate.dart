@@ -110,7 +110,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
         if (resp.code == 0) {
           await YunApiHelper.createRoom(roomId.toString());
           String ownerId = await TxUtils.getLoginUserId();
-          Navigator.pushNamed(
+          Navigator.popAndPushNamed(
             context,
             "/voiceRoom/roomAnchor",
             arguments: {
