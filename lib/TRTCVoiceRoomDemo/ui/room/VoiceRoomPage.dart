@@ -44,7 +44,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   RaiseHandInfo _lastRaiseHandUser;
 
   //大声列表
-  Map<int, UserInfo> _volumeUpdateList = {};
+  Map<int, bool> _volumeUpdateList = {};
 
   @override
   void initState() {
@@ -118,6 +118,19 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         {
           //上麦成员的音量变化
           //_volumeUpdateList
+          List<dynamic> list = param["userVolumes"] as List<dynamic>;
+          list.forEach((item) {
+            int userId = int.tryParse(item['userId']);
+            int volme = int.tryParse(item["volume"].toString());
+            if (_anchorList.containsKey(userId)) {
+              setState(() {
+                _volumeUpdateList[userId] = volme > 20 ? true : false;
+              });
+              // Future.delayed(Duration(seconds: 3), () {
+              //   _volumeUpdateList[userId] = false;
+              // });
+            }
+          });
           print(param);
         }
         break;
@@ -467,33 +480,33 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                         crossAxisSpacing: 15, //水平间隔
                         childAspectRatio: 1.0,
                       ),
-                      children: _anchorList.values
-                          .map((UserInfo _anchorItem) => AnchorItem(
-                                roomOwnerId: currentRoomOwnerId,
-                                isVolumeUpdate: _anchorItem.mute
-                                    ? false
-                                    : _volumeUpdateList
-                                        .containsKey(_anchorItem.userId),
-                                userName: _anchorItem.userName != null &&
-                                        _anchorItem.userAvatar != ''
-                                    ? _anchorItem.userName
-                                    : '--',
-                                userImgUrl: _anchorItem.userAvatar != null &&
-                                        _anchorItem.userAvatar != ''
-                                    ? _anchorItem.userAvatar
-                                    : TxUtils.getRandoAvatarUrl(),
-                                isAdministrator: _anchorItem.userId ==
-                                        currentRoomOwnerId.toString()
-                                    ? true
-                                    : false,
-                                isMute: _anchorItem.mute,
-                                userId: _anchorItem.userId,
-                                onKickOutUser: () {
-                                  //踢人
-                                  trtcVoiceRoom.kickMic(_anchorItem.userId);
-                                },
-                              ))
-                          .toList(),
+                      children: _anchorList.values.map((UserInfo _anchorItem) {
+                        int thisUserId = int.tryParse(_anchorItem.userId);
+                        bool isVolumeUpdate =
+                            _volumeUpdateList.containsKey(thisUserId)
+                                ? _volumeUpdateList[thisUserId]
+                                : false;
+                        return AnchorItem(
+                          roomOwnerId: currentRoomOwnerId,
+                          isVolumeUpdate: isVolumeUpdate,
+                          userName: _anchorItem.userName != null &&
+                                  _anchorItem.userAvatar != ''
+                              ? _anchorItem.userName
+                              : '--',
+                          userImgUrl: _anchorItem.userAvatar != null &&
+                                  _anchorItem.userAvatar != ''
+                              ? _anchorItem.userAvatar
+                              : TxUtils.getRandoAvatarUrl(),
+                          isAdministrator:
+                              thisUserId == currentRoomOwnerId ? true : false,
+                          isMute: _anchorItem.mute,
+                          userId: _anchorItem.userId,
+                          onKickOutUser: () {
+                            //踢人
+                            trtcVoiceRoom.kickMic(_anchorItem.userId);
+                          },
+                        );
+                      }).toList(),
                     ),
                   ),
                   DescriptionTitle("assets/images/Audience_ICON.png", "听众"),
