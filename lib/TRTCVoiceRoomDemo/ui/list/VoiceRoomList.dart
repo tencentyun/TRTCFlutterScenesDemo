@@ -131,12 +131,13 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           ),
         ),
         child: EasyRefresh(
-          emptyWidget: Center(
-            child: Text(
-              '暂无语音沙龙',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+          // emptyWidget: Center(
+          //   child: Text(
+          //     '暂无语音沙龙',
+          //     style: TextStyle(color: Colors.white),
+          //   ),
+          // ),
+
           onRefresh: () async {
             print('onRefresh');
             getRoomList();
