@@ -512,7 +512,11 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                             trtcVoiceRoom.kickMic(_anchorItem.userId);
                           },
                         );
-                      }).toList(),
+                      }).toList()
+                        ..sort((left, right) {
+                          if (left.isAdministrator) return -1;
+                          return 1;
+                        }),
                     ),
                   ),
                   DescriptionTitle("assets/images/Audience_ICON.png", "听众"),

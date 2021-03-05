@@ -207,12 +207,13 @@ class _AnchorItemState extends State<AnchorItem>
                             height: 14,
                           ),
                           Expanded(
-                            flex: 0,
+                            //flex: 0,
+                            //width: 60,
                             child: Text(
                               ' ' + widget.userName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,

@@ -187,8 +187,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                         : info.roomName,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      color: Colors.white,
-                                    ),
+                                        color: Colors.white, fontSize: 18),
                                   ),
                                 ],
                               ),
