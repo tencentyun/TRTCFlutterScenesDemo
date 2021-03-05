@@ -26,7 +26,11 @@ class LoginPageState extends State<LoginPage> {
 
   login(context) async {
     if (userId == '') {
-      TxUtils.showErrorToast('请输入用户名', context);
+      TxUtils.showErrorToast('请输入用户ID', context);
+      return;
+    }
+    if (double.tryParse(userId) == null) {
+      TxUtils.showErrorToast('用户ID必须为数字', context);
       return;
     }
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
@@ -102,8 +106,9 @@ class LoginPageState extends State<LoginPage> {
                         autofocus: true,
                         focusNode: userFocusNode,
                         decoration: InputDecoration(
-                          labelText: "用户名",
+                          labelText: "用户ID",
                           hintText: "请输入登录的UserID",
+
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
@@ -112,7 +117,7 @@ class LoginPageState extends State<LoginPage> {
                             borderSide: BorderSide(color: Colors.white),
                           ),
                         ),
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         onChanged: (value) => this.userId = value),
                   ],
                 ),
