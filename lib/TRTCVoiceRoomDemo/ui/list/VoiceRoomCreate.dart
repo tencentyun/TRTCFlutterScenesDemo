@@ -139,6 +139,15 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
         title: const Text('创建语音沙龙'),
         centerTitle: true,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios), //color: Colors.black
+          onPressed: () async {
+            Navigator.pushReplacementNamed(
+              context,
+              "/voiceRoom/list",
+            );
+          },
+        ),
         // automaticallyImplyLeading: false,
         backgroundColor: Color.fromRGBO(19, 41, 75, 1),
       ),

@@ -20,7 +20,7 @@ class TxUtils {
       text,
       context,
       backgroundColor: Colors.red[400],
-      duration: Toast.LENGTH_LONG,
+      duration: Toast.LENGTH_LONG * 2,
       gravity: Toast.CENTER,
     );
     print(text);
@@ -54,7 +54,7 @@ class TxUtils {
       text,
       context,
       backgroundColor: Colors.green[400],
-      duration: Toast.LENGTH_SHORT,
+      duration: Toast.LENGTH_LONG,
       gravity: Toast.BOTTOM,
     );
   }
