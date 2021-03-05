@@ -126,12 +126,18 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
               setState(() {
                 _volumeUpdateList[userId] = volme > 20 ? true : false;
               });
-              // Future.delayed(Duration(seconds: 3), () {
-              //   _volumeUpdateList[userId] = false;
-              // });
             }
           });
           print(param);
+        }
+        break;
+      case TRTCChatSalonDelegate.onKickedOffline:
+        {
+          TxUtils.showErrorToast('已在其他地方登陆，请重新登录', context);
+          Navigator.popAndPushNamed(
+            context,
+            "/login",
+          );
         }
         break;
       case TRTCChatSalonDelegate.onRoomDestroy:

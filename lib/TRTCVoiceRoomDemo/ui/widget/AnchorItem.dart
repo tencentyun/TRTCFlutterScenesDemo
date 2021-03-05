@@ -150,32 +150,6 @@ class _AnchorItemState extends State<AnchorItem>
                             height: 80,
                           ),
                         )
-                      // AnimatedBuilder(
-                      //     animation: animation,
-                      //     builder: (BuildContext context, Widget child) {
-                      //       return InkWell(
-                      //         onTap: () {
-                      //           this._isCanShowKicUser(widget.userId);
-                      //         },
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             border: new Border.all(
-                      //               color: Color.fromRGBO(15, 169, 104,
-                      //                   1), //_colorsTween.evaluate(animation),
-                      //               width: animation.value,
-                      //             ),
-                      //             image: DecorationImage(
-                      //               image: NetworkImage(widget.userImgUrl),
-                      //               fit: BoxFit.fitWidth,
-                      //             ),
-                      //             borderRadius: BorderRadius.circular(32),
-                      //           ),
-                      //           width: 80,
-                      //           height: 80,
-                      //         ),
-                      //       );
-                      //     },
-                      //   )
                       : InkWell(
                           onTap: () {
                             this._isCanShowKicUser(widget.userId);
