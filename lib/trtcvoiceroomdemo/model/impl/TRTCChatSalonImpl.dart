@@ -1,7 +1,6 @@
 import 'package:tencent_im_sdk_plugin/enum/group_add_opt_type.dart';
 import 'package:tencent_im_sdk_plugin/enum/group_member_filter_type.dart';
 import 'package:tencent_im_sdk_plugin/enum/message_priority.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_event_callback.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_full_info.dart';
@@ -293,7 +292,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
         .getGroupManager()
         .getGroupMemberList(
             groupID: mRoomId,
-            filter: GroupMemberFilterType.V2TIM_GROUP_MEMBER_FILTER_COMMON,
+            filter: GroupMemberFilterType.V2TIM_GROUP_MEMBER_FILTER_ALL,
             nextSeq: nextSeq);
     if (memberRes.code != 0) {
       return MemberListCallback(code: memberRes.code, desc: memberRes.desc);
@@ -309,8 +308,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           userAvatar: memberInfoList[i].faceUrl));
     }
     print("==memberRes.data.nextSeq=" + memberRes.data.nextSeq.toString());
-    print("==memberRes new=" + newInfo.toString());
-    print("==memberRes new=" + newInfo[0].userName.toString());
     return MemberListCallback(
         code: 0,
         desc: 'get member list success',
