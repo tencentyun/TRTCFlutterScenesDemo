@@ -96,13 +96,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         this.doOnKickMic(param);
         break;
       case TRTCChatSalonDelegate.onAudienceEnter:
+        this.doOnAudienceEnter(param);
+        break;
       case TRTCChatSalonDelegate.onAudienceExit:
-        {
-          //观众进入房间
-          ////观众离开房间
-          await this.getAnchorList();
-          this.getAudienceList();
-        }
+        this.doOnAudienceExit(param);
         break;
       case TRTCChatSalonDelegate.onAnchorListChange:
       case TRTCChatSalonDelegate.onAnchorLeave:
@@ -208,6 +205,40 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       userStatus = UserStatus.Mute;
       userType = UserType.Audience;
     });
+  }
+
+  //观众进入房间
+  doOnAudienceEnter(param) {
+    List<dynamic> list = param as List<dynamic>;
+    list.forEach((element) {
+      int userId = int.tryParse(element['userId']);
+      String userName = element['userName'] as String;
+      String userAvatar = element['userAvatar'] as String;
+      if (!_audienceList.containsKey(userId)) {
+        Map<int, UserInfo> ls = Map.from(_audienceList);
+        ls[userId] = new UserInfo(
+            userId: userId.toString(),
+            userAvatar: userAvatar,
+            userName: userName);
+        setState(() {
+          _audienceList = ls;
+        });
+      }
+    });
+  }
+
+  //观众离开房间
+  doOnAudienceExit(param) {
+    int userId = int.tryParse(param["userId"]);
+    if (_audienceList.containsKey(userId)) {
+      Map<int, UserInfo> ls = Map.from(_audienceList);
+      ls.remove(userId);
+      setState(() {
+        setState(() {
+          _audienceList = ls;
+        });
+      });
+    }
   }
 
   initUserInfo() async {
