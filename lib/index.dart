@@ -57,7 +57,7 @@ class IndexPageState extends State<IndexPage> {
               onPressed: () {
                 //关闭对话框并返回true
                 trtcVoiceRoom.logout();
-                TRTCChatSalon.destroySharedInstance();
+                //TRTCChatSalon.destroySharedInstance();
                 TxUtils.setStorageByKey(constants.USERID_KEY, '');
                 Navigator.popAndPushNamed(
                   context,
