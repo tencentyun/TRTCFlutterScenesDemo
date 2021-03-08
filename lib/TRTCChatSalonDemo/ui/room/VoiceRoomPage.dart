@@ -55,7 +55,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   @override
   dispose() {
     trtcVoiceRoom.unRegisterListener(onVoiceListener);
-    //销毁房间todo
     TRTCChatSalon.destroySharedInstance();
     super.dispose();
   }
