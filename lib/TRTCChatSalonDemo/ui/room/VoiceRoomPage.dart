@@ -437,6 +437,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   //主播下麦
   handleAnchorLeaveMic() {
     trtcVoiceRoom.leaveMic();
+    //变为听众
+    this.setState(() {
+      userType = UserType.Audience;
+    });
   }
 
   //音频开关
