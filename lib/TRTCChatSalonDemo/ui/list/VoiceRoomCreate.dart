@@ -42,7 +42,6 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
 
   initSDK() async {
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
-    //TxUtils.getLoginUserId();
   }
 
   // 隐藏底部输入框

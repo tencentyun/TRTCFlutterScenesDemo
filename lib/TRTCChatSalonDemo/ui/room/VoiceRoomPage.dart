@@ -413,9 +413,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   }
 
   // 弹出退房确认对话框
-  Future<bool> showExitConfirmDialog(fatherContext) {
+  Future<bool> showExitConfirmDialog() {
     return showDialog<bool>(
-        context: fatherContext,
+        context: context,
         builder: (context) {
           return Theme(
             data: ThemeData.dark(),
@@ -435,7 +435,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                     style: TextStyle(color: Color.fromRGBO(235, 244, 255, 1)),
                   ),
                   onPressed: () {
-                    Navigator.of(fatherContext).pop();
+                    Navigator.of(context).pop(false);
                   },
                 ),
                 CupertinoDialogAction(
@@ -443,15 +443,19 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                     "我确定",
                     style: TextStyle(color: Color.fromRGBO(0, 98, 227, 1)),
                   ),
-                  onPressed: () async {
+                  onPressed: () {
                     if (userType == UserType.Administrator) {
-                      await YunApiHelper.destroyRoom(currentRoomId.toString());
-                      trtcVoiceRoom.destroyRoom();
+                      YunApiHelper.destroyRoom(currentRoomId.toString())
+                          .then((value) {
+                        trtcVoiceRoom.destroyRoom().then((value) {
+                          Navigator.of(context).pop(true);
+                        });
+                      });
                     } else {
-                      trtcVoiceRoom.exitRoom();
+                      trtcVoiceRoom.exitRoom().then((value) {
+                        Navigator.of(context).pop(true);
+                      });
                     }
-                    Navigator.of(fatherContext)
-                        .pushReplacementNamed('/voiceRoom/list');
                   },
                 ),
               ],
@@ -541,7 +545,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios), //color: Colors.black
           onPressed: () async {
-            await this.showExitConfirmDialog(context);
+            bool isOk = await this.showExitConfirmDialog();
+            if (isOk) {
+              Navigator.pushReplacementNamed(context, '/voiceRoom/list');
+            }
           },
         ),
         centerTitle: true,
@@ -618,7 +625,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                 this.handleAnchorLeaveMic();
               },
               onLeave: () async {
-                await this.showExitConfirmDialog(context);
+                bool isOk = await this.showExitConfirmDialog();
+                if (isOk) {
+                  Navigator.pushReplacementNamed(context, '/voiceRoom/list');
+                }
               },
             ),
           ],

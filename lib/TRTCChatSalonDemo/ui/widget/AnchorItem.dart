@@ -84,29 +84,29 @@ class _AnchorItemState extends State<AnchorItem>
     );
   }
 
-  Animation<double> animation;
-  AnimationController _controller;
+  // Animation<double> animation;
+  // AnimationController _controller;
   @override
   initState() {
     super.initState();
-    _controller =
-        AnimationController(duration: const Duration(seconds: 2), vsync: this);
-    animation = Tween(begin: 4.0, end: 0.0).animate(_controller);
-    animation.addStatusListener((status) {
-      ///dismissed	动画在起始点停止
-      ///forward	动画正在正向执行
-      ///reverse	动画正在反向执行
-      ///completed	动画在终点停止
-      if (status == AnimationStatus.completed) {
-        //动画执行结束时反向执行动画
-        _controller.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        //动画恢复到初始状态时执行动画（正向）
-        _controller.forward();
-      }
-    });
-    //启动动画（正向）
-    _controller.forward();
+    // _controller =
+    //     AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    // animation = Tween(begin: 4.0, end: 0.0).animate(_controller);
+    // animation.addStatusListener((status) {
+    //   ///dismissed	动画在起始点停止
+    //   ///forward	动画正在正向执行
+    //   ///reverse	动画正在反向执行
+    //   ///completed	动画在终点停止
+    //   if (status == AnimationStatus.completed) {
+    //     //动画执行结束时反向执行动画
+    //     _controller.reverse();
+    //   } else if (status == AnimationStatus.dismissed) {
+    //     //动画恢复到初始状态时执行动画（正向）
+    //     _controller.forward();
+    //   }
+    // });
+    // //启动动画（正向）
+    // _controller.forward();
   }
 
   _isCanShowKicUser(userId) async {
