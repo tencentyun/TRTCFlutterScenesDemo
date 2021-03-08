@@ -180,11 +180,12 @@ class VoiceRoomListener {
     }
   }
 
-  void removeListener(VoiceListenerFunc func, mTRTCCloud, timManager) {
+  void removeListener(
+      VoiceListenerFunc func, TRTCCloud mTRTCCloud, V2TIMManager timManager) {
     // listeners.remove(func);
     listenersSet = null;
     mTRTCCloud.unRegisterListener(rtcListener);
-    timManager.removeSimpleMsgListener(simpleMsgListener);
+    timManager.removeSimpleMsgListener();
     timManager.unInitSDK();
   }
 

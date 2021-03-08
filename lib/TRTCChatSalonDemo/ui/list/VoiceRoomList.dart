@@ -43,7 +43,6 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
 
   @override
   dispose() {
-    TRTCChatSalon.destroySharedInstance();
     super.dispose();
   }
 
