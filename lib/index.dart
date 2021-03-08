@@ -154,6 +154,8 @@ class IndexPageState extends State<IndexPage> {
             colors: [
               Color.fromRGBO(19, 41, 75, 1),
               Color.fromRGBO(0, 0, 0, 1),
+              // Color.fromRGBO(0, 0, 0, 1),
+              // Color.fromRGBO(0, 0, 0, 1),
             ],
           ),
         ),
@@ -165,9 +167,9 @@ class IndexPageState extends State<IndexPage> {
             this.getTitleItem("语音沙龙", "assets/images/ChatSalon.png", () {
               goVoiceRoomDemo();
             }),
-            this.getTitleItem("计划中...", "assets/images/ChatSalon.png", () {
-              //goVoiceRoomDemo();
-            }),
+            // this.getTitleItem("计划中...", "assets/images/ChatSalon.png", () {
+            //   //goVoiceRoomDemo();
+            // }),
           ],
         ),
       ),
