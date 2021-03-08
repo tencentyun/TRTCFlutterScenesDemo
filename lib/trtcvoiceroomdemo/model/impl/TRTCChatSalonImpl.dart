@@ -77,6 +77,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           code: codeErr, desc: 'im not login yet, create room fail.');
     }
     mOwnerUserId = mUserId;
+    listener.initData(mOwnerUserId);
     V2TimValueCallback<String> res = await timManager
         .getGroupManager()
         .createGroup(

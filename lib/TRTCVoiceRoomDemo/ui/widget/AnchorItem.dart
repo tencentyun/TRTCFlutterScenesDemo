@@ -186,7 +186,7 @@ class _AnchorItemState extends State<AnchorItem>
           Row(
             children: [
               Container(
-                height: 15,
+                height: 10,
               )
             ],
           ),
