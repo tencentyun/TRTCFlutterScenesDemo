@@ -148,6 +148,7 @@ class VoiceRoomListener {
   VoiceListenerFunc listenersSet;
   TRTCCloud mTRTCCloud;
   V2TIMManager timManager;
+  String mOwnerUserId;
 
   VoiceRoomListener(TRTCCloud _mTRTCCloud, V2TIMManager _timManager) {
     mTRTCCloud = _mTRTCCloud;
@@ -159,6 +160,10 @@ class VoiceRoomListener {
       TRTCChatSalonDelegate type = TRTCChatSalonDelegate.onKickedOffline;
       emitEvent(type, {});
     }
+  }
+
+  void initData(String userId) {
+    mOwnerUserId = userId;
   }
 
   void addListener(VoiceListenerFunc func) {
@@ -225,11 +230,15 @@ class VoiceRoomListener {
       List<V2TimGroupMemberInfo> memberList = data.memberList;
       List newList = [];
       for (var i = 0; i < memberList.length; i++) {
-        newList.add({
-          'userId': memberList[i].userID,
-          'userName': memberList[i].nickName,
-          'userAvatar': memberList[i].faceUrl
-        });
+        if (mOwnerUserId != null && mOwnerUserId == memberList[i].userID) {
+          //取消掉群主进房的事件通知
+        } else {
+          newList.add({
+            'userId': memberList[i].userID,
+            'userName': memberList[i].nickName,
+            'userAvatar': memberList[i].faceUrl
+          });
+        }
       }
       emitEvent(type, newList);
     } else if (event.type == 'onMemberLeave') {
