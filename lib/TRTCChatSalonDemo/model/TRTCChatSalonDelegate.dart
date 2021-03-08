@@ -5,7 +5,11 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_member_enter.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_member_leave.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_recv_group_text_message.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
+
+import 'TRTCChatSalonDef.dart';
 
 enum TRTCChatSalonDelegate {
   /// 错误回调，表示 SDK 不可恢复的错误，一定要监听并分情况给用户适当的界面提示
@@ -194,7 +198,7 @@ class VoiceRoomListener {
     TRTCChatSalonDelegate type;
 
     List newGroupList = [];
-    groupAttributeMap.forEach((key, value) {
+    groupAttributeMap.forEach((key, value) async {
       newGroupList.add({'userId': key, 'mute': value == "1" ? false : true});
       if (mOldAttributeMap.containsKey(key) && mOldAttributeMap[key] != value) {
         //有成员改变了麦的状态
@@ -203,7 +207,23 @@ class VoiceRoomListener {
       } else if (!mOldAttributeMap.containsKey(key)) {
         //有成员上麦
         type = TRTCChatSalonDelegate.onAnchorEnter;
-        emitEvent(type, {'userId': key});
+        V2TimValueCallback<List<V2TimUserFullInfo>> res =
+            await timManager.getUsersInfo(userIDList: [key]);
+        if (res.code == 0) {
+          List<V2TimUserFullInfo> userInfo = res.data;
+          if (userInfo.length > 0) {
+            emitEvent(type, {
+              'userId': key,
+              'userName': userInfo[0].nickName,
+              'userAvatar': userInfo[0].faceUrl,
+              'mute': false // 默认开麦
+            });
+          } else {
+            emitEvent(type, {'userId': key});
+          }
+        } else {
+          emitEvent(type, {'userId': key});
+        }
       }
     });
     //每次有变化必定触发更新
