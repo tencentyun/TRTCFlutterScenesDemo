@@ -70,7 +70,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
     if (roomInfo.ownerId.toString() == loginUserId) {
       Navigator.pushReplacementNamed(
         context,
-        "/voiceRoom/roomAudience",
+        "/chatSalon/roomAudience",
         arguments: {
           'roomId': roomInfo.roomId,
           "ownerId": roomInfo.ownerId,
@@ -82,7 +82,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
     }
     Navigator.pushReplacementNamed(
       context,
-      "/voiceRoom/roomAnchor",
+      "/chatSalon/roomAnchor",
       arguments: {
         "ownerId": roomInfo.ownerId,
         "roomName": roomInfo.roomName,
@@ -244,7 +244,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
         onPressed: () => {
           Navigator.pushReplacementNamed(
             context,
-            "/voiceRoom/roomCreate",
+            "/chatSalon/roomCreate",
           )
         },
         tooltip: '创建语音聊天室',

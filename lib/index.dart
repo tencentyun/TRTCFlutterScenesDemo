@@ -73,7 +73,7 @@ class IndexPageState extends State<IndexPage> {
   goVoiceRoomDemo() {
     Navigator.pushReplacementNamed(
       context,
-      "/voiceRoom/list",
+      "/chatSalon/list",
     );
   }
 

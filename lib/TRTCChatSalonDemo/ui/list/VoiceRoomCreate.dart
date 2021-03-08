@@ -111,7 +111,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
           String ownerId = await TxUtils.getLoginUserId();
           Navigator.popAndPushNamed(
             context,
-            "/voiceRoom/roomAnchor",
+            "/chatSalon/roomAnchor",
             arguments: {
               "roomName": meetTitle,
               "roomId": roomId,
@@ -143,7 +143,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
           onPressed: () async {
             Navigator.pushReplacementNamed(
               context,
-              "/voiceRoom/list",
+              "/chatSalon/list",
             );
           },
         ),

@@ -47,10 +47,10 @@ class _MyAppState extends State<MyApp> {
         "/": (context) => IndexPage(), //VoiceRoomListPage()
         "/index": (context) => IndexPage(), //VoiceRoomListPage()
         "/login": (context) => LoginPage(),
-        "/voiceRoom/list": (context) => VoiceRoomListPage(),
-        "/voiceRoom/roomCreate": (context) => VoiceRoomCreatePage(),
-        "/voiceRoom/roomAnchor": (context) => VoiceRoomPage(UserType.Anchor),
-        "/voiceRoom/roomAudience": (context) =>
+        "/chatSalon/list": (context) => VoiceRoomListPage(),
+        "/chatSalon/roomCreate": (context) => VoiceRoomCreatePage(),
+        "/chatSalon/roomAnchor": (context) => VoiceRoomPage(UserType.Anchor),
+        "/chatSalon/roomAudience": (context) =>
             VoiceRoomPage(UserType.Audience),
       },
     );

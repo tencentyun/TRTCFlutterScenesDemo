@@ -147,7 +147,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           TxUtils.showErrorToast('沙龙已结束。', context);
           Navigator.pushReplacementNamed(
             context,
-            "/voiceRoom/list",
+            "/chatSalon/list",
           );
           //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
         }
@@ -547,7 +547,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           onPressed: () async {
             bool isOk = await this.showExitConfirmDialog();
             if (isOk) {
-              Navigator.pushReplacementNamed(context, '/voiceRoom/list');
+              Navigator.pushReplacementNamed(context, '/chatSalon/list');
             }
           },
         ),
@@ -627,7 +627,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
               onLeave: () async {
                 bool isOk = await this.showExitConfirmDialog();
                 if (isOk) {
-                  Navigator.pushReplacementNamed(context, '/voiceRoom/list');
+                  Navigator.pushReplacementNamed(context, '/chatSalon/list');
                 }
               },
             ),
