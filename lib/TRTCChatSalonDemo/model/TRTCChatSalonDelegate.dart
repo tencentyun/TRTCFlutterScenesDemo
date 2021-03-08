@@ -190,7 +190,7 @@ class VoiceRoomListener {
 
   groupAttriChange(V2TimGroupAttributeChanged data) {
     Map<String, String> groupAttributeMap = data.groupAttributeMap;
-    TRTCChatSalonDelegate type = TRTCChatSalonDelegate.onAnchorListChange;
+    TRTCChatSalonDelegate type;
 
     List newGroupList = [];
     groupAttributeMap.forEach((key, value) {
@@ -205,7 +205,8 @@ class VoiceRoomListener {
         emitEvent(type, {'userId': key});
       }
     });
-    emitEvent(type, newGroupList);
+    //每次有变化必定触发更新
+    emitEvent(TRTCChatSalonDelegate.onAnchorListChange, newGroupList);
 
     mOldAttributeMap.forEach((key, value) {
       if (!groupAttributeMap.containsKey(key)) {
