@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../utils/TxUtils.dart';
 import '../utils/constants.dart' as constants;
 import '../debug/GenerateTestUserSig.dart';
-import '../TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
-import '../TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
+import '../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
+import '../TRTCChatSalonDemo/model/TRTCChatSalonDef.dart';
 
 /*
  *  登录界面

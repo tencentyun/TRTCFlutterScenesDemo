@@ -4,7 +4,7 @@ import './utils/TxUtils.dart';
 import 'utils/constants.dart' as constants;
 import './base/TestFlowDelegate.dart';
 import './debug/GenerateTestUserSig.dart';
-import './TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
+import './TRTCChatSalonDemo/model/TRTCChatSalon.dart';
 import './i10n/localization_intl.dart';
 
 class IndexPage extends StatefulWidget {

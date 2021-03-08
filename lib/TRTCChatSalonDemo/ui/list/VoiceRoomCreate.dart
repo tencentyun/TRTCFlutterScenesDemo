@@ -7,8 +7,8 @@ import '../../../utils/TxUtils.dart';
 import '../../../utils/constants.dart' as constants;
 import 'package:permission_handler/permission_handler.dart';
 import '../../../debug/GenerateTestUserSig.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
+import '../../../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
+import '../../../TRTCChatSalonDemo/model/TRTCChatSalonDef.dart';
 import '../../../base/YunApiHelper.dart';
 
 // 多人视频会议首页

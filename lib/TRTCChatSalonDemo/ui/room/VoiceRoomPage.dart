@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:trtc_scenes_demo/TRTCVoiceRoomDemo/model/TRTCChatSalonDelegate.dart';
+import 'package:trtc_scenes_demo/TRTCChatSalonDemo/model/TRTCChatSalonDelegate.dart';
 import 'package:trtc_scenes_demo/base/YunApiHelper.dart';
 import '../../../utils/TxUtils.dart';
 import '../widget/RoomBottomBar.dart';
@@ -168,10 +168,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //群主拒绝举手
   doOnRefuseToSpeak(param) {
-    this._showTopMessage("抱歉，管理员没有同意您上麦", false);
-    Future.delayed(Duration(seconds: 5), () {
-      this._closeTopMessage();
-    });
+    this._showTopMessage("抱歉，管理员没有同意您上麦", false, true);
     setState(() {
       userType = UserType.Audience;
       userStatus = UserStatus.Mute;
@@ -183,7 +180,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     int userId = int.parse(param);
     UserInfo raiseUser = this._finUserInfo(userId);
     if (raiseUser != null) {
-      this._showTopMessage(raiseUser.userName + "申请成为主播", true);
+      this._showTopMessage(raiseUser.userName + "申请成为主播", true, false);
       RaiseHandInfo tem = new RaiseHandInfo(
           isCanAgree: true,
           userAvatar: raiseUser.userAvatar,
@@ -198,10 +195,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   ////被群主踢下麦
   doOnKickMic(param) async {
-    this._showTopMessage("你已被主播踢下麦", false);
-    Future.delayed(Duration(seconds: 5), () {
-      this._closeTopMessage();
-    });
+    this._showTopMessage("你已被主播踢下麦", false, true);
     trtcVoiceRoom.leaveMic();
     await this.getAnchorList();
     this.setState(() {
@@ -394,18 +388,20 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   //听众举手
   handleRaiseHandClick() {
     trtcVoiceRoom.raiseHand();
-    this._showTopMessage("举手成功！等待管理员通过~", false);
-    Future.delayed(Duration(seconds: 5), () {
-      this._closeTopMessage();
-    });
+    this._showTopMessage("举手成功！等待管理员通过~", false, true);
   }
 
-  _showTopMessage(String message, bool showAction) {
+  _showTopMessage(String message, bool showActionBtn, bool autoClose) {
     setState(() {
       topMsgVisible = true;
       topMsg = message;
-      isShowTopMsgAction = showAction;
+      isShowTopMsgAction = showActionBtn;
     });
+    if (autoClose) {
+      Future.delayed(Duration(seconds: 5), () {
+        this._closeTopMessage();
+      });
+    }
   }
 
   _closeTopMessage() {
@@ -464,6 +460,78 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         });
   }
 
+  Widget getAnchorListWidget(BuildContext context) {
+    return Container(
+      height: _anchorList.length == 0 ? 30 : 140,
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+      width: MediaQuery.of(context).size.width,
+      child: GridView(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 135.0,
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 15, //水平间隔
+          childAspectRatio: 1.0,
+        ),
+        children: _anchorList.values.map((UserInfo _anchorItem) {
+          int thisUserId = int.tryParse(_anchorItem.userId);
+          bool isVolumeUpdate = _volumeUpdateList.containsKey(thisUserId)
+              ? _volumeUpdateList[thisUserId]
+              : false;
+          return AnchorItem(
+            roomOwnerId: currentRoomOwnerId,
+            isVolumeUpdate: isVolumeUpdate,
+            userName:
+                _anchorItem.userName != null && _anchorItem.userAvatar != ''
+                    ? _anchorItem.userName
+                    : '--',
+            userImgUrl:
+                _anchorItem.userAvatar != null && _anchorItem.userAvatar != ''
+                    ? _anchorItem.userAvatar
+                    : TxUtils.getRandoAvatarUrl(),
+            isAdministrator: thisUserId == currentRoomOwnerId ? true : false,
+            isMute: _anchorItem.mute,
+            userId: _anchorItem.userId,
+            onKickOutUser: () {
+              //踢人
+              trtcVoiceRoom.kickMic(_anchorItem.userId);
+            },
+          );
+        }).toList()
+          ..sort((left, right) {
+            if (left.isAdministrator) return -1;
+            return 1;
+          }),
+      ),
+    );
+  }
+
+  Widget getAudienceListWidget(BuildContext context) {
+    return Expanded(
+      flex: 2,
+      child: GridView(
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 100.0,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 15,
+          childAspectRatio: 0.9,
+        ),
+        children: _audienceList.values
+            .map((UserInfo _audienceItem) => AudienceItem(
+                  userImgUrl: _audienceItem.userAvatar != null &&
+                          _audienceItem.userAvatar != ''
+                      ? _audienceItem.userAvatar
+                      : TxUtils.getRandoAvatarUrl(),
+                  userName: _audienceItem.userName != null &&
+                          _audienceItem.userName != ''
+                      ? _audienceItem.userName
+                      : '--',
+                ))
+            .toList(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -509,75 +577,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                     child:
                         DescriptionTitle("assets/images/Anchor_ICON.png", "主播"),
                   ),
-                  Container(
-                    height: _anchorList.length == 0 ? 30 : 140,
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    width: MediaQuery.of(context).size.width,
-                    child: GridView(
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 135.0,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 15, //水平间隔
-                        childAspectRatio: 1.0,
-                      ),
-                      children: _anchorList.values.map((UserInfo _anchorItem) {
-                        int thisUserId = int.tryParse(_anchorItem.userId);
-                        bool isVolumeUpdate =
-                            _volumeUpdateList.containsKey(thisUserId)
-                                ? _volumeUpdateList[thisUserId]
-                                : false;
-                        return AnchorItem(
-                          roomOwnerId: currentRoomOwnerId,
-                          isVolumeUpdate: isVolumeUpdate,
-                          userName: _anchorItem.userName != null &&
-                                  _anchorItem.userAvatar != ''
-                              ? _anchorItem.userName
-                              : '--',
-                          userImgUrl: _anchorItem.userAvatar != null &&
-                                  _anchorItem.userAvatar != ''
-                              ? _anchorItem.userAvatar
-                              : TxUtils.getRandoAvatarUrl(),
-                          isAdministrator:
-                              thisUserId == currentRoomOwnerId ? true : false,
-                          isMute: _anchorItem.mute,
-                          userId: _anchorItem.userId,
-                          onKickOutUser: () {
-                            //踢人
-                            trtcVoiceRoom.kickMic(_anchorItem.userId);
-                          },
-                        );
-                      }).toList()
-                        ..sort((left, right) {
-                          if (left.isAdministrator) return -1;
-                          return 1;
-                        }),
-                    ),
-                  ),
+                  this.getAnchorListWidget(context),
                   DescriptionTitle("assets/images/Audience_ICON.png", "听众"),
-                  Expanded(
-                    flex: 2,
-                    child: GridView(
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 100.0,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 15,
-                        childAspectRatio: 0.9,
-                      ),
-                      children: _audienceList.values
-                          .map((UserInfo _audienceItem) => AudienceItem(
-                                userImgUrl: _audienceItem.userAvatar != null &&
-                                        _audienceItem.userAvatar != ''
-                                    ? _audienceItem.userAvatar
-                                    : TxUtils.getRandoAvatarUrl(),
-                                userName: _audienceItem.userName != null &&
-                                        _audienceItem.userName != ''
-                                    ? _audienceItem.userName
-                                    : '--',
-                              ))
-                          .toList(),
-                    ),
-                  ),
+                  this.getAudienceListWidget(context),
                   Expanded(
                     flex: 0,
                     child: Container(

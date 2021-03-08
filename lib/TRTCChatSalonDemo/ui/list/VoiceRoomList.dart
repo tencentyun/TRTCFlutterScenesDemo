@@ -4,8 +4,8 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:toast/toast.dart';
 import '../../../utils/TxUtils.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalon.dart';
-import '../../../TRTCVoiceRoomDemo/model/TRTCChatSalonDef.dart';
+import '../../../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
+import '../../../TRTCChatSalonDemo/model/TRTCChatSalonDef.dart';
 import '../../../base/YunApiHelper.dart';
 
 /*

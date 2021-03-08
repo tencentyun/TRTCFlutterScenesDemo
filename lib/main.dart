@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './TRTCVoiceRoomDemo/ui/list/VoiceRoomList.dart';
-import './TRTCVoiceRoomDemo/ui/list/VoiceRoomCreate.dart';
-import 'TRTCVoiceRoomDemo/ui/room/VoiceRoomPage.dart';
+import './TRTCChatSalonDemo/ui/list/VoiceRoomList.dart';
+import './TRTCChatSalonDemo/ui/list/VoiceRoomCreate.dart';
+import 'TRTCChatSalonDemo/ui/room/VoiceRoomPage.dart';
 import './index.dart';
 import './login/LoginPage.dart';
-import './TRTCVoiceRoomDemo/ui/base/UserEnum.dart';
+import './TRTCChatSalonDemo/ui/base/UserEnum.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import './i10n/localization_intl.dart';
