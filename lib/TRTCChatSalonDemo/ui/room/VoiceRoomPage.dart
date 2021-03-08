@@ -467,6 +467,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     return Container(
       height: _anchorList.length == 0 ? 30 : 140,
       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+      constraints: BoxConstraints(
+        minHeight: _anchorList.length == 0 ? 30 : 140,
+      ),
       width: MediaQuery.of(context).size.width,
       child: GridView(
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
