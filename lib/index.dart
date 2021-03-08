@@ -77,6 +77,48 @@ class IndexPageState extends State<IndexPage> {
     );
   }
 
+  Widget getTitleItem(String title, String imgUrl, Function onTap) {
+    var titleItem = Container(
+      height: 80.0,
+      color: Color.fromRGBO(30, 57, 103, 1),
+      width: double.infinity,
+      child: Row(
+        children: [
+          Expanded(
+              flex: 1,
+              child: InkWell(
+                onTap: () {
+                  onTap();
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset(
+                      imgUrl,
+                      height: 44,
+                      width: 44,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 20),
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+        ],
+      ),
+    );
+    return titleItem;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,6 +139,14 @@ class IndexPageState extends State<IndexPage> {
       ),
       body: Container(
         decoration: BoxDecoration(
+          image: new DecorationImage(
+            image: new AssetImage(
+              "assets/images/bg_main_title.png",
+            ),
+            //fit: BoxFit.contain,
+            alignment: Alignment.topCenter,
+            //centerSlice: new Rect.fromRGBO(19, 41, 75, 1),
+          ),
           gradient: LinearGradient(
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
@@ -107,27 +157,17 @@ class IndexPageState extends State<IndexPage> {
             ],
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        padding: EdgeInsets.only(top: 150, left: 20, right: 20),
+        child: GridView(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 30),
           children: <Widget>[
-            Image.asset("assets/images/bg_main_title.png"),
-            Flow(
-              delegate: TestFlowDelegate(margin: EdgeInsets.all(10.0)),
-              children: <Widget>[
-                GestureDetector(
-                  child: Container(
-                    width: 550.0,
-                    height: 80.0,
-                    alignment: Alignment.center,
-                    child: Text('语音聊天室'),
-                    color: Colors.white,
-                  ),
-                  onTap: () {
-                    goVoiceRoomDemo();
-                  },
-                ),
-              ],
-            ),
+            this.getTitleItem("语音沙龙", "assets/images/ChatSalon.png", () {
+              goVoiceRoomDemo();
+            }),
+            this.getTitleItem("计划中...", "assets/images/ChatSalon.png", () {
+              //goVoiceRoomDemo();
+            }),
           ],
         ),
       ),
