@@ -9,8 +9,6 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 
-import 'TRTCChatSalonDef.dart';
-
 enum TRTCChatSalonDelegate {
   /// 错误回调，表示 SDK 不可恢复的错误，一定要监听并分情况给用户适当的界面提示
   ///
@@ -229,11 +227,28 @@ class VoiceRoomListener {
     //每次有变化必定触发更新
     emitEvent(TRTCChatSalonDelegate.onAnchorListChange, newGroupList);
 
-    mOldAttributeMap.forEach((key, value) {
+    mOldAttributeMap.forEach((key, value) async {
       if (!groupAttributeMap.containsKey(key)) {
         //有成员下麦
         type = TRTCChatSalonDelegate.onAnchorLeave;
-        emitEvent(type, {'userId': key});
+
+        V2TimValueCallback<List<V2TimUserFullInfo>> res =
+            await timManager.getUsersInfo(userIDList: [key]);
+        if (res.code == 0) {
+          List<V2TimUserFullInfo> userInfo = res.data;
+          if (userInfo.length > 0) {
+            emitEvent(type, {
+              'userId': key,
+              'userName': userInfo[0].nickName,
+              'userAvatar': userInfo[0].faceUrl,
+              'mute': false // 默认开麦
+            });
+          } else {
+            emitEvent(type, {'userId': key});
+          }
+        } else {
+          emitEvent(type, {'userId': key});
+        }
       }
     });
 
