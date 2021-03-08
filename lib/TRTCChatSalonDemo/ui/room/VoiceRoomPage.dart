@@ -101,12 +101,15 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         break;
       //case TRTCChatSalonDelegate.onAnchorListChange:
       case TRTCChatSalonDelegate.onAnchorLeave:
+        {
+          //主播离开房间
+          this.doOnAnchorLeave(param);
+        }
+        break;
       case TRTCChatSalonDelegate.onAnchorEnter:
         {
-          //onAnchorListChange
-          //有成员上麦(主动上麦/主播抱人上麦)
-          await this.getAnchorList();
-          this.getAudienceList();
+          //主播进入房间
+          this.doOnAnchorEnter(param);
         }
         break;
       case TRTCChatSalonDelegate.onMicMute:
@@ -184,8 +187,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           userAvatar: raiseUser.userAvatar,
           userId: raiseUser.userId,
           userName: raiseUser.userName);
+      Map<int, RaiseHandInfo> _newRaiseHandList = Map.from(_raiseHandList);
+      _newRaiseHandList[userId] = tem;
       setState(() {
-        _raiseHandList[userId] = tem;
+        _raiseHandList = _newRaiseHandList;
         _lastRaiseHandUser = tem;
       });
     }
@@ -202,23 +207,83 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     });
   }
 
+  //主播进入房间
+  doOnAnchorEnter(param) {
+    Map ps = param as Map;
+    int userId = int.tryParse(ps['userId']);
+
+    Map<int, UserInfo> _newAnchorList = Map.from(_anchorList);
+    if (!_newAnchorList.containsKey(userId)) {
+      String userName = ps['userName'] as String;
+      String userAvatar = ps['userAvatar'] as String;
+      bool mute = ps['mute'] as bool;
+      _newAnchorList[userId] = new UserInfo(
+        userId: userId.toString(),
+        mute: mute,
+        userAvatar: userAvatar,
+        userName: userName,
+      );
+    }
+
+    setState(() {
+      _anchorList = _newAnchorList;
+    });
+    //更新观众
+    if (_audienceList.containsKey(userId)) {
+      Map<int, UserInfo> _newAudienceList = Map.from(_audienceList);
+      _newAudienceList.remove(userId);
+      setState(() {
+        setState(() {
+          _audienceList = _newAudienceList;
+        });
+      });
+    }
+  }
+
+  //主播离开房间
+  doOnAnchorLeave(param) {
+    Map ps = param as Map;
+    int userId = int.tryParse(ps['userId']);
+    Map<int, UserInfo> _newAnchorList = Map.from(_anchorList);
+    if (_newAnchorList.containsKey(userId)) {
+      _newAnchorList.remove(userId);
+    }
+    setState(() {
+      _anchorList = _newAnchorList;
+    });
+    //主播离开变为普通的听众
+    Map<int, UserInfo> _newAudienceList = Map.from(_audienceList);
+    String userName = ps['userName'] as String;
+    String userAvatar = ps['userAvatar'] as String;
+    bool mute = ps['mute'] as bool;
+    _newAudienceList[userId] = new UserInfo(
+      userId: userId.toString(),
+      mute: mute,
+      userAvatar: userAvatar,
+      userName: userName,
+    );
+    setState(() {
+      _audienceList = _newAudienceList;
+    });
+  }
+
   //观众进入房间
   doOnAudienceEnter(param) {
     List<dynamic> list = param as List<dynamic>;
-    Map<int, UserInfo> newAudienceList = Map.from(_audienceList);
+    Map<int, UserInfo> _newAudienceList = Map.from(_audienceList);
     list.forEach((element) {
       int userId = int.tryParse(element['userId']);
       String userName = element['userName'] as String;
       String userAvatar = element['userAvatar'] as String;
-      if (!newAudienceList.containsKey(userId)) {
-        newAudienceList[userId] = new UserInfo(
+      if (!_newAudienceList.containsKey(userId)) {
+        _newAudienceList[userId] = new UserInfo(
             userId: userId.toString(),
             userAvatar: userAvatar,
             userName: userName);
       }
     });
     setState(() {
-      _audienceList = newAudienceList;
+      _audienceList = _newAudienceList;
     });
   }
 
