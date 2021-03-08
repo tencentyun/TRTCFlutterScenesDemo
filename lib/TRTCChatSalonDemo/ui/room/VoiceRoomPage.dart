@@ -113,6 +113,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         break;
       case TRTCChatSalonDelegate.onMicMute:
         {
+          print("==onMicMute=" + param.toString());
           //主播是否禁麦
           this.getAnchorList();
         }
@@ -268,6 +269,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //观众进入房间
   doOnAudienceEnter(param) {
+    print("==doOnAudienceEnter=" + param.toString());
+
     List<dynamic> list = param as List<dynamic>;
     Map<int, UserInfo> _newAudienceList = Map.from(_audienceList);
     list.forEach((element) {

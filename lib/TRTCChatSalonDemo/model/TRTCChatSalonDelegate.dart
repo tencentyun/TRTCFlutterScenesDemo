@@ -150,7 +150,7 @@ class VoiceRoomListener {
   VoiceListenerFunc listenersSet;
   TRTCCloud mTRTCCloud;
   V2TIMManager timManager;
-  String mOwnerUserId;
+  String mUserId;
 
   VoiceRoomListener(TRTCCloud _mTRTCCloud, V2TIMManager _timManager) {
     mTRTCCloud = _mTRTCCloud;
@@ -164,8 +164,9 @@ class VoiceRoomListener {
     }
   }
 
-  void initData(String userId) {
-    mOwnerUserId = userId;
+  void initData(String userId, attr) {
+    mUserId = userId;
+    mOldAttributeMap = attr;
   }
 
   void addListener(VoiceListenerFunc func) {
@@ -188,11 +189,13 @@ class VoiceRoomListener {
     listenersSet = null;
     mTRTCCloud.unRegisterListener(rtcListener);
     timManager.removeSimpleMsgListener();
-    timManager.unInitSDK();
+    // timManager.unInitSDK();
   }
 
   groupAttriChange(V2TimGroupAttributeChanged data) {
     Map<String, String> groupAttributeMap = data.groupAttributeMap;
+    print("==groupAttributeMap=" + groupAttributeMap.toString());
+    print("==mOldAttributeMap=" + mOldAttributeMap.toString());
     TRTCChatSalonDelegate type;
 
     List newGroupList = [];
@@ -262,14 +265,24 @@ class VoiceRoomListener {
       //群属性发生变更
       groupAttriChange(event.data);
     } else if (event.type == 'onMemberEnter') {
+      print("==mOldAttributeMap=" + mOldAttributeMap.toString());
       type = TRTCChatSalonDelegate.onAudienceEnter;
       V2TimMemberEnter data = event.data;
       List<V2TimGroupMemberInfo> memberList = data.memberList;
       List newList = [];
       for (var i = 0; i < memberList.length; i++) {
-        if (mOwnerUserId != null && mOwnerUserId == memberList[i].userID) {
-          //取消掉群主进房的事件通知
-        } else {
+        // if (mUserId != null && mUserId == memberList[i].userID) {
+        //   //取消掉用户自己进房的事件通知
+        // } else {
+        //   newList.add({
+        //     'userId': memberList[i].userID,
+        //     'userName': memberList[i].nickName,
+        //     'userAvatar': memberList[i].faceUrl
+        //   });
+        // }
+
+        if (!mOldAttributeMap.containsKey(memberList[i]) &&
+            mUserId != memberList[i].userID) {
           newList.add({
             'userId': memberList[i].userID,
             'userName': memberList[i].nickName,
@@ -277,7 +290,9 @@ class VoiceRoomListener {
           });
         }
       }
-      emitEvent(type, newList);
+      if (newList.length > 0) {
+        emitEvent(type, newList);
+      }
     } else if (event.type == 'onMemberLeave') {
       type = TRTCChatSalonDelegate.onAudienceExit;
       V2TimMemberLeave data = event.data;

@@ -77,7 +77,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           code: codeErr, desc: 'im not login yet, create room fail.');
     }
     mOwnerUserId = mUserId;
-    listener.initData(mOwnerUserId);
     V2TimValueCallback<String> res = await timManager
         .getGroupManager()
         .createGroup(
@@ -136,6 +135,8 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       V2TimCallback initRes = await timManager
           .getGroupManager()
           .initGroupAttributes(groupID: mRoomId, attributes: {mUserId: "1"});
+      listener.initData(mOwnerUserId, {mUserId: "1"});
+
       print("==initRes code=" + initRes.code.toString());
     }
     return ActionCallback(code: code, desc: msg);
@@ -175,6 +176,8 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           .getGroupsInfo(groupIDList: [roomId.toString()]);
       List<V2TimGroupInfoResult> groupResult = res.data;
       mOwnerUserId = groupResult[0].groupInfo.owner;
+      Map<String, String> mOldAttributeMap = {};
+      listener.initData(mUserId, mOldAttributeMap);
     }
 
     return ActionCallback(code: joinRes.code, desc: joinRes.desc);
