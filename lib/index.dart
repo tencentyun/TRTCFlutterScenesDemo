@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './utils/TxUtils.dart';
 import 'utils/constants.dart' as constants;
-import './base/TestFlowDelegate.dart';
 import './debug/GenerateTestUserSig.dart';
 import './TRTCChatSalonDemo/model/TRTCChatSalon.dart';
 import './i10n/localization_intl.dart';
@@ -32,6 +31,7 @@ class IndexPageState extends State<IndexPage> {
       );
     } else {
       TxUtils.setStorageByKey(constants.USERID_KEY, userId);
+
       trtcVoiceRoom.login(
         GenerateTestUserSig.sdkAppId,
         userId,
@@ -57,6 +57,7 @@ class IndexPageState extends State<IndexPage> {
               onPressed: () {
                 //关闭对话框并返回true
                 trtcVoiceRoom.logout();
+                TRTCChatSalon.destroySharedInstance();
                 TxUtils.setStorageByKey(constants.USERID_KEY, '');
                 Navigator.popAndPushNamed(
                   context,
