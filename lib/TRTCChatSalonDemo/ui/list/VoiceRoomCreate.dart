@@ -23,13 +23,13 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   TRTCChatSalon trtcVoiceRoom;
 
   /// 用户id
-  String userName = '';
+  String userName = 'test';
 
   /// 登录后签名
   String userSig;
 
   /// 会议id
-  String meetTitle = '';
+  String meetTitle = 'test的默认主题';
 
   final meetIdFocusNode = FocusNode();
   final userFocusNode = FocusNode();
@@ -171,6 +171,17 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                     TextField(
                         style: TextStyle(color: Colors.white),
                         autofocus: false,
+                        controller: TextEditingController.fromValue(
+                          TextEditingValue(
+                            text:
+                                '${this.meetTitle == null ? "" : this.meetTitle}', //判断keyword是否为空
+                            selection: TextSelection.fromPosition(
+                              TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset: '${this.meetTitle}'.length),
+                            ),
+                          ),
+                        ),
                         focusNode: meetIdFocusNode,
                         decoration: InputDecoration(
                           labelText: "主题",
@@ -187,6 +198,17 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                     TextField(
                         style: TextStyle(color: Colors.white),
                         autofocus: false,
+                        controller: TextEditingController.fromValue(
+                          TextEditingValue(
+                            text:
+                                '${this.userName == null ? "" : this.userName}', //判断keyword是否为空
+                            selection: TextSelection.fromPosition(
+                              TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset: '${this.userName}'.length),
+                            ),
+                          ),
+                        ),
                         focusNode: userFocusNode,
                         decoration: InputDecoration(
                           labelText: "用户名",

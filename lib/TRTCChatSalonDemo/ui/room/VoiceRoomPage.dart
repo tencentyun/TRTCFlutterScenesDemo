@@ -672,7 +672,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text(title + '的沙龙($currentRoomId)'),
+        title: Text(title + '($currentRoomId)'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios), //color: Colors.black
           onPressed: () async {
