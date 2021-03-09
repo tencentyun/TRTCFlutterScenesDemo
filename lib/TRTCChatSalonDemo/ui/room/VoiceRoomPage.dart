@@ -306,11 +306,23 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   doOnAudienceExit(param) {
     int userId = int.tryParse(param["userId"]);
     if (_audienceList.containsKey(userId)) {
-      Map<int, UserInfo> ls = Map.from(_audienceList);
-      ls.remove(userId);
+      Map<int, UserInfo> _newAudienceList = Map.from(_audienceList);
+      _newAudienceList.remove(userId);
       setState(() {
         setState(() {
-          _audienceList = ls;
+          _audienceList = _newAudienceList;
+        });
+      });
+    } else {
+      print('-----doOnAudienceExit:$userId not exits $_audienceList-------');
+    }
+    //把主播也一起踢了
+    if (_anchorList.containsKey(userId)) {
+      Map<int, UserInfo> _newAnchorListList = Map.from(_anchorList);
+      _newAnchorListList.remove(userId);
+      setState(() {
+        setState(() {
+          _anchorList = _newAnchorListList;
         });
       });
     }
@@ -355,10 +367,12 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       String loginUserId = await TxUtils.getLoginUserId();
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
       if (_archorResp.code == 0) {
+        print('----getAnchorList----:' + _archorResp.list.toString());
         Map<int, UserInfo> _newArchorList = {};
         _archorResp.list.forEach((item) {
-          if (item.userId != null && item.userId != '')
+          if (item.userId != null && item.userId != '') {
             _newArchorList[int.tryParse(item.userId)] = item;
+          }
         });
         if (userType != UserType.Administrator) {
           setState(() {
@@ -386,6 +400,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     try {
       MemberListCallback _memberResp = await trtcVoiceRoom.getRoomMemberList(0);
       if (_memberResp.code == 0) {
+        print('----getAudienceList----:' + _memberResp.list.toString());
         Map<int, UserInfo> userList = {};
         _memberResp.list.forEach((item) {
           if (item.userId != null && item.userId != '') {
