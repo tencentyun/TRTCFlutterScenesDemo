@@ -192,6 +192,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (mRoomId == null) {
       return ActionCallback(code: codeErr, desc: "not enter room yet");
     }
+    mTRTCCloud.exitRoom();
     //角色为主播，需要删除群属性，删除主播列表
     if (mRole == "archor") {
       //删除群属性
@@ -207,7 +208,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       return ActionCallback(code: codeErr, desc: quitRes.desc);
     }
 
-    mTRTCCloud.exitRoom();
     return ActionCallback(code: 0, desc: "quit room success.");
   }
 
@@ -272,8 +272,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     V2TimValueCallback<Map<String, String>> attrRes = await timManager
         .getGroupManager()
         .getGroupAttributes(groupID: mRoomId, keys: null);
-    print("==attrRes=" + attrRes.code.toString());
-    print("==attrRes data=" + attrRes.data.toString());
     if (attrRes.code == 0) {
       Map<String, String> attrData = attrRes.data;
       if (attrData == null) {
@@ -318,7 +316,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     }
     List<V2TimGroupMemberFullInfo> memberInfoList =
         memberRes.data.memberInfoList;
-    print("==memberInfoList=" + memberInfoList.toString());
     List<UserInfo> newInfo = [];
     for (var i = 0; i < memberInfoList.length; i++) {
       newInfo.add(UserInfo(
@@ -326,7 +323,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           userName: memberInfoList[i].nickName,
           userAvatar: memberInfoList[i].faceUrl));
     }
-    print("==memberRes.data.nextSeq=" + memberRes.data.nextSeq.toString());
     return MemberListCallback(
         code: 0,
         desc: 'get member list success',
