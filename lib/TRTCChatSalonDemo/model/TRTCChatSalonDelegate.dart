@@ -265,23 +265,13 @@ class VoiceRoomListener {
       //群属性发生变更
       groupAttriChange(event.data);
     } else if (event.type == 'onMemberEnter') {
-      print("==mOldAttributeMap=" + mOldAttributeMap.toString());
+      print("==mOldAttributeMap11=" + mOldAttributeMap.toString());
       type = TRTCChatSalonDelegate.onAudienceEnter;
       V2TimMemberEnter data = event.data;
       List<V2TimGroupMemberInfo> memberList = data.memberList;
       List newList = [];
       for (var i = 0; i < memberList.length; i++) {
-        // if (mUserId != null && mUserId == memberList[i].userID) {
-        //   //取消掉用户自己进房的事件通知
-        // } else {
-        //   newList.add({
-        //     'userId': memberList[i].userID,
-        //     'userName': memberList[i].nickName,
-        //     'userAvatar': memberList[i].faceUrl
-        //   });
-        // }
-
-        if (!mOldAttributeMap.containsKey(memberList[i]) &&
+        if (!mOldAttributeMap.containsKey(memberList[i].userID) &&
             mUserId != memberList[i].userID) {
           newList.add({
             'userId': memberList[i].userID,
@@ -290,6 +280,7 @@ class VoiceRoomListener {
           });
         }
       }
+      print("==newList=" + newList.toString());
       if (newList.length > 0) {
         emitEvent(type, newList);
       }
