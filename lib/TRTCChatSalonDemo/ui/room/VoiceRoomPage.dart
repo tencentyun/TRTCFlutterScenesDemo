@@ -322,28 +322,20 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   doOnUserVolumeUpdate(param) async {
     String loginUserId = await TxUtils.getLoginUserId();
     List<dynamic> list = param["userVolumes"] as List<dynamic>;
-    int totalVolume = int.tryParse(param["totalVolume"].toString());
-    //无声时候清空
-    if (totalVolume == 0) {
-      setState(() {
-        _volumeUpdateList = {};
-      });
-    } else {
-      list.forEach((item) {
-        int userId = int.tryParse(loginUserId);
-        if (item['userId'] != null) {
-          userId = int.tryParse(item['userId']);
-        }
-        int volme = int.tryParse(item["volume"].toString());
-        Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
+    Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
+    list.forEach((item) {
+      int userId = int.tryParse(loginUserId);
+      if (item['userId'] != null) {
+        userId = int.tryParse(item['userId']);
+      }
+      int volme = int.tryParse(item["volume"].toString());
+      if (_anchorList.containsKey(userId)) {
         _newVolumeUpdateList[userId] = volme > 20 ? true : false;
-        if (_anchorList.containsKey(userId)) {
-          setState(() {
-            _volumeUpdateList = _newVolumeUpdateList;
-          });
-        }
-      });
-    }
+      }
+    });
+    setState(() {
+      _volumeUpdateList = _newVolumeUpdateList;
+    });
   }
 
   initUserInfo() async {
