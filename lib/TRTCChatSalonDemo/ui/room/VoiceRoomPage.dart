@@ -691,83 +691,92 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         elevation: 0,
         backgroundColor: Color.fromRGBO(19, 41, 75, 1),
       ),
-      body: ConstrainedBox(
-        constraints: BoxConstraints.expand(),
-        child: Stack(
-          alignment: Alignment.topLeft,
-          fit: StackFit.expand,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.topLeft,
-              child: Flex(
-                direction: Axis.vertical,
-                children: <Widget>[
-                  RoomTopMessage(
-                    message: topMsg,
-                    visible: topMsgVisible,
-                    isShowBtn: isShowTopMsgAction,
-                    okTitle: '欢迎',
-                    cancelTitle: '拒绝',
-                    onCancelTab: () {
-                      this.handleAdminRefuseToSpeak();
-                    },
-                    onOkTab: () {
-                      this.agreeToSpeackClick();
-                    },
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                    child:
-                        DescriptionTitle("assets/images/Anchor_ICON.png", "主播"),
-                  ),
-                  this.getAnchorListWidget(context),
-                  DescriptionTitle("assets/images/Audience_ICON.png", "听众"),
-                  this.getAudienceListWidget(context),
-                  Expanded(
-                    flex: 0,
-                    child: Container(
-                      height: 60,
+      body: WillPopScope(
+        onWillPop: () async {
+          bool isOk = await this.showExitConfirmDialog();
+          if (isOk) {
+            Navigator.pushReplacementNamed(context, '/chatSalon/list');
+          }
+          return isOk;
+        },
+        child: ConstrainedBox(
+          constraints: BoxConstraints.expand(),
+          child: Stack(
+            alignment: Alignment.topLeft,
+            fit: StackFit.expand,
+            children: <Widget>[
+              Container(
+                alignment: Alignment.topLeft,
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: <Widget>[
+                    RoomTopMessage(
+                      message: topMsg,
+                      visible: topMsgVisible,
+                      isShowBtn: isShowTopMsgAction,
+                      okTitle: '欢迎',
+                      cancelTitle: '拒绝',
+                      onCancelTab: () {
+                        this.handleAdminRefuseToSpeak();
+                      },
+                      onOkTab: () {
+                        this.agreeToSpeackClick();
+                      },
                     ),
-                  )
-                ],
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  stops: [0.0, 1.0],
-                  colors: [
-                    Color.fromRGBO(19, 41, 75, 1),
-                    Color.fromRGBO(0, 0, 0, 1),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                      child: DescriptionTitle(
+                          "assets/images/Anchor_ICON.png", "主播"),
+                    ),
+                    this.getAnchorListWidget(context),
+                    DescriptionTitle("assets/images/Audience_ICON.png", "听众"),
+                    this.getAudienceListWidget(context),
+                    Expanded(
+                      flex: 0,
+                      child: Container(
+                        height: 60,
+                      ),
+                    )
                   ],
                 ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    stops: [0.0, 1.0],
+                    colors: [
+                      Color.fromRGBO(19, 41, 75, 1),
+                      Color.fromRGBO(0, 0, 0, 1),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            RoomBottomBar(
-              userStatus: userStatus,
-              userType: userType,
-              raiseHandList: _raiseHandList.values.toList(),
-              onMuteAudio: (mute) {
-                this.handleMuteAudio(mute);
-              },
-              onAgreeToSpeak: (String userId) {
-                this.agreeToSpeackClick(userId: userId);
-              },
-              onRaiseHand: () {
-                this.handleRaiseHandClick();
-              },
-              onAnchorLeaveMic: () {
-                //主播下麦
-                this.handleAnchorLeaveMic();
-              },
-              onLeave: () async {
-                bool isOk = await this.showExitConfirmDialog();
-                if (isOk) {
-                  Navigator.pushReplacementNamed(context, '/chatSalon/list');
-                }
-              },
-            ),
-          ],
+              RoomBottomBar(
+                userStatus: userStatus,
+                userType: userType,
+                raiseHandList: _raiseHandList.values.toList(),
+                onMuteAudio: (mute) {
+                  this.handleMuteAudio(mute);
+                },
+                onAgreeToSpeak: (String userId) {
+                  this.agreeToSpeackClick(userId: userId);
+                },
+                onRaiseHand: () {
+                  this.handleRaiseHandClick();
+                },
+                onAnchorLeaveMic: () {
+                  //主播下麦
+                  this.handleAnchorLeaveMic();
+                },
+                onLeave: () async {
+                  bool isOk = await this.showExitConfirmDialog();
+                  if (isOk) {
+                    Navigator.pushReplacementNamed(context, '/chatSalon/list');
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
