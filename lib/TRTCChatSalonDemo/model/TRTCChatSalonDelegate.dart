@@ -271,8 +271,7 @@ class VoiceRoomListener {
       List<V2TimGroupMemberInfo> memberList = data.memberList;
       List newList = [];
       for (var i = 0; i < memberList.length; i++) {
-        if (!mOldAttributeMap.containsKey(memberList[i].userID) &&
-            mUserId != memberList[i].userID) {
+        if (!mOldAttributeMap.containsKey(memberList[i].userID)) {
           newList.add({
             'userId': memberList[i].userID,
             'userName': memberList[i].nickName,

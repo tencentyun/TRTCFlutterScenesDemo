@@ -176,8 +176,12 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           .getGroupsInfo(groupIDList: [roomId.toString()]);
       List<V2TimGroupInfoResult> groupResult = res.data;
       mOwnerUserId = groupResult[0].groupInfo.owner;
-      Map<String, String> mOldAttributeMap = {};
-      listener.initData(mUserId, mOldAttributeMap);
+
+      V2TimValueCallback<Map<String, String>> attrRes = await timManager
+          .getGroupManager()
+          .getGroupAttributes(groupID: mRoomId, keys: null);
+      Map<String, String> attributeMap = attrRes.data;
+      listener.initData(mUserId, attributeMap);
     }
 
     return ActionCallback(code: joinRes.code, desc: joinRes.desc);
