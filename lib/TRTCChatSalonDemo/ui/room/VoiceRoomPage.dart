@@ -138,9 +138,15 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onUserVolumeUpdate:
         {
           //上麦成员的音量变化
-          //_volumeUpdateList
-          print('----onUserVolumeUpdate:----' + param.toString());
           List<dynamic> list = param["userVolumes"] as List<dynamic>;
+          int totalVolume = int.tryParse(param["totalVolume"].toString());
+          //无声时候清空
+          if (totalVolume == 0) {
+            setState(() {
+              _volumeUpdateList = {};
+            });
+            return;
+          }
           list.forEach((item) {
             int userId = int.tryParse(item['userId']);
             int volme = int.tryParse(item["volume"].toString());
@@ -430,7 +436,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     try {
       MemberListCallback _memberResp = await trtcVoiceRoom.getRoomMemberList(0);
       if (_memberResp.code == 0) {
-        print('----getAudienceList----:' + _memberResp.list.toString());
         Map<int, UserInfo> userList = {};
         _memberResp.list.forEach((item) {
           if (item.userId != null && item.userId != '') {
