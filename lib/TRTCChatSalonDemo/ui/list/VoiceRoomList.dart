@@ -77,7 +77,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           'roomId': roomInfo.roomId,
           "ownerId": roomInfo.ownerId,
           "roomName": roomInfo.roomName,
-          'isAdmin': true,
+          'isNeedCreateRoom': false,
         },
       );
       return;
@@ -89,7 +89,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
         "ownerId": roomInfo.ownerId,
         "roomName": roomInfo.roomName,
         'roomId': roomInfo.roomId,
-        'isAdmin': false,
+        'isNeedCreateRoom': false,
       },
     );
   }

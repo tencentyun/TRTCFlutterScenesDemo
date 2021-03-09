@@ -98,30 +98,18 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
           userName,
           _avatarUrl,
         );
-
-        ActionCallback resp = await trtcVoiceRoom.createRoom(
-          roomId,
-          RoomParam(
-            coverUrl: _avatarUrl,
-            roomName: meetTitle,
-          ),
+        String ownerId = await TxUtils.getLoginUserId();
+        Navigator.popAndPushNamed(
+          context,
+          "/chatSalon/roomAnchor",
+          arguments: {
+            "coverUrl": _avatarUrl,
+            "roomName": meetTitle,
+            "roomId": roomId,
+            "ownerId": ownerId,
+            'isNeedCreateRoom': true,
+          },
         );
-        if (resp.code == 0) {
-          await YunApiHelper.createRoom(roomId.toString());
-          String ownerId = await TxUtils.getLoginUserId();
-          Navigator.popAndPushNamed(
-            context,
-            "/chatSalon/roomAnchor",
-            arguments: {
-              "roomName": meetTitle,
-              "roomId": roomId,
-              "ownerId": ownerId,
-              'isAdmin': true,
-            },
-          );
-        } else {
-          TxUtils.showErrorToast('createRoom:' + resp.desc, context);
-        }
       } catch (ex) {
         TxUtils.showErrorToast(ex.toString(), context);
       }

@@ -333,32 +333,58 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     Map arguments = ModalRoute.of(context).settings.arguments;
     int _currentRoomId = int.tryParse(arguments['roomId'].toString());
     int _currentRoomOwnerId = int.tryParse(arguments['ownerId'].toString());
-
+    String roomName =
+        arguments["roomName"] == null ? '--' : arguments["roomName"];
     final bool isAdmin =
         _currentRoomOwnerId.toString() == loginUserId ? true : false;
+    bool isNeedCreateRoom = false;
+    if (arguments.containsKey('isNeedCreateRoom')) {
+      isNeedCreateRoom = arguments['isNeedCreateRoom'] as bool;
+    }
     setState(() {
       currentRoomId = _currentRoomId;
       currentRoomOwnerId = _currentRoomOwnerId;
       userType = isAdmin ? UserType.Administrator : UserType.Audience;
-      title = arguments["roomName"] == null ? '--' : arguments["roomName"];
+      title = roomName;
     });
-    if (!isAdmin) {
+    if (isNeedCreateRoom) {
+      String coverUrl = arguments['coverUrl'] as String;
+      await this.createRoom(_currentRoomId, roomName, coverUrl);
+      TxUtils.showToast('房间创建成功。', context);
+    } else {
       ActionCallback enterRoomResp =
           await trtcVoiceRoom.enterRoom(_currentRoomId);
       if (enterRoomResp.code == 0) {
-        TxUtils.showToast('进房成功', context);
+        if (isAdmin) {
+          setState(() {
+            userStatus = UserStatus.Speaking;
+          });
+          TxUtils.showToast('房主占座成功。', context);
+        } else {
+          TxUtils.showToast('进房成功', context);
+        }
       } else {
         TxUtils.showErrorToast('enterRoom:' + enterRoomResp.desc, context);
       }
-    } else {
-      setState(() {
-        userStatus = UserStatus.Speaking;
-      });
-      TxUtils.showToast('房主占座成功。', context);
     }
     trtcVoiceRoom.registerListener(onVoiceListener);
     await this.getAnchorList();
     await this.getAudienceList();
+  }
+
+  createRoom(roomId, roomName, coverUrl) async {
+    ActionCallback resp = await trtcVoiceRoom.createRoom(
+      roomId,
+      RoomParam(
+        coverUrl: coverUrl,
+        roomName: roomName,
+      ),
+    );
+    if (resp.code == 0) {
+      await YunApiHelper.createRoom(roomId.toString());
+    } else {
+      TxUtils.showErrorToast('createRoom:' + resp.desc, context);
+    }
   }
 
   //获取主播列表
