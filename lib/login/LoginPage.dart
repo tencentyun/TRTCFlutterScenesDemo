@@ -48,7 +48,7 @@ class LoginPageState extends State<LoginPage> {
       TxUtils.setStorageByKey(constants.USERID_KEY, userId);
       Navigator.pushNamed(context, "/index");
     } else {
-      TxUtils.showErrorToast(resValue.desc, context);
+      TxUtils.showErrorToast('setSelfProfile:' + resValue.desc, context);
     }
   }
 

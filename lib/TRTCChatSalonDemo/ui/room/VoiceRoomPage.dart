@@ -348,7 +348,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       if (enterRoomResp.code == 0) {
         TxUtils.showToast('进房成功', context);
       } else {
-        TxUtils.showErrorToast(enterRoomResp.desc, context);
+        TxUtils.showErrorToast('enterRoom:' + enterRoomResp.desc, context);
       }
     } else {
       setState(() {
@@ -388,7 +388,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           _anchorList = _newArchorList;
         });
       } else {
-        TxUtils.showErrorToast(_archorResp.desc, context);
+        TxUtils.showErrorToast(
+            'getArchorInfoList:' + _archorResp.desc, context);
       }
     } catch (ex) {
       TxUtils.showErrorToast(ex.toString(), context);
@@ -415,7 +416,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           _audienceList = userList;
         });
       } else {
-        TxUtils.showErrorToast(_memberResp.desc, context);
+        TxUtils.showErrorToast(
+            "getRoomMemberList:" + _memberResp.desc, context);
       }
     } catch (ex) {
       TxUtils.showErrorToast(ex.toString(), context);
