@@ -81,6 +81,20 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           );
         }
         break;
+      case TRTCChatSalonDelegate.onEnterRoom:
+        {
+          //进房
+          int result = param as int;
+          if (result < 0) {
+            TxUtils.showErrorToast('进房失败', context);
+            Navigator.pushReplacementNamed(
+              context,
+              "/chatSalon/list",
+            );
+            return;
+          }
+        }
+        break;
       case TRTCChatSalonDelegate.onAgreeToSpeak:
         this.doOnAgreeToSpeak(param);
         break;
@@ -317,20 +331,19 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       userType = isAdmin ? UserType.Administrator : UserType.Audience;
       title = arguments["roomName"] == null ? '--' : arguments["roomName"];
     });
-
-    ActionCallback enterRoomResp =
-        await trtcVoiceRoom.enterRoom(_currentRoomId);
-    if (enterRoomResp.code == 0) {
-      if (isAdmin) {
-        setState(() {
-          userStatus = UserStatus.Speaking;
-        });
-        TxUtils.showToast('房主占座成功。', context);
-      } else {
+    if (!isAdmin) {
+      ActionCallback enterRoomResp =
+          await trtcVoiceRoom.enterRoom(_currentRoomId);
+      if (enterRoomResp.code == 0) {
         TxUtils.showToast('进房成功', context);
+      } else {
+        TxUtils.showErrorToast(enterRoomResp.desc, context);
       }
     } else {
-      TxUtils.showErrorToast(enterRoomResp.desc, context);
+      setState(() {
+        userStatus = UserStatus.Speaking;
+      });
+      TxUtils.showToast('房主占座成功。', context);
     }
     trtcVoiceRoom.registerListener(onVoiceListener);
     await this.getAnchorList();
@@ -447,10 +460,12 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //音频开关
   handleMuteAudio(bool mute) {
+    //设置
+    trtcVoiceRoom.muteLocalAudio(mute);
+    trtcVoiceRoom.muteMic(mute);
     setState(() {
+      //状态图标切换
       userStatus = mute ? UserStatus.Mute : UserStatus.Speaking;
-      trtcVoiceRoom.muteLocalAudio(mute);
-      trtcVoiceRoom.muteMic(mute);
     });
   }
 

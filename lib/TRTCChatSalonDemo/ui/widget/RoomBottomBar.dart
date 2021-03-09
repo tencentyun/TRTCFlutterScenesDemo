@@ -45,6 +45,7 @@ class RoomBottomBar extends StatefulWidget {
 
 class _RoomBottomBarState extends State<RoomBottomBar> {
   bool hadHandUp = false;
+  bool isHadMute = false;
   Map<String, bool> hadAgreeMap = {};
   @override
   void initState() {
@@ -61,8 +62,11 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
     widget.onRaiseHand();
   }
 
-  onSoundClick(bool isSpeaking) {
-    widget.onMuteAudio(isSpeaking);
+  onSoundClick(bool isMute) {
+    setState(() {
+      isHadMute = isMute;
+    });
+    widget.onMuteAudio(isMute);
   }
 
   onShowHandList(raiseHandList) {
@@ -183,7 +187,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
           ? "assets/images/raiseHand.png"
           : "assets/images/noRaiseHand.png";
     } else {
-      lastBtnUrl = widget.userStatus == UserStatus.Mute
+      lastBtnUrl = isHadMute
           ? "assets/images/no-speaking.png"
           : "assets/images/speaking.png";
     }
@@ -231,8 +235,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                     if (UserType.Audience == widget.userType) {
                       this.onHandUp();
                     } else {
-                      this.onSoundClick(
-                          widget.userStatus == UserStatus.Mute ? false : true);
+                      this.onSoundClick(isHadMute ? false : true);
                     }
                   },
                   child: Image.asset(
