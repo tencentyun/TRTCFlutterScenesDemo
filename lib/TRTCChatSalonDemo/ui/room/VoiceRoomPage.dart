@@ -138,26 +138,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onUserVolumeUpdate:
         {
           //上麦成员的音量变化
-          List<dynamic> list = param["userVolumes"] as List<dynamic>;
-          int totalVolume = int.tryParse(param["totalVolume"].toString());
-          //无声时候清空
-          if (totalVolume == 0) {
-            setState(() {
-              _volumeUpdateList = {};
-            });
-          } else {
-            list.forEach((item) {
-              int userId = int.tryParse(item['userId']);
-              int volme = int.tryParse(item["volume"].toString());
-              Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
-              _newVolumeUpdateList[userId] = volme > 20 ? true : false;
-              if (_anchorList.containsKey(userId)) {
-                setState(() {
-                  _volumeUpdateList = _newVolumeUpdateList;
-                });
-              }
-            });
-          }
+          this.doOnUserVolumeUpdate(param);
         }
         break;
       case TRTCChatSalonDelegate.onKickedOffline:
@@ -333,6 +314,34 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         setState(() {
           _anchorList = _newAnchorListList;
         });
+      });
+    }
+  }
+
+  //上麦成员的音量变化
+  doOnUserVolumeUpdate(param) async {
+    String loginUserId = await TxUtils.getLoginUserId();
+    List<dynamic> list = param["userVolumes"] as List<dynamic>;
+    int totalVolume = int.tryParse(param["totalVolume"].toString());
+    //无声时候清空
+    if (totalVolume == 0) {
+      setState(() {
+        _volumeUpdateList = {};
+      });
+    } else {
+      list.forEach((item) {
+        int userId = int.tryParse(loginUserId);
+        if (item['userId'] != null) {
+          userId = int.tryParse(item['userId']);
+        }
+        int volme = int.tryParse(item["volume"].toString());
+        Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
+        _newVolumeUpdateList[userId] = volme > 20 ? true : false;
+        if (_anchorList.containsKey(userId)) {
+          setState(() {
+            _volumeUpdateList = _newVolumeUpdateList;
+          });
+        }
       });
     }
   }
