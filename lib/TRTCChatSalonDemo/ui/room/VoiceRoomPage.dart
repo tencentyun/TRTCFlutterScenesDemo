@@ -110,6 +110,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onAudienceEnter:
         this.doOnAudienceEnter(param);
         break;
+      case TRTCChatSalonDelegate.onExitRoom:
+        {}
+        break;
       case TRTCChatSalonDelegate.onAudienceExit:
         this.doOnAudienceExit(param);
         break;
@@ -227,17 +230,16 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     int userId = int.tryParse(ps['userId']);
 
     Map<int, UserInfo> _newAnchorList = Map.from(_anchorList);
-    if (!_newAnchorList.containsKey(userId)) {
-      String userName = ps['userName'] as String;
-      String userAvatar = ps['userAvatar'] as String;
-      bool mute = ps['mute'] as bool;
-      _newAnchorList[userId] = new UserInfo(
-        userId: userId.toString(),
-        mute: mute,
-        userAvatar: userAvatar,
-        userName: userName,
-      );
-    }
+
+    String userName = ps['userName'] as String;
+    String userAvatar = ps['userAvatar'] as String;
+    bool mute = ps['mute'] as bool;
+    _newAnchorList[userId] = new UserInfo(
+      userId: userId.toString(),
+      mute: mute,
+      userAvatar: userAvatar,
+      userName: userName,
+    );
 
     setState(() {
       _anchorList = _newAnchorList;
@@ -284,19 +286,16 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   //观众进入房间
   doOnAudienceEnter(param) {
     print("==doOnAudienceEnter=" + param.toString());
-
     List<dynamic> list = param as List<dynamic>;
     Map<int, UserInfo> _newAudienceList = Map.from(_audienceList);
     list.forEach((element) {
       int userId = int.tryParse(element['userId']);
       String userName = element['userName'] as String;
       String userAvatar = element['userAvatar'] as String;
-      if (!_newAudienceList.containsKey(userId)) {
-        _newAudienceList[userId] = new UserInfo(
-            userId: userId.toString(),
-            userAvatar: userAvatar,
-            userName: userName);
-      }
+      _newAudienceList[userId] = new UserInfo(
+          userId: userId.toString(),
+          userAvatar: userAvatar,
+          userName: userName);
     });
     setState(() {
       _audienceList = _newAudienceList;
