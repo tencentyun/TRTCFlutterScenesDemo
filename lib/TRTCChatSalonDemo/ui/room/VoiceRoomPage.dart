@@ -145,19 +145,19 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
             setState(() {
               _volumeUpdateList = {};
             });
-            return;
+          } else {
+            list.forEach((item) {
+              int userId = int.tryParse(item['userId']);
+              int volme = int.tryParse(item["volume"].toString());
+              Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
+              _newVolumeUpdateList[userId] = volme > 20 ? true : false;
+              if (_anchorList.containsKey(userId)) {
+                setState(() {
+                  _volumeUpdateList = _newVolumeUpdateList;
+                });
+              }
+            });
           }
-          list.forEach((item) {
-            int userId = int.tryParse(item['userId']);
-            int volme = int.tryParse(item["volume"].toString());
-            Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
-            _newVolumeUpdateList[userId] = volme > 20 ? true : false;
-            if (_anchorList.containsKey(userId)) {
-              setState(() {
-                _volumeUpdateList = _newVolumeUpdateList;
-              });
-            }
-          });
         }
         break;
       case TRTCChatSalonDelegate.onKickedOffline:
