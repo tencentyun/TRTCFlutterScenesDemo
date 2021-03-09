@@ -101,7 +101,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-          title: const Text('语音聊天室'),
+          title: Text('语音沙龙'),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios), //color: Colors.black
