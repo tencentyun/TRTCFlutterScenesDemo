@@ -139,13 +139,16 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         {
           //上麦成员的音量变化
           //_volumeUpdateList
+          print('----onUserVolumeUpdate:----' + param.toString());
           List<dynamic> list = param["userVolumes"] as List<dynamic>;
           list.forEach((item) {
             int userId = int.tryParse(item['userId']);
             int volme = int.tryParse(item["volume"].toString());
+            Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
+            _newVolumeUpdateList[userId] = volme > 20 ? true : false;
             if (_anchorList.containsKey(userId)) {
               setState(() {
-                _volumeUpdateList[userId] = volme > 20 ? true : false;
+                _volumeUpdateList = _newVolumeUpdateList;
               });
             }
           });
@@ -503,7 +506,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   //音频开关
   handleMuteAudio(bool mute) {
     //设置
-    trtcVoiceRoom.muteLocalAudio(mute);
     trtcVoiceRoom.muteMic(mute);
     setState(() {
       //状态图标切换
