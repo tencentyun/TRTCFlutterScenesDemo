@@ -194,8 +194,6 @@ class VoiceRoomListener {
 
   groupAttriChange(V2TimGroupAttributeChanged data) {
     Map<String, String> groupAttributeMap = data.groupAttributeMap;
-    print("==groupAttributeMap=" + groupAttributeMap.toString());
-    print("==mOldAttributeMap=" + mOldAttributeMap.toString());
     TRTCChatSalonDelegate type;
 
     List newGroupList = [];
@@ -259,13 +257,12 @@ class VoiceRoomListener {
   }
 
   groupListener(V2TimEventCallback event) {
-    print("==groupListener type heh=" + event.type.toString());
+    print("==groupListener type=" + event.type.toString());
     TRTCChatSalonDelegate type;
     if (event.type == 'onGroupAttributeChanged') {
       //群属性发生变更
       groupAttriChange(event.data);
     } else if (event.type == 'onMemberEnter') {
-      print("==mOldAttributeMap11=" + mOldAttributeMap.toString());
       type = TRTCChatSalonDelegate.onAudienceEnter;
       V2TimMemberEnter data = event.data;
       List<V2TimGroupMemberInfo> memberList = data.memberList;
@@ -279,7 +276,6 @@ class VoiceRoomListener {
           });
         }
       }
-      print("==newList=" + newList.toString());
       if (newList.length > 0) {
         emitEvent(type, newList);
       }

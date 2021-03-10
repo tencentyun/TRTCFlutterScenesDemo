@@ -47,10 +47,12 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
   TXDeviceManager txDeviceManager;
 
   TRTCChatSalonImpl() {
-    initVar();
+    //获取腾讯即时通信IM manager
+    timManager = TencentImSDKPlugin.v2TIMManager;
+    initTRTC();
   }
 
-  initVar() async {
+  initTRTC() async {
     mTRTCCloud = await TRTCCloud.sharedInstance();
     txDeviceManager = mTRTCCloud.getDeviceManager();
     txAudioManager = mTRTCCloud.getAudioEffectManager();
@@ -85,7 +87,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
             groupID: roomId.toString());
     String msg = res.desc;
     int code = res.code;
-    print("==code11=" + code.toString());
     if (code == 0) {
       msg = 'create room success';
     } else if (code == 10036) {
@@ -132,12 +133,14 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           faceUrl: roomParam.coverUrl,
           introduction: mSelfUserName);
 
+      listener.initData(mOwnerUserId, {mUserId: "1"});
       V2TimCallback initRes = await timManager
           .getGroupManager()
           .initGroupAttributes(groupID: mRoomId, attributes: {mUserId: "1"});
-      listener.initData(mOwnerUserId, {mUserId: "1"});
 
-      print("==initRes code=" + initRes.code.toString());
+      if (initRes.code != 0) {
+        return ActionCallback(code: initRes.code, desc: initRes.desc);
+      }
     }
     return ActionCallback(code: code, desc: msg);
   }
@@ -427,8 +430,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     mUserSig = userSig;
 
     if (!mIsInitIMSDK) {
-      //获取腾讯即时通信IM manager;
-      timManager = TencentImSDKPlugin.v2TIMManager;
       listener = VoiceRoomListener(mTRTCCloud, timManager);
       //初始化SDK
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
@@ -452,7 +453,6 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     }
     V2TimCallback loginRes =
         await timManager.login(userID: userId, userSig: userSig);
-    print("==loginRes==" + loginRes.code.toString());
     if (loginRes.code == 0) {
       mIsLogin = true;
       return ActionCallback(code: 0, desc: 'login im success');

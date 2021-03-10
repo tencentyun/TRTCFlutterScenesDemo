@@ -34,7 +34,6 @@ class LoginPageState extends State<LoginPage> {
       return;
     }
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
-
     ActionCallback resValue = await trtcVoiceRoom.login(
       GenerateTestUserSig.sdkAppId,
       userId,
