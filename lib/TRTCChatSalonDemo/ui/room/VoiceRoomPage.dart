@@ -40,7 +40,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   Map<int, UserInfo> _anchorList = {};
   //听众列表
   Map<int, UserInfo> _audienceList = {};
-  double _audienceNextSeq = 0;
+  int _audienceNextSeq = 0;
   //举手列表
   Map<int, RaiseHandInfo> _raiseHandList = {};
   RaiseHandInfo _lastRaiseHandUser;
@@ -452,6 +452,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         });
         setState(() {
           _audienceList = userList;
+          _audienceNextSeq = _memberResp.nextSeq;
         });
       } else {
         TxUtils.showErrorToast(
@@ -464,10 +465,11 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   getMoreAudienceList() async {
     try {
-      double nextSeq = double.tryParse(_audienceList.length.toString());
-      print('----------getMoreAudienceList-------:' + nextSeq.toString());
+      if (_audienceNextSeq == 0) {
+        return;
+      }
       MemberListCallback _memberResp =
-          await trtcVoiceRoom.getRoomMemberList(nextSeq);
+          await trtcVoiceRoom.getRoomMemberList(_audienceNextSeq.toDouble());
       if (_memberResp.code == 0) {
         Map<int, UserInfo> userList = {};
         _memberResp.list.forEach((item) {
@@ -481,6 +483,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         });
         setState(() {
           _audienceList.addAll(userList);
+          _audienceNextSeq = _memberResp.nextSeq;
         });
       } else {
         TxUtils.showErrorToast(
@@ -679,6 +682,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   }
 
   Widget getAudienceListWidget(BuildContext context) {
+    List<UserInfo> list = _audienceList.values.toList();
     return Expanded(
       flex: 2,
       child: GridView.builder(
@@ -689,10 +693,9 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           crossAxisSpacing: 15,
           childAspectRatio: 0.9,
         ),
-        itemCount: _audienceList.values.length,
+        itemCount: list.length,
         itemBuilder: (context, int index) {
-          List<UserInfo> list = _audienceList.values.toList();
-          if (index == list.length) {
+          if (index == (list.length - 1)) {
             this.getMoreAudienceList();
           }
           var _audienceItem = list[index];

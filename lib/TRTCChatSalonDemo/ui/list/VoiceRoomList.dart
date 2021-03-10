@@ -146,6 +146,13 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
             ),
           ),
           child: EasyRefresh(
+            header: ClassicalHeader(
+              refreshText: '下拉刷新',
+              refreshReadyText: '准备刷新数据',
+              refreshingText: '正在刷新中...',
+              refreshedText: '刷新完成',
+              showInfo: false,
+            ),
             emptyWidget: roomCount <= 0
                 ? Center(
                     child: Text(

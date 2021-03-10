@@ -124,6 +124,11 @@ abstract class TRTCChatSalon {
   */
   Future<MemberListCallback> getRoomMemberList(double nextSeq);
 
+  /*
+  * 拉取房间内所有在线成员总数
+  */
+  Future<int> getRoomOnlineMemberCount();
+
   //////////////////////////////////////////////////////////
   //
   //                 麦位管理接口
