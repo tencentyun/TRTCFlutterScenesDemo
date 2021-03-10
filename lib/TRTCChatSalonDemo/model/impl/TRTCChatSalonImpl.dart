@@ -304,6 +304,17 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
   }
 
   @override
+  Future<int> getRoomOnlineMemberCount() async {
+    V2TimValueCallback<int> memberRes = await timManager
+        .getGroupManager()
+        .getGroupOnlineMemberCount(groupID: mRoomId);
+    if (memberRes.code != 0) {
+      return 0;
+    }
+    return memberRes.data;
+  }
+
+  @override
   Future<MemberListCallback> getRoomMemberList(double nextSeq) async {
     V2TimValueCallback<V2TimGroupMemberInfoResult> memberRes = await timManager
         .getGroupManager()

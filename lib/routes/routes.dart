@@ -5,6 +5,7 @@ import '../TRTCChatSalonDemo/ui/room/VoiceRoomPage.dart';
 import '../index.dart';
 import '../login/LoginPage.dart';
 import '../TRTCChatSalonDemo/ui/base/UserEnum.dart';
+import '../TRTCChatSalonDemo/ui/ChatSalonTest.dart';
 
 final String initialRoute = "/forTest";
 final Map<String, WidgetBuilder> routes = {
@@ -17,4 +18,5 @@ final Map<String, WidgetBuilder> routes = {
   "/chatSalon/roomCreate": (context) => VoiceRoomCreatePage(),
   "/chatSalon/roomAnchor": (context) => VoiceRoomPage(UserType.Anchor),
   "/chatSalon/roomAudience": (context) => VoiceRoomPage(UserType.Audience),
+  "/chatSalon/test": (context) => ChatSalonTest(),
 };
