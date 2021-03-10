@@ -26,6 +26,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     with TickerProviderStateMixin {
   int currentRoomId;
   int currentRoomOwnerId;
+  int currentLoginUserId;
 
   TRTCChatSalon trtcVoiceRoom;
   UserStatus userStatus = UserStatus.Mute;
@@ -320,11 +321,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //上麦成员的音量变化
   doOnUserVolumeUpdate(param) async {
-    String loginUserId = await TxUtils.getLoginUserId();
     List<dynamic> list = param["userVolumes"] as List<dynamic>;
     Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
     list.forEach((item) {
-      int userId = int.tryParse(loginUserId);
+      int userId = currentLoginUserId;
       if (item['userId'] != null) {
         userId = int.tryParse(item['userId']);
       }
@@ -340,13 +340,14 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   initUserInfo() async {
     String loginUserId = await TxUtils.getLoginUserId();
+    currentLoginUserId = int.tryParse(loginUserId);
     Map arguments = ModalRoute.of(context).settings.arguments;
     int _currentRoomId = int.tryParse(arguments['roomId'].toString());
     int _currentRoomOwnerId = int.tryParse(arguments['ownerId'].toString());
     String roomName =
         arguments["roomName"] == null ? '--' : arguments["roomName"];
     final bool isAdmin =
-        _currentRoomOwnerId.toString() == loginUserId ? true : false;
+        _currentRoomOwnerId == currentLoginUserId ? true : false;
     bool isNeedCreateRoom = false;
     if (arguments.containsKey('isNeedCreateRoom')) {
       isNeedCreateRoom = arguments['isNeedCreateRoom'] as bool;
@@ -400,7 +401,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   //获取主播列表
   getAnchorList() async {
     try {
-      String loginUserId = await TxUtils.getLoginUserId();
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
       if (_archorResp.code == 0) {
         print('----getAnchorList----:' + _archorResp.list.toString());
@@ -412,10 +412,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         });
         if (userType != UserType.Administrator) {
           setState(() {
-            userType = _newArchorList.containsKey(int.parse(loginUserId))
+            userType = _newArchorList.containsKey(currentLoginUserId)
                 ? UserType.Anchor
                 : UserType.Audience;
-            userStatus = _newArchorList.containsKey(int.parse(loginUserId))
+            userStatus = _newArchorList.containsKey(currentLoginUserId)
                 ? UserStatus.Speaking
                 : UserStatus.Mute;
           });
