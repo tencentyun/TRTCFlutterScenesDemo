@@ -325,10 +325,13 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     Map<int, bool> _newVolumeUpdateList = Map.from(_volumeUpdateList);
     list.forEach((item) {
       int userId = currentLoginUserId;
-      if (item['userId'] != null) {
-        userId = int.tryParse(item['userId']);
-      }
       int volme = int.tryParse(item["volume"].toString());
+      if (item['userId'] != null && item['userId'] != "") {
+        userId = int.tryParse(item['userId']);
+      } else {
+        print('currentLoginUserId volme:' + volme.toString());
+      }
+
       if (_anchorList.containsKey(userId)) {
         _newVolumeUpdateList[userId] = volme > 20 ? true : false;
       }
@@ -758,7 +761,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                       visible: topMsgVisible,
                       isShowBtn: isShowTopMsgAction,
                       okTitle: '欢迎',
-                      cancelTitle: '拒绝',
+                      cancelTitle: '忽略',
                       onCancelTab: () {
                         this.handleAdminRefuseToSpeak();
                       },

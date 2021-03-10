@@ -166,12 +166,12 @@ class IndexPageState extends State<IndexPage> {
             this.getTitleItem("语音沙龙", "assets/images/ChatSalon.png", () {
               goVoiceRoomDemo();
             }),
-            // this.getTitleItem("进房测试", "assets/images/ChatSalon.png", () {
-            //   Navigator.pushReplacementNamed(
-            //     context,
-            //     "/chatSalon/test",
-            //   );
-            // })
+            this.getTitleItem("进房测试", "assets/images/ChatSalon.png", () {
+              Navigator.pushReplacementNamed(
+                context,
+                "/chatSalon/test",
+              );
+            })
           ],
         ),
       ),
