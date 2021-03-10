@@ -4,12 +4,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/TxUtils.dart';
-import '../../../utils/constants.dart' as constants;
 import 'package:permission_handler/permission_handler.dart';
 import '../../../debug/GenerateTestUserSig.dart';
 import '../../../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
-import '../../../TRTCChatSalonDemo/model/TRTCChatSalonDef.dart';
-import '../../../base/YunApiHelper.dart';
 
 // 多人视频会议首页
 class VoiceRoomCreatePage extends StatefulWidget {
@@ -23,13 +20,13 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   TRTCChatSalon trtcVoiceRoom;
 
   /// 用户id
-  String userName = 'test';
+  String userName = 'xx';
 
   /// 登录后签名
   String userSig;
 
   /// 会议id
-  String meetTitle = 'test的默认主题';
+  String meetTitle = 'xx的主题';
 
   final meetIdFocusNode = FocusNode();
   final userFocusNode = FocusNode();
@@ -42,6 +39,14 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
 
   initSDK() async {
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
+    String userId = await TxUtils.getLoginUserId();
+    String loginUserName = await TxUtils.getStorageByKey("loginUserName");
+    setState(() {
+      userName = (loginUserName != null && loginUserName != "")
+          ? loginUserName
+          : 'id-$userId';
+      meetTitle = '$userName的主题';
+    });
   }
 
   // 隐藏底部输入框
@@ -98,6 +103,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
           userName,
           _avatarUrl,
         );
+        await TxUtils.setStorageByKey("loginUserName", userName);
         String ownerId = await TxUtils.getLoginUserId();
         Navigator.popAndPushNamed(
           context,

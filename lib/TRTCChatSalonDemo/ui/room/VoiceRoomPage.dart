@@ -328,10 +328,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       int volme = int.tryParse(item["volume"].toString());
       if (item['userId'] != null && item['userId'] != "") {
         userId = int.tryParse(item['userId']);
-      } else {
-        print('currentLoginUserId volme:' + volme.toString());
       }
-
       if (_anchorList.containsKey(userId)) {
         _newVolumeUpdateList[userId] = volme > 20 ? true : false;
       }
@@ -511,9 +508,13 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       trtcVoiceRoom.agreeToSpeak(tmpUserId);
       this._closeTopMessage();
       if (_raiseHandList.containsKey(int.parse(tmpUserId))) {
-        this.setState(() {
-          _raiseHandList[int.parse(tmpUserId)].isCanAgree = false;
-        });
+        //同意后也移除
+        // this.setState(() {
+        //   _raiseHandList[int.parse(tmpUserId)].isCanAgree = false;
+        // });
+        if (_raiseHandList.containsKey(int.parse(tmpUserId))) {
+          _raiseHandList.remove(int.parse(tmpUserId));
+        }
       }
     }
   }
