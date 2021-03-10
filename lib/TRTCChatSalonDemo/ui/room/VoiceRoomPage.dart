@@ -231,7 +231,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       userAvatar: userAvatar,
       userName: userName,
     );
-
     setState(() {
       _anchorList = _newAnchorList;
     });
@@ -410,16 +409,19 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
             _newArchorList[int.tryParse(item.userId)] = item;
           }
         });
-        if (userType != UserType.Administrator) {
-          setState(() {
-            userType = _newArchorList.containsKey(currentLoginUserId)
-                ? UserType.Anchor
-                : UserType.Audience;
-            userStatus = _newArchorList.containsKey(currentLoginUserId)
-                ? UserStatus.Speaking
-                : UserStatus.Mute;
-          });
-        }
+        setState(() {
+          userType = !_newArchorList.containsKey(currentLoginUserId)
+              ? UserType.Audience
+              : userType == UserType.Administrator
+                  ? UserType.Administrator
+                  : UserType.Anchor;
+          userStatus = _newArchorList.containsKey(currentLoginUserId)
+              ? _newArchorList[currentLoginUserId].mute
+                  ? UserStatus.Mute
+                  : UserStatus.Speaking
+              : UserStatus.Mute;
+        });
+
         setState(() {
           _anchorList = _newArchorList;
         });

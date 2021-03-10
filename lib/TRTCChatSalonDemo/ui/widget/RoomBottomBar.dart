@@ -45,14 +45,10 @@ class RoomBottomBar extends StatefulWidget {
 
 class _RoomBottomBarState extends State<RoomBottomBar> {
   bool hadHandUp = false;
-  bool isHadMute = false;
   Map<String, bool> hadAgreeMap = {};
   @override
   void initState() {
     super.initState();
-    // this.setState(() {
-    //   hadAgree=
-    // });
   }
 
   onHandUp() {
@@ -62,10 +58,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
     widget.onRaiseHand();
   }
 
-  onSoundClick(bool isMute) {
-    setState(() {
-      isHadMute = isMute;
-    });
+  onMuteAudioClick(bool isMute) {
     widget.onMuteAudio(isMute);
   }
 
@@ -81,7 +74,6 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                 SliverAppBar(
                   leading: Text(''),
                   pinned: true,
-                  //expandedHeight: 40.0,
                   backgroundColor: Color.fromRGBO(19, 35, 63, 1),
                   shadowColor: Color.fromRGBO(19, 35, 63, 1),
                   title: Text(
@@ -187,7 +179,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
           ? "assets/images/raiseHand.png"
           : "assets/images/noRaiseHand.png";
     } else {
-      lastBtnUrl = isHadMute
+      lastBtnUrl = widget.userStatus == UserStatus.Mute
           ? "assets/images/no-speaking.png"
           : "assets/images/speaking.png";
     }
@@ -201,6 +193,25 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
     widget.raiseHandList.forEach((element) {
       if (element.isCanAgree) validRaiseHandCount = validRaiseHandCount + 1;
     });
+    var lastRighttBtn = Positioned(
+      right: 10,
+      child: Container(
+        child: InkWell(
+          onTap: () {
+            if (UserType.Audience == widget.userType) {
+              this.onHandUp();
+            } else {
+              this.onMuteAudioClick(
+                  widget.userStatus == UserStatus.Mute ? false : true);
+            }
+          },
+          child: Image.asset(
+            lastBtnUrl,
+            width: 48.0,
+          ),
+        ),
+      ),
+    );
     return Positioned(
         bottom: 10,
         left: 0,
@@ -227,24 +238,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                 ),
               ),
             ),
-            Positioned(
-              right: 10,
-              child: Container(
-                child: InkWell(
-                  onTap: () {
-                    if (UserType.Audience == widget.userType) {
-                      this.onHandUp();
-                    } else {
-                      this.onSoundClick(isHadMute ? false : true);
-                    }
-                  },
-                  child: Image.asset(
-                    lastBtnUrl,
-                    width: 48.0,
-                  ),
-                ),
-              ),
-            ),
+            lastRighttBtn,
             secondBtnUrl != ""
                 ? Positioned(
                     right: 80,
