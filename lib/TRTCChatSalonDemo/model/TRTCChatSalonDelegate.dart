@@ -74,18 +74,18 @@ enum TRTCChatSalonDelegate {
   /// mute：静音状态
   onAnchorListChange,
 
-  /// 有成员上麦(主动上麦/主播抱人上麦)
+  /// 有成员上麦(主动申请上麦，群主同意)
   ///
   /// 参数：
   ///
   /// userId  上麦的用户id
-  onAnchorEnter,
+  onAnchorEnterMic,
 
   /// 有成员下麦(主动下麦/主播踢人下麦)
   ///
   /// 参数：
   /// userId  下麦的用户id
-  onAnchorLeave,
+  onAnchorLeaveMic,
 
   /// 主播是否禁麦
   ///
@@ -205,7 +205,7 @@ class VoiceRoomListener {
         emitEvent(type, {'userId': key, 'mute': value == "1" ? false : true});
       } else if (!mOldAttributeMap.containsKey(key)) {
         //有成员上麦
-        type = TRTCChatSalonDelegate.onAnchorEnter;
+        type = TRTCChatSalonDelegate.onAnchorEnterMic;
         V2TimValueCallback<List<V2TimUserFullInfo>> res =
             await timManager.getUsersInfo(userIDList: [key]);
         if (res.code == 0) {
@@ -231,7 +231,7 @@ class VoiceRoomListener {
     mOldAttributeMap.forEach((key, value) async {
       if (!groupAttributeMap.containsKey(key)) {
         //有成员下麦
-        type = TRTCChatSalonDelegate.onAnchorLeave;
+        type = TRTCChatSalonDelegate.onAnchorLeaveMic;
 
         V2TimValueCallback<List<V2TimUserFullInfo>> res =
             await timManager.getUsersInfo(userIDList: [key]);
