@@ -20,7 +20,7 @@ class ChatSalonTestState extends State<ChatSalonTest> {
   loginRoomByCount(userCount) async {
     var trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
     Random rng = new Random();
-    int startUserId = rng.nextInt(20);
+    int startUserId = rng.nextInt(99);
     for (int i = 0; i < userCount; i++) {
       String userId = startUserId.toString() + i.toString();
       trtcVoiceRoom
@@ -35,10 +35,10 @@ class ChatSalonTestState extends State<ChatSalonTest> {
               .setSelfProfile(userId, TxUtils.getRandoAvatarUrl())
               .then((value) {
             trtcVoiceRoom.enterRoom(int.tryParse(roomId)).then((value) {
-              sleep(Duration(seconds: 1));
-              trtcVoiceRoom.raiseHand();
-              sleep(Duration(seconds: 3));
-              trtcVoiceRoom.enterMic();
+              //sleep(Duration(seconds: 1));
+              // trtcVoiceRoom.raiseHand();
+              //sleep(Duration(seconds: 3));
+              //trtcVoiceRoom.enterMic();
             });
             TxUtils.showErrorToast(userId + '成功进房', context);
           });
