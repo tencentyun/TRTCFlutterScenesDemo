@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:trtc_scenes_demo/TRTCChatSalonDemo/model/TRTCChatSalonDelegate.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
@@ -19,8 +21,6 @@ class ChatSalonTestState extends State<ChatSalonTest> {
     var trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
     Random rng = new Random();
     int startUserId = rng.nextInt(20);
-    int succCount = 0;
-
     for (int i = 0; i < userCount; i++) {
       String userId = startUserId.toString() + i.toString();
       trtcVoiceRoom
@@ -34,14 +34,18 @@ class ChatSalonTestState extends State<ChatSalonTest> {
           trtcVoiceRoom
               .setSelfProfile(userId, TxUtils.getRandoAvatarUrl())
               .then((value) {
-            trtcVoiceRoom.enterRoom(int.tryParse(roomId));
-            succCount++;
+            trtcVoiceRoom.enterRoom(int.tryParse(roomId)).then((value) {
+              sleep(Duration(seconds: 1));
+              trtcVoiceRoom.raiseHand();
+              sleep(Duration(seconds: 3));
+              trtcVoiceRoom.enterMic();
+            });
+            TxUtils.showErrorToast(userId + '成功进房', context);
           });
         } else {
           print(value.desc);
         }
       });
-      TxUtils.showErrorToast(succCount.toString() + '人成功进房', context);
     }
   }
 
