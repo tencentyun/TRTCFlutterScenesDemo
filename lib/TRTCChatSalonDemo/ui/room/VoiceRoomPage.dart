@@ -40,6 +40,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   Map<int, UserInfo> _anchorList = {};
   //听众列表
   Map<int, UserInfo> _audienceList = {};
+  double _audienceNextSeq = 0;
   //举手列表
   Map<int, RaiseHandInfo> _raiseHandList = {};
   RaiseHandInfo _lastRaiseHandUser;
@@ -461,6 +462,35 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     }
   }
 
+  getMoreAudienceList() async {
+    try {
+      double nextSeq = double.tryParse(_audienceList.length.toString());
+      print('----------getMoreAudienceList-------:' + nextSeq.toString());
+      MemberListCallback _memberResp =
+          await trtcVoiceRoom.getRoomMemberList(nextSeq);
+      if (_memberResp.code == 0) {
+        Map<int, UserInfo> userList = {};
+        _memberResp.list.forEach((item) {
+          if (item.userId != null && item.userId != '') {
+            int userId = int.tryParse(item.userId);
+            //非主播
+            if (!_anchorList.containsKey(userId)) {
+              userList[userId] = item;
+            }
+          }
+        });
+        setState(() {
+          _audienceList.addAll(userList);
+        });
+      } else {
+        TxUtils.showErrorToast(
+            "getRoomMemberList:" + _memberResp.desc, context);
+      }
+    } catch (ex) {
+      TxUtils.showErrorToast(ex.toString(), context);
+    }
+  }
+
   //管理员同意其成为主播
   agreeToSpeackClick({userId}) {
     String tmpUserId = '';
@@ -651,7 +681,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   Widget getAudienceListWidget(BuildContext context) {
     return Expanded(
       flex: 2,
-      child: GridView(
+      child: GridView.builder(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 100.0,
@@ -659,18 +689,25 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           crossAxisSpacing: 15,
           childAspectRatio: 0.9,
         ),
-        children: _audienceList.values
-            .map((UserInfo _audienceItem) => AudienceItem(
-                  userImgUrl: _audienceItem.userAvatar != null &&
-                          _audienceItem.userAvatar != ''
-                      ? _audienceItem.userAvatar
-                      : TxUtils.getRandoAvatarUrl(),
-                  userName: _audienceItem.userName != null &&
-                          _audienceItem.userName != ''
-                      ? _audienceItem.userName
-                      : '--',
-                ))
-            .toList(),
+        itemCount: _audienceList.values.length,
+        itemBuilder: (context, int index) {
+          List<UserInfo> list = _audienceList.values.toList();
+          if (index == list.length) {
+            this.getMoreAudienceList();
+          }
+          var _audienceItem = list[index];
+          var buildItem = AudienceItem(
+            userImgUrl: _audienceItem.userAvatar != null &&
+                    _audienceItem.userAvatar != ''
+                ? _audienceItem.userAvatar
+                : TxUtils.getRandoAvatarUrl(),
+            userName:
+                _audienceItem.userName != null && _audienceItem.userName != ''
+                    ? _audienceItem.userName
+                    : '--',
+          );
+          return buildItem;
+        },
       ),
     );
   }
