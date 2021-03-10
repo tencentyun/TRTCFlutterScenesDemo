@@ -118,13 +118,13 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onAudienceExit:
         this.doOnAudienceExit(param);
         break;
-      case TRTCChatSalonDelegate.onAnchorLeave:
+      case TRTCChatSalonDelegate.onAnchorLeaveMic:
         {
           //主播离开房间
           this.doOnAnchorLeave(param);
         }
         break;
-      case TRTCChatSalonDelegate.onAnchorEnter:
+      case TRTCChatSalonDelegate.onAnchorEnterMic:
         {
           //主播进入房间
           this.doOnAnchorEnter(param);

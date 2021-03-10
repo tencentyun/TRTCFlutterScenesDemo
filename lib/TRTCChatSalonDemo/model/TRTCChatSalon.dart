@@ -138,7 +138,7 @@ abstract class TRTCChatSalon {
   /*
   * 观众申请上麦
   *
-  * 上麦成功后，房间内所有成员会收到`onAnchorListChange`和`onAnchorEnter`的事件通知。
+  * 上麦成功后，房间内所有成员会收到`onAnchorListChange`和`onAnchorEnterMic`的事件通知。
   */
   void raiseHand();
 
@@ -159,14 +159,14 @@ abstract class TRTCChatSalon {
   /*
   * 上麦
   *
-  * 上麦成功后，房间内所有成员会收到`onAnchorListChange`和`onAnchorLeave`的事件通知。
+  * 上麦成功后，房间内所有成员会收到`onAnchorListChange`和`onAnchorEnterMic`的事件通知。
   */
   Future<ActionCallback> enterMic();
 
   /*
   * 主动下麦
   *
-  * 下麦成功后，房间内所有成员会收到`onAnchorListChange`和`onAnchorLeave`的事件通知。
+  * 下麦成功后，房间内所有成员会收到`onAnchorListChange`和`onAnchorLeaveMic`的事件通知。
   */
   Future<ActionCallback> leaveMic();
 
@@ -182,7 +182,7 @@ abstract class TRTCChatSalon {
   /*
   * 踢人下麦(群主调用)
   *
-  * 群主踢人下麦，房间内所有成员会收到`onAnchorListChange`和`onAnchorLeave`的事件通知。
+  * 群主踢人下麦，房间内所有成员会收到`onAnchorListChange`和`onAnchorLeaveMic`的事件通知。
   *
   * @param userId 需要踢下麦的用户id
   */

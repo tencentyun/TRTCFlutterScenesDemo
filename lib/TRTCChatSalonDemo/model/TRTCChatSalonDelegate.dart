@@ -74,18 +74,18 @@ enum TRTCChatSalonDelegate {
   /// mute：静音状态
   onAnchorListChange,
 
-  /// 有成员上麦(主动上麦/主播抱人上麦)
+  /// 有成员上麦(主动申请上麦，群主同意)
   ///
   /// 参数：
   ///
   /// userId  上麦的用户id
-  onAnchorEnter,
+  onAnchorEnterMic,
 
   /// 有成员下麦(主动下麦/主播踢人下麦)
   ///
   /// 参数：
   /// userId  下麦的用户id
-  onAnchorLeave,
+  onAnchorLeaveMic,
 
   /// 主播是否禁麦
   ///
@@ -194,8 +194,6 @@ class VoiceRoomListener {
 
   groupAttriChange(V2TimGroupAttributeChanged data) {
     Map<String, String> groupAttributeMap = data.groupAttributeMap;
-    print("==groupAttributeMap=" + groupAttributeMap.toString());
-    print("==mOldAttributeMap=" + mOldAttributeMap.toString());
     TRTCChatSalonDelegate type;
 
     List newGroupList = [];
@@ -207,7 +205,7 @@ class VoiceRoomListener {
         emitEvent(type, {'userId': key, 'mute': value == "1" ? false : true});
       } else if (!mOldAttributeMap.containsKey(key)) {
         //有成员上麦
-        type = TRTCChatSalonDelegate.onAnchorEnter;
+        type = TRTCChatSalonDelegate.onAnchorEnterMic;
         V2TimValueCallback<List<V2TimUserFullInfo>> res =
             await timManager.getUsersInfo(userIDList: [key]);
         if (res.code == 0) {
@@ -233,7 +231,7 @@ class VoiceRoomListener {
     mOldAttributeMap.forEach((key, value) async {
       if (!groupAttributeMap.containsKey(key)) {
         //有成员下麦
-        type = TRTCChatSalonDelegate.onAnchorLeave;
+        type = TRTCChatSalonDelegate.onAnchorLeaveMic;
 
         V2TimValueCallback<List<V2TimUserFullInfo>> res =
             await timManager.getUsersInfo(userIDList: [key]);
@@ -259,13 +257,12 @@ class VoiceRoomListener {
   }
 
   groupListener(V2TimEventCallback event) {
-    print("==groupListener type heh=" + event.type.toString());
+    print("==groupListener type=" + event.type.toString());
     TRTCChatSalonDelegate type;
     if (event.type == 'onGroupAttributeChanged') {
       //群属性发生变更
       groupAttriChange(event.data);
     } else if (event.type == 'onMemberEnter') {
-      print("==mOldAttributeMap11=" + mOldAttributeMap.toString());
       type = TRTCChatSalonDelegate.onAudienceEnter;
       V2TimMemberEnter data = event.data;
       List<V2TimGroupMemberInfo> memberList = data.memberList;
@@ -279,7 +276,6 @@ class VoiceRoomListener {
           });
         }
       }
-      print("==newList=" + newList.toString());
       if (newList.length > 0) {
         emitEvent(type, newList);
       }
