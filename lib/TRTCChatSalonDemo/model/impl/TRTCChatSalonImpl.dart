@@ -153,7 +153,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
   Future<ActionCallback> destroyRoom() async {
     V2TimCallback dismissRes = await timManager.dismissGroup(groupID: mRoomId);
     if (dismissRes.code == 0) {
-      mTRTCCloud.exitRoom();
+      await mTRTCCloud.exitRoom();
       return ActionCallback(code: 0, desc: "dismiss room success.");
     } else {
       return ActionCallback(code: codeErr, desc: "dismiss room fail.");
@@ -195,7 +195,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (mRoomId == null) {
       return ActionCallback(code: codeErr, desc: "not enter room yet");
     }
-    mTRTCCloud.exitRoom();
+    await mTRTCCloud.exitRoom();
     //角色为主播，需要删除群属性，删除主播列表
     if (mRole == "archor") {
       //删除群属性
