@@ -9,6 +9,7 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 
+/// TRTCChatSalonDelegate回调事件
 enum TRTCChatSalonDelegate {
   /// 错误回调，表示 SDK 不可恢复的错误，一定要监听并分情况给用户适当的界面提示
   ///
@@ -263,7 +264,6 @@ class VoiceRoomListener {
   }
 
   groupListener(V2TimEventCallback event) {
-    print("==groupListener type=" + event.type.toString());
     TRTCChatSalonDelegate type;
     if (event.type == 'onGroupAttributeChanged') {
       //群属性发生变更
