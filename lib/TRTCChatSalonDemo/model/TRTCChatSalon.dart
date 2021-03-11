@@ -143,14 +143,14 @@ abstract class TRTCChatSalon {
   void raiseHand();
 
   /*
-  * 群主（管理员）同意上麦
+  * 群主同意上麦
   *
   * @param userId
   */
   Future<ActionCallback> agreeToSpeak(String userId);
 
   /*
-  * 群主（管理员）拒绝上麦
+  * 群主拒绝上麦
   *
   * @param userId
   */

@@ -79,6 +79,12 @@ enum TRTCChatSalonDelegate {
   /// 参数：
   ///
   /// userId  上麦的用户id
+  ///
+  /// userName 用户昵称
+  ///
+  /// userAvatar 用户头像
+  ///
+  /// mute 麦位状态
   onAnchorEnterMic,
 
   /// 有成员下麦(主动下麦/主播踢人下麦)
@@ -129,7 +135,7 @@ enum TRTCChatSalonDelegate {
   ///
   /// 参数：
   ///
-  /// text：文本消息
+  /// message：文本消息
   ///
   /// sendId：发送者id
   ///
@@ -313,7 +319,7 @@ class VoiceRoomListener {
       V2TimRecvGroupTextMessage message = data.data;
       type = TRTCChatSalonDelegate.onRecvRoomTextMsg;
       emitEvent(type, {
-        "text": message.text,
+        "message": message.text,
         "sendId": message.sender.userID,
         "userAvatar": message.sender.faceUrl,
         "userName": message.sender.nickName
