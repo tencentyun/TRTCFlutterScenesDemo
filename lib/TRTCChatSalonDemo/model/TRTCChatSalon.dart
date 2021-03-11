@@ -273,7 +273,6 @@ abstract class TRTCChatSalon {
   /*
   * 在房间中广播文本消息，一般用于弹幕聊天
   * @param message 文本消息
-  * @param callback 发送结果回调
   */
   Future<ActionCallback> sendRoomTextMsg(String message);
 }
