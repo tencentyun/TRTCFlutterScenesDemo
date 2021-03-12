@@ -1,0 +1,299 @@
+{
+  "@@last_modified": "2021-03-12T16:39:52.953569",
+  "trtc": "TRTC",
+  "@trtc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "logout": "退出",
+  "@logout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "salonTitle": "语音沙龙",
+  "@salonTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleTRTC": "TRTC",
+  "@titleTRTC": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "login": "登录",
+  "@login": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "okText": "确定",
+  "@okText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "cancelText": "取消",
+  "@cancelText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tipsText": "提示",
+  "@tipsText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "logoutContent": "确定退出登录吗?",
+  "@logoutContent": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserIDInput": "请输入用户ID",
+  "@errorUserIDInput": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserIDNumber": "用户ID必须为数字",
+  "@errorUserIDNumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successLogin": "登录成功",
+  "@successLogin": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tencentTRTC": "腾讯云TRTC",
+  "@tencentTRTC": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userIDLabel": "用户ID",
+  "@userIDLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userIDHintText": "请输入登录的UserID",
+  "@userIDHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorOpenUrl": "打开地址失败",
+  "@errorOpenUrl": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "helpTooltip": "查看说明文档",
+  "@helpTooltip": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshText": "下拉刷新",
+  "@refreshText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshReadyText": "准备刷新数据",
+  "@refreshReadyText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshingText": "正在刷新中...",
+  "@refreshingText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshedText": "刷新完成",
+  "@refreshedText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noHadSalon": "暂无语音沙龙",
+  "@noHadSalon": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "onLineCount": "{memberCount}人在线",
+  "@onLineCount": {
+    "type": "text",
+    "placeholders": {
+      "memberCount": {}
+    }
+  },
+  "defaultChatTitle": "{userName}的主题",
+  "@defaultChatTitle": {
+    "type": "text",
+    "placeholders": {
+      "userName": {}
+    }
+  },
+  "errorsdkAppId": "请填写SDKAPPID",
+  "@errorsdkAppId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorSecretKey": "请填写密钥",
+  "@errorSecretKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMeetTitle": "请输入房间主题",
+  "@errorMeetTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMeetTitleLength": "房间主题过长，请输入合法的房间主题",
+  "@errorMeetTitleLength": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserName": "请输入用户名",
+  "@errorUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserNameLength": "用户名过长，请输入合法的用户名",
+  "@errorUserNameLength": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMicrophonePermission": "需要获取音视频权限才能进入",
+  "@errorMicrophonePermission": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "createSalonTooltip": "创建语音沙龙",
+  "@createSalonTooltip": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "meetTitleLabel": "主题",
+  "@meetTitleLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "meetTitleHintText": "请输入房间名称",
+  "@meetTitleHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userNameLabel": "用户名",
+  "@userNameLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userNameHintText": "请输入用户名",
+  "@userNameHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "startSalon": "开始交谈",
+  "@startSalon": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failEnterRoom": "进房失败",
+  "@failEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failKickedOffline": "已在其他地方登陆，请重新登录",
+  "@failKickedOffline": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failRoomDestroy": "沙龙已结束。",
+  "@failRoomDestroy": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failRefuseToSpeak": "抱歉，管理员没有同意您上麦",
+  "@failRefuseToSpeak": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userRaiseHand": "{userName}申请成为主播",
+  "@userRaiseHand": {
+    "type": "text",
+    "placeholders": {
+      "userName": {}
+    }
+  },
+  "hadKickMic": "你已被主播踢下麦",
+  "@hadKickMic": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successCreateRoom": "房间创建成功。",
+  "@successCreateRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successEnterRoom": "进房成功",
+  "@successEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successAdminEnterRoom": "房主占座成功。",
+  "@successAdminEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successRaiseHand": "举手成功！等待管理员通过~",
+  "@successRaiseHand": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "adminLeaveRoomTips": "离开会解散房间，确定离开吗?",
+  "@adminLeaveRoomTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "leaveRoomTips": "确定离开房间吗?",
+  "@leaveRoomTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "waitTips": "再等等",
+  "@waitTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iSure": "我确定",
+  "@iSure": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "welcome": "欢迎",
+  "@welcome": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "ignore": "忽略",
+  "@ignore": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "anchor": "主播",
+  "@anchor": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "audience": "听众",
+  "@audience": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "kickMic": "要求下麦",
+  "@kickMic": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "raiseUpList": "举手列表",
+  "@raiseUpList": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "leaveTips": "安静离开~",
+  "@leaveTips": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

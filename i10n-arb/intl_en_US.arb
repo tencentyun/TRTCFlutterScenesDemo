@@ -1,0 +1,299 @@
+{
+  "@@last_modified": "2021-03-12T16:39:52.953569",
+  "trtc": "TRTC",
+  "@trtc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "logout": "Logout",
+  "@logout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "salonTitle": "Chat Salon",
+  "@salonTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleTRTC": "TRTC",
+  "@titleTRTC": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "login": "Login",
+  "@login": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "okText": "Confirm",
+  "@okText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "cancelText": "Cancel",
+  "@cancelText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tipsText": "Tips",
+  "@tipsText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "logoutContent": "Are you sure to log out?",
+  "@logoutContent": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserIDInput": "User ID is empty",
+  "@errorUserIDInput": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserIDNumber": "User ID must be number",
+  "@errorUserIDNumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successLogin": "Login success",
+  "@successLogin": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tencentTRTC": "Tencent TRTC",
+  "@tencentTRTC": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userIDLabel": "User ID",
+  "@userIDLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userIDHintText": "Please input user ID",
+  "@userIDHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorOpenUrl": "Failed to open address",
+  "@errorOpenUrl": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "helpTooltip": "View documentation",
+  "@helpTooltip": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshText": "Pull down to refresh",
+  "@refreshText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshReadyText": "Start refresh",
+  "@refreshReadyText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshingText": "loading…",
+  "@refreshingText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshedText": "Refresh complete",
+  "@refreshedText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noHadSalon": "No content yet~",
+  "@noHadSalon": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "onLineCount": "{memberCount} people online",
+  "@onLineCount": {
+    "type": "text",
+    "placeholders": {
+      "memberCount": {}
+    }
+  },
+  "defaultChatTitle": "{userName} default room topic",
+  "@defaultChatTitle": {
+    "type": "text",
+    "placeholders": {
+      "userName": {}
+    }
+  },
+  "errorsdkAppId": "Invalid appid",
+  "@errorsdkAppId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorSecretKey": "Invalid secretKey ",
+  "@errorSecretKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMeetTitle": "Topic is empty",
+  "@errorMeetTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMeetTitleLength": "Topic is too long",
+  "@errorMeetTitleLength": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserName": "Nickname or user name is empty",
+  "@errorUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserNameLength": "Nickname or user name is too long",
+  "@errorUserNameLength": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMicrophonePermission": "Need to obtain audio permissions to enter",
+  "@errorMicrophonePermission": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "createSalonTooltip": "Create a chat salon room",
+  "@createSalonTooltip": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "meetTitleLabel": "Topic",
+  "@meetTitleLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "meetTitleHintText": "Please input topic",
+  "@meetTitleHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userNameLabel": "User ID",
+  "@userNameLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userNameHintText": "Please input user ID",
+  "@userNameHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "startSalon": "Let’s go",
+  "@startSalon": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failEnterRoom": "Enter room failed",
+  "@failEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failKickedOffline": "Already logged in elsewhere, please log in again",
+  "@failKickedOffline": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failRoomDestroy": "The host has closed the room",
+  "@failRoomDestroy": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failRefuseToSpeak": "Sorry, the administrator did not agree",
+  "@failRefuseToSpeak": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userRaiseHand": "{userName} applies to become a speaker",
+  "@userRaiseHand": {
+    "type": "text",
+    "placeholders": {
+      "userName": {}
+    }
+  },
+  "hadKickMic": "You have been kicked off by the administrator",
+  "@hadKickMic": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successCreateRoom": "Create room success",
+  "@successCreateRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successEnterRoom": "Enter room success",
+  "@successEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successAdminEnterRoom": "Host succeeded in occupying the seat",
+  "@successAdminEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successRaiseHand": "You raised your hand! We'll let the speakers know you want to talk~",
+  "@successRaiseHand": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "adminLeaveRoomTips": "you want to end the room?",
+  "@adminLeaveRoomTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "leaveRoomTips": "You want to leave the room?",
+  "@leaveRoomTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "waitTips": "Wait a bit",
+  "@waitTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iSure": "Confirm",
+  "@iSure": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "welcome": "Welcome",
+  "@welcome": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "ignore": "Dismiss",
+  "@ignore": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "anchor": "Speakers",
+  "@anchor": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "audience": "Audiences",
+  "@audience": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "kickMic": "Move to the audience",
+  "@kickMic": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "raiseUpList": "Raised hands",
+  "@raiseUpList": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "leaveTips": "Leave quietly ",
+  "@leaveTips": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

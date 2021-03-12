@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../base/UserEnum.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 import 'package:badges/badges.dart';
+import '../../../i10n/localization_intl.dart';
 
 class RaiseHandInfo {
   /// 用户唯一标识
@@ -77,7 +78,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                   backgroundColor: Color.fromRGBO(19, 35, 63, 1),
                   shadowColor: Color.fromRGBO(19, 35, 63, 1),
                   title: Text(
-                    '举手列表',
+                    Languages.of(context).raiseUpList,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -225,7 +226,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                   minWidth: 144,
                   color: Color.fromRGBO(0, 98, 227, 1),
                   child: Text(
-                    "安静离开~",
+                    Languages.of(context).leaveTips,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,

@@ -45,15 +45,15 @@ class IndexPageState extends State<IndexPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("提示"),
-          content: Text("确定退出登录吗?"),
+          title: Text(Languages.of(context).tipsText),
+          content: Text(Languages.of(context).logoutContent),
           actions: <Widget>[
             FlatButton(
-              child: Text("取消"),
+              child: Text(Languages.of(context).cancelText),
               onPressed: () => Navigator.of(context).pop(), // 关闭对话框
             ),
             FlatButton(
-              child: Text("确定"),
+              child: Text(Languages.of(context).okText),
               onPressed: () {
                 //关闭对话框并返回true
                 trtcVoiceRoom.logout();
@@ -126,12 +126,12 @@ class IndexPageState extends State<IndexPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.person),
-          tooltip: '退出',
+          tooltip: Languages.of(context).logout,
           onPressed: () async {
             await logout();
           },
         ),
-        title: Text(Languages.of(context).title),
+        title: Text(Languages.of(context).trtc),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Color.fromRGBO(14, 25, 44, 1),
@@ -159,7 +159,9 @@ class IndexPageState extends State<IndexPage> {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 30),
           children: <Widget>[
-            this.getTitleItem("语音沙龙", "assets/images/ChatSalon.png", () {
+            this.getTitleItem(
+                Languages.of(context).salonTitle, "assets/images/ChatSalon.png",
+                () {
               goVoiceRoomDemo();
             })
           ],

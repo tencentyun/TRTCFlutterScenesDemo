@@ -11,9 +11,10 @@ import '../widget/DescriptionTitle.dart';
 import '../base/UserEnum.dart';
 import '../../model/TRTCChatSalon.dart';
 import '../../model/TRTCChatSalonDef.dart';
+import '../../../i10n/localization_intl.dart';
 
 /*
- *  主播界面
+ *  房间界面
  */
 class VoiceRoomPage extends StatefulWidget {
   VoiceRoomPage(this.userType, {Key key}) : super(key: key);
@@ -88,7 +89,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           //进房
           int result = param as int;
           if (result < 0) {
-            TxUtils.showErrorToast('进房失败', context);
+            TxUtils.showErrorToast(
+                Languages.of(context).failEnterRoom, context);
             Navigator.pushReplacementNamed(
               context,
               "/chatSalon/list",
@@ -132,7 +134,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         break;
       case TRTCChatSalonDelegate.onMicMute:
         {
-          print("==onMicMute=" + param.toString());
           //主播是否禁麦
           this.getAnchorList();
         }
@@ -145,7 +146,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         break;
       case TRTCChatSalonDelegate.onKickedOffline:
         {
-          TxUtils.showErrorToast('已在其他地方登陆，请重新登录', context);
+          TxUtils.showErrorToast(
+              Languages.of(context).failKickedOffline, context);
           Navigator.pushReplacementNamed(
             context,
             "/login",
@@ -155,7 +157,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onRoomDestroy:
         {
           //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
-          TxUtils.showErrorToast('沙龙已结束。', context);
+          TxUtils.showErrorToast(
+              Languages.of(context).failRoomDestroy, context);
           Navigator.pushReplacementNamed(
             context,
             "/chatSalon/list",
@@ -178,7 +181,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   //群主拒绝举手
   doOnRefuseToSpeak(param) {
-    this._showTopMessage("抱歉，管理员没有同意您上麦", false, true);
+    this._showTopMessage(Languages.of(context).failRefuseToSpeak, false, true);
     setState(() {
       userType = UserType.Audience;
       userStatus = UserStatus.Mute;
@@ -190,7 +193,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     int userId = int.parse(param);
     UserInfo raiseUser = this._finUserInfo(userId);
     if (raiseUser != null) {
-      this._showTopMessage(raiseUser.userName + "申请成为主播", true, false);
+      this._showTopMessage(
+          Languages.of(context).userRaiseHand(raiseUser.userName), true, false);
       RaiseHandInfo tem = new RaiseHandInfo(
           isCanAgree: true,
           userAvatar: raiseUser.userAvatar,
@@ -207,7 +211,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
 
   ////被群主踢下麦
   doOnKickMic(param) async {
-    this._showTopMessage("你已被主播踢下麦", false, true);
+    this._showTopMessage(Languages.of(context).hadKickMic, false, true);
     trtcVoiceRoom.leaveMic();
     await this.getAnchorList();
     this.setState(() {
@@ -359,7 +363,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     if (isNeedCreateRoom) {
       String coverUrl = arguments['coverUrl'] as String;
       await this.createRoom(_currentRoomId, roomName, coverUrl);
-      TxUtils.showToast('房间创建成功。', context);
+      TxUtils.showToast(Languages.of(context).successCreateRoom, context);
     } else {
       ActionCallback enterRoomResp =
           await trtcVoiceRoom.enterRoom(_currentRoomId);
@@ -368,9 +372,10 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           setState(() {
             userStatus = UserStatus.Speaking;
           });
-          TxUtils.showToast('房主占座成功。', context);
+          TxUtils.showToast(
+              Languages.of(context).successAdminEnterRoom, context);
         } else {
-          TxUtils.showToast('进房成功', context);
+          TxUtils.showToast(Languages.of(context).successEnterRoom, context);
         }
       } else {
         TxUtils.showErrorToast('enterRoom:' + enterRoomResp.desc, context);
@@ -558,7 +563,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   //听众举手
   handleRaiseHandClick() {
     trtcVoiceRoom.raiseHand();
-    this._showTopMessage("举手成功！等待管理员通过~", false, true);
+    this._showTopMessage(Languages.of(context).successRaiseHand, false, true);
   }
 
   _showTopMessage(String message, bool showActionBtn, bool autoClose) {
@@ -593,15 +598,15 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
               content: Container(
                 child: Text(
                   userType == UserType.Administrator
-                      ? "离开会解散房间，确定离开吗?"
-                      : "确定离开房间吗？",
+                      ? Languages.of(context).adminLeaveRoomTips
+                      : Languages.of(context).leaveRoomTips,
                   textAlign: TextAlign.center,
                 ),
               ),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text(
-                    "再等等",
+                    Languages.of(context).waitTips,
                     style: TextStyle(color: Color.fromRGBO(235, 244, 255, 1)),
                   ),
                   onPressed: () {
@@ -610,7 +615,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                 ),
                 CupertinoDialogAction(
                   child: Text(
-                    "我确定",
+                    Languages.of(context).iSure,
                     style: TextStyle(color: Color.fromRGBO(0, 98, 227, 1)),
                   ),
                   onPressed: () {
@@ -757,8 +762,8 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                       message: topMsg,
                       visible: topMsgVisible,
                       isShowBtn: isShowTopMsgAction,
-                      okTitle: '欢迎',
-                      cancelTitle: '忽略',
+                      okTitle: Languages.of(context).welcome,
+                      cancelTitle: Languages.of(context).ignore,
                       onCancelTab: () {
                         this.handleAdminRefuseToSpeak();
                       },
@@ -768,11 +773,12 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
                     ),
                     Container(
                       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                      child: DescriptionTitle(
-                          "assets/images/Anchor_ICON.png", "主播"),
+                      child: DescriptionTitle("assets/images/Anchor_ICON.png",
+                          Languages.of(context).anchor),
                     ),
                     this.getAnchorListWidget(context),
-                    DescriptionTitle("assets/images/Audience_ICON.png", "听众"),
+                    DescriptionTitle("assets/images/Audience_ICON.png",
+                        Languages.of(context).audience),
                     this.getAudienceListWidget(context),
                     Expanded(
                       flex: 0,
