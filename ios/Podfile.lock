@@ -1,0 +1,77 @@
+PODS:
+  - Bugly (2.5.71)
+  - Flutter (1.0.0)
+  - flutter_bugly (0.0.1):
+    - Bugly
+    - Flutter
+  - HydraAsync (2.0.5)
+  - path_provider (0.0.1):
+    - Flutter
+  - "permission_handler (5.0.1+1)":
+    - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
+  - tencent_im_sdk_plugin (1.0.5):
+    - Flutter
+    - HydraAsync
+    - TXIMSDK_Smart_iOS (= 5.1.137)
+  - tencent_trtc_cloud (0.0.6):
+    - Flutter
+    - TXLiteAVSDK_TRTC (= 8.1.9719)
+  - TXIMSDK_Smart_iOS (5.1.137)
+  - TXLiteAVSDK_TRTC (8.1.9719)
+  - url_launcher (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_bugly (from `.symlinks/plugins/flutter_bugly/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - tencent_im_sdk_plugin (from `.symlinks/plugins/tencent_im_sdk_plugin/ios`)
+  - tencent_trtc_cloud (from `.symlinks/plugins/tencent_trtc_cloud/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Bugly
+    - HydraAsync
+    - TXIMSDK_Smart_iOS
+    - TXLiteAVSDK_TRTC
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_bugly:
+    :path: ".symlinks/plugins/flutter_bugly/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+  tencent_im_sdk_plugin:
+    :path: ".symlinks/plugins/tencent_im_sdk_plugin/ios"
+  tencent_trtc_cloud:
+    :path: ".symlinks/plugins/tencent_trtc_cloud/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
+
+SPEC CHECKSUMS:
+  Bugly: fd066c75c4a0eca1440f9b6a84bd37d51bfc85ac
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
+  HydraAsync: 6b74390f143e7edfb8bd3c706262b67bbefc09df
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  tencent_im_sdk_plugin: 65e2091606c7cf827d04da8dabc452edb67e64b4
+  tencent_trtc_cloud: 569c900fe5e510a218145400538ead54b10b4e23
+  TXIMSDK_Smart_iOS: 6923d8f1d341ff12f0211afe8c62b98c6f140617
+  TXLiteAVSDK_TRTC: dd581804b8badfffaf1d00856d7f2812eb8a47d4
+  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.10.0
