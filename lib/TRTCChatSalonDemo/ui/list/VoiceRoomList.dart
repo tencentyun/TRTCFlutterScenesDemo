@@ -99,7 +99,6 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
     int roomCount = roomInfList.length;
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
           title: Text('语音沙龙'),
           centerTitle: true,

@@ -127,7 +127,6 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: const Text('创建语音沙龙'),
         centerTitle: true,

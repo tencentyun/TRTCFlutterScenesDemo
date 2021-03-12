@@ -52,7 +52,6 @@ class ChatSalonTestState extends State<ChatSalonTest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           title: Text('Test'),
         ),

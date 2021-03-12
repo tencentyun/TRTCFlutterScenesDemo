@@ -5,7 +5,7 @@ TRTCChatSalon 是基于腾讯云实时音视频（TRTC）和即时通信 IM 服�
 - 观众可以申请上麦，变成麦上主播，可以和其他人语音互动，也可以随时下麦成为普通的观众。
 - 支持发送各种文本消息。
 
-TRTCChatSalon 是一个开源的 Class，依赖腾讯云的两个闭源 SDK，具体的实现过程请参见 [语音沙龙（Flutter）](https://cloud.tencent.com/document/product/647/45737)。
+TRTCChatSalon 是一个开源的 Class，依赖腾讯云的两个闭源 SDK，具体的实现过程请参见 [语音沙龙（Flutter）](https://github.com/c1avie/TRTCChatSalon/blob/master/README.md)。
 
 - TRTC SDK：使用 [TRTC SDK](https://cloud.tencent.com/document/product/647) 作为低延时语音聊天组件。
 - IM SDK：使用 [IM SDK](https://cloud.tencent.com/document/product/269) 的 AVChatroom 实现聊天室的功能，同时，通过 IM 的属性接口来存储麦位表等房间信息，邀请信令可以用于上麦申请/抱麦申请。
@@ -139,7 +139,7 @@ TRTCChatSalon 是一个开源的 Class，依赖腾讯云的两个闭源 SDK，�
 
 ### sharedInstance
 
-获取 [TRTCChatSalon](https://cloud.tencent.com/document/product/647/45737) 单例对象。
+获取 TRTCChatSalon 单例对象。
 
 ```dart
  static Future<TRTCChatSalon> sharedInstance()
@@ -148,7 +148,7 @@ TRTCChatSalon 是一个开源的 Class，依赖腾讯云的两个闭源 SDK，�
 
 ### destroySharedInstance
 
-销毁 [TRTCChatSalon](https://cloud.tencent.com/document/product/647/45737) 单例对象。
+销毁 TRTCChatSalon 单例对象。
 
 >?销毁实例后，外部缓存的 TRTCChatSalon 实例无法再使用，需要重新调用 [sharedInstance](#sharedInstance) 获取新实例。
 

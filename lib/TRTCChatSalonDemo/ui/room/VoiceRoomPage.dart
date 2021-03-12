@@ -722,7 +722,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(title + '($currentRoomId)'),
         leading: IconButton(

@@ -123,7 +123,6 @@ class IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.person),
