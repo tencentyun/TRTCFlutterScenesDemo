@@ -83,9 +83,12 @@ class _RoomTopMessageState extends State<RoomTopMessage> {
             children: [
               Container(
                 height: widget.visible ? 38 : 0,
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width - 10),
                 padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
                 child: Text(
                   widget.message,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white,

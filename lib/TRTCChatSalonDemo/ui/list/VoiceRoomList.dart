@@ -198,13 +198,17 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      info.roomName == null
-                                          ? "--"
-                                          : info.roomName,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18),
+                                    Container(
+                                      constraints:
+                                          BoxConstraints(maxWidth: 140),
+                                      child: Text(
+                                        info.roomName == null
+                                            ? "--"
+                                            : info.roomName,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 18),
+                                      ),
                                     ),
                                   ],
                                 ),
