@@ -20,13 +20,13 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   TRTCChatSalon trtcVoiceRoom;
 
   /// 用户id
-  String userName = 'xx';
+  String userName = 'Test';
 
   /// 登录后签名
   String userSig;
 
   /// 会议id
-  String meetTitle = 'xx的主题';
+  String meetTitle = 'Test的沙龙';
 
   final meetIdFocusNode = FocusNode();
   final userFocusNode = FocusNode();
@@ -44,7 +44,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     setState(() {
       userName = (loginUserName != null && loginUserName != "")
           ? loginUserName
-          : 'id-$userId';
+          : 'id：$userId';
       meetTitle = '$userName的主题';
     });
   }

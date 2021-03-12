@@ -126,7 +126,6 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                               child: InkWell(
                                 onTap: () {
                                   //同意or拒绝
-                                  //userInfo
                                   Navigator.pop(context);
                                   if (userInfo.isCanAgree) {
                                     widget.onAgreeToSpeak(userInfo.userId);

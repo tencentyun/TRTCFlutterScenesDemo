@@ -134,7 +134,6 @@ class IndexPageState extends State<IndexPage> {
         title: Text(Languages.of(context).title),
         centerTitle: true,
         elevation: 0,
-        // automaticallyImplyLeading: false,
         backgroundColor: Color.fromRGBO(14, 25, 44, 1),
       ),
       body: Container(
@@ -143,9 +142,7 @@ class IndexPageState extends State<IndexPage> {
             image: new AssetImage(
               "assets/images/bg_main_title.png",
             ),
-            //fit: BoxFit.contain,
             alignment: Alignment.topCenter,
-            //centerSlice: new Rect.fromRGBO(19, 41, 75, 1),
           ),
           gradient: LinearGradient(
             begin: Alignment.topRight,

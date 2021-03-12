@@ -154,12 +154,12 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         break;
       case TRTCChatSalonDelegate.onRoomDestroy:
         {
+          //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
           TxUtils.showErrorToast('沙龙已结束。', context);
           Navigator.pushReplacementNamed(
             context,
             "/chatSalon/list",
           );
-          //房间被销毁，当主播调用destroyRoom后，观众会收到该回调
         }
         break;
     }
@@ -304,8 +304,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
           _audienceList = _newAudienceList;
         });
       });
-    } else {
-      print('-----doOnAudienceExit:$userId not exits $_audienceList-------');
     }
     //把主播也一起踢了
     if (_anchorList.containsKey(userId)) {
@@ -403,7 +401,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
     try {
       UserListCallback _archorResp = await trtcVoiceRoom.getArchorInfoList();
       if (_archorResp.code == 0) {
-        print('----getAnchorList----:' + _archorResp.list.toString());
         Map<int, UserInfo> _newArchorList = {};
         _archorResp.list.forEach((item) {
           if (item.userId != null && item.userId != '') {
