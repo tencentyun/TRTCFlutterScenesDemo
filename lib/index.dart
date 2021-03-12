@@ -161,12 +161,6 @@ class IndexPageState extends State<IndexPage> {
           children: <Widget>[
             this.getTitleItem("语音沙龙", "assets/images/ChatSalon.png", () {
               goVoiceRoomDemo();
-            }),
-            this.getTitleItem("进房测试", "assets/images/ChatSalon.png", () {
-              Navigator.pushReplacementNamed(
-                context,
-                "/chatSalon/test",
-              );
             })
           ],
         ),
