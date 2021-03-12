@@ -13,7 +13,7 @@ import '../../model/TRTCChatSalon.dart';
 import '../../model/TRTCChatSalonDef.dart';
 
 /*
- *  主播界面
+ *  房间界面
  */
 class VoiceRoomPage extends StatefulWidget {
   VoiceRoomPage(this.userType, {Key key}) : super(key: key);

@@ -7,8 +7,8 @@ import '../../../utils/TxUtils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../debug/GenerateTestUserSig.dart';
 import '../../../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
+import '../../../i10n/localization_intl.dart';
 
-// 多人视频会议首页
 class VoiceRoomCreatePage extends StatefulWidget {
   VoiceRoomCreatePage({Key key}) : super(key: key);
 
@@ -26,7 +26,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   String userSig;
 
   /// 会议id
-  String meetTitle = 'Test的沙龙';
+  String meetTitle = '''Test's Salon''';
 
   final meetIdFocusNode = FocusNode();
   final userFocusNode = FocusNode();
@@ -45,7 +45,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
       userName = (loginUserName != null && loginUserName != "")
           ? loginUserName
           : 'id：$userId';
-      meetTitle = '$userName的主题';
+      meetTitle = Languages.of(context).defaultChatTitle(userName);
     });
   }
 
@@ -66,27 +66,29 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
 
   _isVerifyInputOk() {
     if (GenerateTestUserSig.sdkAppId == 0) {
-      TxUtils.showErrorToast('请填写SDKAPPID', context);
+      TxUtils.showErrorToast(Languages.of(context).errorsdkAppId, context);
       return false;
     }
     if (GenerateTestUserSig.secretKey == '') {
-      TxUtils.showErrorToast('请填写密钥', context);
+      TxUtils.showErrorToast(Languages.of(context).errorSecretKey, context);
       return false;
     }
     meetTitle = meetTitle.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     if (meetTitle == '') {
-      TxUtils.showErrorToast('请输入房间主题', context);
+      TxUtils.showErrorToast(Languages.of(context).errorMeetTitle, context);
       return false;
     } else if (meetTitle.toString().length > 250) {
-      TxUtils.showErrorToast('房间主题过长，请输入合法的房间主题', context);
+      TxUtils.showErrorToast(
+          Languages.of(context).errorMeetTitleLength, context);
       return false;
     }
     userName = userName.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     if (userName == '') {
-      TxUtils.showErrorToast('请输入用户名', context);
+      TxUtils.showErrorToast(Languages.of(context).errorUserName, context);
       return false;
     } else if (userName.length > 10) {
-      TxUtils.showErrorToast('用户名过长，请输入合法的用户名', context);
+      TxUtils.showErrorToast(
+          Languages.of(context).errorUserNameLength, context);
       return false;
     }
     return true;
@@ -120,7 +122,8 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
         TxUtils.showErrorToast(ex.toString(), context);
       }
     } else {
-      TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
+      TxUtils.showErrorToast(
+          Languages.of(context).errorMicrophonePermission, context);
     }
   }
 
@@ -128,7 +131,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('创建语音沙龙'),
+        title: Text(Languages.of(context).createSalonTooltip),
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
@@ -189,8 +192,8 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                         ),
                         focusNode: meetIdFocusNode,
                         decoration: InputDecoration(
-                          labelText: "主题",
-                          hintText: "默认房间名称",
+                          labelText: Languages.of(context).meetTitleLabel,
+                          hintText: Languages.of(context).meetTitleHintText,
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
@@ -216,8 +219,8 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                         ),
                         focusNode: userFocusNode,
                         decoration: InputDecoration(
-                          labelText: "用户名",
-                          hintText: "默认用户名",
+                          labelText: Languages.of(context).userNameLabel,
+                          hintText: Languages.of(context).userNameHintText,
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
@@ -237,8 +240,8 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                     Expanded(
                       child: RaisedButton(
                         padding: EdgeInsets.all(15.0),
-                        child: Text("开始交谈"),
-                        color: Theme.of(context).primaryColor, //#0062E3;
+                        child: Text(Languages.of(context).startSalon),
+                        color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         onPressed: createVoiceRoom,
                       ),

@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2021-03-12T15:34:51.473478",
+  "@@last_modified": "2021-03-12T16:12:57.460803",
   "trtc": "TRTC",
   "@trtc": {
     "type": "text",
@@ -72,6 +72,120 @@
   },
   "userIDHintText": "请输入登录的UserID",
   "@userIDHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorOpenUrl": "打开地址失败",
+  "@errorOpenUrl": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "helpTooltip": "查看说明文档",
+  "@helpTooltip": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshText": "下拉刷新",
+  "@refreshText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshReadyText": "准备刷新数据",
+  "@refreshReadyText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshingText": "正在刷新中...",
+  "@refreshingText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "refreshedText": "刷新完成",
+  "@refreshedText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noHadSalon": "暂无语音沙龙",
+  "@noHadSalon": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "onLineCount": "{memberCount}人在线",
+  "@onLineCount": {
+    "type": "text",
+    "placeholders": {
+      "memberCount": {}
+    }
+  },
+  "defaultChatTitle": "{userName}的主题",
+  "@defaultChatTitle": {
+    "type": "text",
+    "placeholders": {
+      "userName": {}
+    }
+  },
+  "errorsdkAppId": "请填写SDKAPPID",
+  "@errorsdkAppId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorSecretKey": "请填写密钥",
+  "@errorSecretKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMeetTitle": "请输入房间主题",
+  "@errorMeetTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMeetTitleLength": "房间主题过长，请输入合法的房间主题",
+  "@errorMeetTitleLength": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserName": "请输入用户名",
+  "@errorUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserNameLength": "用户名过长，请输入合法的用户名",
+  "@errorUserNameLength": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorMicrophonePermission": "需要获取音视频权限才能进入",
+  "@errorMicrophonePermission": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "createSalonTooltip": "创建语音沙龙",
+  "@createSalonTooltip": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "meetTitleLabel": "主题",
+  "@meetTitleLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "meetTitleHintText": "请输入房间名称",
+  "@meetTitleHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userNameLabel": "用户名",
+  "@userNameLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userNameHintText": "请输入用户名",
+  "@userNameHintText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "startSalon": "开始交谈",
+  "@startSalon": {
     "type": "text",
     "placeholders": {}
   }

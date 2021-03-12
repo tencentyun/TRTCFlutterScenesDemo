@@ -43,6 +43,46 @@ class Languages {
   String get userIDLabel => Intl.message('用户ID', name: 'userIDLabel');
   String get userIDHintText =>
       Intl.message('请输入登录的UserID', name: 'userIDHintText');
+
+  /*
+   * VoiceRoomList.dart start
+   */
+  String get errorOpenUrl => Intl.message('打开地址失败', name: 'errorOpenUrl');
+  String get helpTooltip => Intl.message('查看说明文档', name: 'helpTooltip');
+  String get refreshText => Intl.message('下拉刷新', name: 'refreshText');
+  String get refreshReadyText =>
+      Intl.message('准备刷新数据', name: 'refreshReadyText');
+  String get refreshingText => Intl.message('正在刷新中...', name: 'refreshingText');
+  String get refreshedText => Intl.message('刷新完成', name: 'refreshedText');
+  String get noHadSalon => Intl.message('暂无语音沙龙', name: 'noHadSalon');
+  String onLineCount(int memberCount) =>
+      Intl.message('$memberCount人在线', name: 'onLineCount', args: [memberCount]);
+
+  /*
+   * VoiceRoomCreate.dart start
+   */
+  String defaultChatTitle(String userName) =>
+      Intl.message('$userName的主题', name: 'defaultChatTitle', args: [userName]);
+  String get errorsdkAppId =>
+      Intl.message('请填写SDKAPPID', name: 'errorsdkAppId');
+  String get errorSecretKey => Intl.message('请填写密钥', name: 'errorSecretKey');
+  String get errorMeetTitle => Intl.message('请输入房间主题', name: 'errorMeetTitle');
+  String get errorMeetTitleLength =>
+      Intl.message('房间主题过长，请输入合法的房间主题', name: 'errorMeetTitleLength');
+  String get errorUserName => Intl.message('请输入用户名', name: 'errorUserName');
+  String get errorUserNameLength =>
+      Intl.message('用户名过长，请输入合法的用户名', name: 'errorUserNameLength');
+  String get errorMicrophonePermission =>
+      Intl.message('需要获取音视频权限才能进入', name: 'errorMicrophonePermission');
+  String get createSalonTooltip =>
+      Intl.message('创建语音沙龙', name: 'createSalonTooltip');
+  String get meetTitleLabel => Intl.message('主题', name: 'meetTitleLabel');
+  String get meetTitleHintText =>
+      Intl.message('请输入房间名称', name: 'meetTitleHintText');
+  String get userNameLabel => Intl.message('用户名', name: 'userNameLabel');
+  String get userNameHintText =>
+      Intl.message('请输入用户名', name: 'userNameHintText');
+  String get startSalon => Intl.message('开始交谈', name: 'startSalon');
 }
 
 //Locale代理类

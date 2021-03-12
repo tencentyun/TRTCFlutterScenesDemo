@@ -7,6 +7,7 @@ import '../../../utils/TxUtils.dart';
 import '../../../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
 import '../../../TRTCChatSalonDemo/model/TRTCChatSalonDef.dart';
 import '../../../base/YunApiHelper.dart';
+import '../../../i10n/localization_intl.dart';
 
 /*
  * 房间列表
@@ -26,7 +27,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
       await launch(url);
     } else {
       Toast.show(
-        "打开地址失败",
+        Languages.of(context).errorOpenUrl,
         context,
         duration: Toast.LENGTH_SHORT,
         gravity: Toast.CENTER,
@@ -100,7 +101,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text('语音沙龙'),
+          title: Text(Languages.of(context).salonTitle),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios), //color: Colors.black
@@ -117,7 +118,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.contact_support),
-              tooltip: '查看说明文档',
+              tooltip: Languages.of(context).helpTooltip,
               onPressed: () {
                 this.openUrl(
                     'https://cloud.tencent.com/document/product/647/35428');
@@ -146,16 +147,16 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           ),
           child: EasyRefresh(
             header: ClassicalHeader(
-              refreshText: '下拉刷新',
-              refreshReadyText: '准备刷新数据',
-              refreshingText: '正在刷新中...',
-              refreshedText: '刷新完成',
+              refreshText: Languages.of(context).refreshText,
+              refreshReadyText: Languages.of(context).refreshReadyText,
+              refreshingText: Languages.of(context).refreshingText,
+              refreshedText: Languages.of(context).refreshedText,
               showInfo: false,
             ),
             emptyWidget: roomCount <= 0
                 ? Center(
                     child: Text(
-                      '暂无语音沙龙',
+                      Languages.of(context).noHadSalon,
                       style: TextStyle(color: Colors.white),
                     ),
                   )
@@ -199,7 +200,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                   children: [
                                     Text(
                                       info.roomName == null
-                                          ? "无主题"
+                                          ? "--"
                                           : info.roomName,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -235,7 +236,8 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      info.memberCount.toString() + '人在线',
+                                      Languages.of(context)
+                                          .onLineCount(info.memberCount),
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -264,7 +266,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
             "/chatSalon/roomCreate",
           )
         },
-        tooltip: '创建语音聊天室',
+        tooltip: Languages.of(context).createSalonTooltip,
         child: Icon(Icons.add),
       ),
     );
