@@ -83,6 +83,39 @@ class Languages {
   String get userNameHintText =>
       Intl.message('请输入用户名', name: 'userNameHintText');
   String get startSalon => Intl.message('开始交谈', name: 'startSalon');
+
+  /*
+   * VoiceRoomPage.dart
+   */
+  String get failEnterRoom => Intl.message('进房失败', name: 'failEnterRoom');
+  String get failKickedOffline =>
+      Intl.message('已在其他地方登陆，请重新登录', name: 'failKickedOffline');
+  String get failRoomDestroy => Intl.message('沙龙已结束。', name: 'failRoomDestroy');
+  String get failRefuseToSpeak =>
+      Intl.message('抱歉，管理员没有同意您上麦', name: 'failRefuseToSpeak');
+  String userRaiseHand(String userName) =>
+      Intl.message('$userName申请成为主播', name: 'userRaiseHand', args: [userName]);
+  String get hadKickMic => Intl.message('你已被主播踢下麦', name: 'hadKickMic');
+  String get successCreateRoom =>
+      Intl.message('房间创建成功。', name: 'successCreateRoom');
+  String get successEnterRoom => Intl.message('进房成功', name: 'successEnterRoom');
+  String get successAdminEnterRoom =>
+      Intl.message('房主占座成功。', name: 'successAdminEnterRoom');
+  String get successRaiseHand =>
+      Intl.message('举手成功！等待管理员通过~', name: 'successRaiseHand');
+
+  String get adminLeaveRoomTips =>
+      Intl.message('离开会解散房间，确定离开吗?', name: 'adminLeaveRoomTips');
+  String get leaveRoomTips => Intl.message('确定离开房间吗?', name: 'leaveRoomTips');
+  String get waitTips => Intl.message('再等等', name: 'waitTips');
+  String get iSure => Intl.message('我确定', name: 'iSure');
+  String get welcome => Intl.message('欢迎', name: 'welcome');
+  String get ignore => Intl.message('忽略', name: 'ignore');
+  String get anchor => Intl.message('主播', name: 'anchor');
+  String get audience => Intl.message('听众', name: 'audience');
+  String get kickMic => Intl.message('要求下麦', name: 'kickMic');
+  String get raiseUpList => Intl.message('举手列表', name: 'raiseUpList');
+  String get leaveTips => Intl.message('安静离开~', name: 'leaveTips');
 }
 
 //Locale代理类

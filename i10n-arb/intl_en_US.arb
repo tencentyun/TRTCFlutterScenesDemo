@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2021-03-12T16:12:57.460803",
+  "@@last_modified": "2021-03-12T16:39:52.953569",
   "trtc": "TRTC",
   "@trtc": {
     "type": "text",
@@ -186,6 +186,113 @@
   },
   "startSalon": "开始交谈",
   "@startSalon": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failEnterRoom": "进房失败",
+  "@failEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failKickedOffline": "已在其他地方登陆，请重新登录",
+  "@failKickedOffline": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failRoomDestroy": "沙龙已结束。",
+  "@failRoomDestroy": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "failRefuseToSpeak": "抱歉，管理员没有同意您上麦",
+  "@failRefuseToSpeak": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userRaiseHand": "{userName}申请成为主播",
+  "@userRaiseHand": {
+    "type": "text",
+    "placeholders": {
+      "userName": {}
+    }
+  },
+  "hadKickMic": "你已被主播踢下麦",
+  "@hadKickMic": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successCreateRoom": "房间创建成功。",
+  "@successCreateRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successEnterRoom": "进房成功",
+  "@successEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successAdminEnterRoom": "房主占座成功。",
+  "@successAdminEnterRoom": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successRaiseHand": "举手成功！等待管理员通过~",
+  "@successRaiseHand": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "adminLeaveRoomTips": "离开会解散房间，确定离开吗?",
+  "@adminLeaveRoomTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "leaveRoomTips": "确定离开房间吗?",
+  "@leaveRoomTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "waitTips": "再等等",
+  "@waitTips": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iSure": "我确定",
+  "@iSure": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "welcome": "欢迎",
+  "@welcome": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "ignore": "忽略",
+  "@ignore": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "anchor": "主播",
+  "@anchor": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "audience": "听众",
+  "@audience": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "kickMic": "要求下麦",
+  "@kickMic": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "raiseUpList": "举手列表",
+  "@raiseUpList": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "leaveTips": "安静离开~",
+  "@leaveTips": {
     "type": "text",
     "placeholders": {}
   }

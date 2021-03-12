@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
+import '../../../i10n/localization_intl.dart';
 
 class AnchorItem extends StatefulWidget {
   AnchorItem({
@@ -47,7 +48,7 @@ class _AnchorItemState extends State<AnchorItem>
                         widget.onKickOutUser();
                       },
                       title: Text(
-                        '要求下麦',
+                        Languages.of(context).kickMic,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color.fromRGBO(235, 240, 250, 1),
@@ -70,7 +71,7 @@ class _AnchorItemState extends State<AnchorItem>
                         Navigator.pop(context);
                       },
                       title: Text(
-                        '取消',
+                        Languages.of(context).cancelText,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color.fromRGBO(235, 240, 250, 0.5),
