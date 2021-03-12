@@ -1,12 +1,12 @@
 
 # 生成intl_messages.arb文件
-flutter pub pub run intl_translation:extract_to_arb --output-dir=i10n-arb lib/i10n/localization_intl.dart
+# flutter pub pub run intl_translation:extract_to_arb --output-dir=i10n-arb lib/i10n/localization_intl.dart
 
-# 复制生成一份intl_zh_CN.arb文件
-rm i10n-arb/intl_zh_CN.arb
-rm i10n-arb/intl_en_US.arb
-cp i10n-arb/intl_messages.arb i10n-arb/intl_zh_CN.arb
-cp i10n-arb/intl_messages.arb i10n-arb/intl_en_US.arb
+# # 复制生成一份intl_zh_CN.arb文件
+# rm i10n-arb/intl_zh_CN.arb
+# rm i10n-arb/intl_en_US.arb
+# cp i10n-arb/intl_messages.arb i10n-arb/intl_zh_CN.arb
+# cp i10n-arb/intl_messages.arb i10n-arb/intl_en_US.arb
 
 
 #  在文件intl_zh_CN.arb添加 "@@locale":"zh_CN"  ,

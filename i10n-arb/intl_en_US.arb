@@ -5,12 +5,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "logout": "退出",
+  "logout": "Logout",
   "@logout": {
     "type": "text",
     "placeholders": {}
   },
-  "salonTitle": "语音沙龙",
+  "salonTitle": "Chat Salon",
   "@salonTitle": {
     "type": "text",
     "placeholders": {}
@@ -20,278 +20,278 @@
     "type": "text",
     "placeholders": {}
   },
-  "login": "登录",
+  "login": "Login",
   "@login": {
     "type": "text",
     "placeholders": {}
   },
-  "okText": "确定",
+  "okText": "Confirm",
   "@okText": {
     "type": "text",
     "placeholders": {}
   },
-  "cancelText": "取消",
+  "cancelText": "Cancel",
   "@cancelText": {
     "type": "text",
     "placeholders": {}
   },
-  "tipsText": "提示",
+  "tipsText": "Tips",
   "@tipsText": {
     "type": "text",
     "placeholders": {}
   },
-  "logoutContent": "确定退出登录吗?",
+  "logoutContent": "Are you sure to log out?",
   "@logoutContent": {
     "type": "text",
     "placeholders": {}
   },
-  "errorUserIDInput": "请输入用户ID",
+  "errorUserIDInput": "User ID is empty",
   "@errorUserIDInput": {
     "type": "text",
     "placeholders": {}
   },
-  "errorUserIDNumber": "用户ID必须为数字",
+  "errorUserIDNumber": "User ID must be number",
   "@errorUserIDNumber": {
     "type": "text",
     "placeholders": {}
   },
-  "successLogin": "登录成功",
+  "successLogin": "Login success",
   "@successLogin": {
     "type": "text",
     "placeholders": {}
   },
-  "tencentTRTC": "腾讯云TRTC",
+  "tencentTRTC": "Tencent TRTC",
   "@tencentTRTC": {
     "type": "text",
     "placeholders": {}
   },
-  "userIDLabel": "用户ID",
+  "userIDLabel": "User ID",
   "@userIDLabel": {
     "type": "text",
     "placeholders": {}
   },
-  "userIDHintText": "请输入登录的UserID",
+  "userIDHintText": "Please input user ID",
   "@userIDHintText": {
     "type": "text",
     "placeholders": {}
   },
-  "errorOpenUrl": "打开地址失败",
+  "errorOpenUrl": "Failed to open address",
   "@errorOpenUrl": {
     "type": "text",
     "placeholders": {}
   },
-  "helpTooltip": "查看说明文档",
+  "helpTooltip": "View documentation",
   "@helpTooltip": {
     "type": "text",
     "placeholders": {}
   },
-  "refreshText": "下拉刷新",
+  "refreshText": "Pull down to refresh",
   "@refreshText": {
     "type": "text",
     "placeholders": {}
   },
-  "refreshReadyText": "准备刷新数据",
+  "refreshReadyText": "Start refresh",
   "@refreshReadyText": {
     "type": "text",
     "placeholders": {}
   },
-  "refreshingText": "正在刷新中...",
+  "refreshingText": "loading…",
   "@refreshingText": {
     "type": "text",
     "placeholders": {}
   },
-  "refreshedText": "刷新完成",
+  "refreshedText": "Refresh complete",
   "@refreshedText": {
     "type": "text",
     "placeholders": {}
   },
-  "noHadSalon": "暂无语音沙龙",
+  "noHadSalon": "No content yet~",
   "@noHadSalon": {
     "type": "text",
     "placeholders": {}
   },
-  "onLineCount": "{memberCount}人在线",
+  "onLineCount": "{memberCount} people online",
   "@onLineCount": {
     "type": "text",
     "placeholders": {
       "memberCount": {}
     }
   },
-  "defaultChatTitle": "{userName}的主题",
+  "defaultChatTitle": "{userName} default room topic",
   "@defaultChatTitle": {
     "type": "text",
     "placeholders": {
       "userName": {}
     }
   },
-  "errorsdkAppId": "请填写SDKAPPID",
+  "errorsdkAppId": "Invalid appid",
   "@errorsdkAppId": {
     "type": "text",
     "placeholders": {}
   },
-  "errorSecretKey": "请填写密钥",
+  "errorSecretKey": "Invalid secretKey ",
   "@errorSecretKey": {
     "type": "text",
     "placeholders": {}
   },
-  "errorMeetTitle": "请输入房间主题",
+  "errorMeetTitle": "Topic is empty",
   "@errorMeetTitle": {
     "type": "text",
     "placeholders": {}
   },
-  "errorMeetTitleLength": "房间主题过长，请输入合法的房间主题",
+  "errorMeetTitleLength": "Topic is too long",
   "@errorMeetTitleLength": {
     "type": "text",
     "placeholders": {}
   },
-  "errorUserName": "请输入用户名",
+  "errorUserName": "Nickname or user name is empty",
   "@errorUserName": {
     "type": "text",
     "placeholders": {}
   },
-  "errorUserNameLength": "用户名过长，请输入合法的用户名",
+  "errorUserNameLength": "Nickname or user name is too long",
   "@errorUserNameLength": {
     "type": "text",
     "placeholders": {}
   },
-  "errorMicrophonePermission": "需要获取音视频权限才能进入",
+  "errorMicrophonePermission": "Need to obtain audio permissions to enter",
   "@errorMicrophonePermission": {
     "type": "text",
     "placeholders": {}
   },
-  "createSalonTooltip": "创建语音沙龙",
+  "createSalonTooltip": "Create a chat salon room",
   "@createSalonTooltip": {
     "type": "text",
     "placeholders": {}
   },
-  "meetTitleLabel": "主题",
+  "meetTitleLabel": "Topic",
   "@meetTitleLabel": {
     "type": "text",
     "placeholders": {}
   },
-  "meetTitleHintText": "请输入房间名称",
+  "meetTitleHintText": "Please input topic",
   "@meetTitleHintText": {
     "type": "text",
     "placeholders": {}
   },
-  "userNameLabel": "用户名",
+  "userNameLabel": "User ID",
   "@userNameLabel": {
     "type": "text",
     "placeholders": {}
   },
-  "userNameHintText": "请输入用户名",
+  "userNameHintText": "Please input user ID",
   "@userNameHintText": {
     "type": "text",
     "placeholders": {}
   },
-  "startSalon": "开始交谈",
+  "startSalon": "Let’s go",
   "@startSalon": {
     "type": "text",
     "placeholders": {}
   },
-  "failEnterRoom": "进房失败",
+  "failEnterRoom": "Enter room failed",
   "@failEnterRoom": {
     "type": "text",
     "placeholders": {}
   },
-  "failKickedOffline": "已在其他地方登陆，请重新登录",
+  "failKickedOffline": "Already logged in elsewhere, please log in again",
   "@failKickedOffline": {
     "type": "text",
     "placeholders": {}
   },
-  "failRoomDestroy": "沙龙已结束。",
+  "failRoomDestroy": "The host has closed the room",
   "@failRoomDestroy": {
     "type": "text",
     "placeholders": {}
   },
-  "failRefuseToSpeak": "抱歉，管理员没有同意您上麦",
+  "failRefuseToSpeak": "Sorry, the administrator did not agree",
   "@failRefuseToSpeak": {
     "type": "text",
     "placeholders": {}
   },
-  "userRaiseHand": "{userName}申请成为主播",
+  "userRaiseHand": "{userName} applies to become a speaker",
   "@userRaiseHand": {
     "type": "text",
     "placeholders": {
       "userName": {}
     }
   },
-  "hadKickMic": "你已被主播踢下麦",
+  "hadKickMic": "You have been kicked off by the administrator",
   "@hadKickMic": {
     "type": "text",
     "placeholders": {}
   },
-  "successCreateRoom": "房间创建成功。",
+  "successCreateRoom": "Create room success",
   "@successCreateRoom": {
     "type": "text",
     "placeholders": {}
   },
-  "successEnterRoom": "进房成功",
+  "successEnterRoom": "Enter room success",
   "@successEnterRoom": {
     "type": "text",
     "placeholders": {}
   },
-  "successAdminEnterRoom": "房主占座成功。",
+  "successAdminEnterRoom": "Host succeeded in occupying the seat",
   "@successAdminEnterRoom": {
     "type": "text",
     "placeholders": {}
   },
-  "successRaiseHand": "举手成功！等待管理员通过~",
+  "successRaiseHand": "You raised your hand! We'll let the speakers know you want to talk~",
   "@successRaiseHand": {
     "type": "text",
     "placeholders": {}
   },
-  "adminLeaveRoomTips": "离开会解散房间，确定离开吗?",
+  "adminLeaveRoomTips": "you want to end the room?",
   "@adminLeaveRoomTips": {
     "type": "text",
     "placeholders": {}
   },
-  "leaveRoomTips": "确定离开房间吗?",
+  "leaveRoomTips": "You want to leave the room?",
   "@leaveRoomTips": {
     "type": "text",
     "placeholders": {}
   },
-  "waitTips": "再等等",
+  "waitTips": "Wait a bit",
   "@waitTips": {
     "type": "text",
     "placeholders": {}
   },
-  "iSure": "我确定",
+  "iSure": "Confirm",
   "@iSure": {
     "type": "text",
     "placeholders": {}
   },
-  "welcome": "欢迎",
+  "welcome": "Welcome",
   "@welcome": {
     "type": "text",
     "placeholders": {}
   },
-  "ignore": "忽略",
+  "ignore": "Dismiss",
   "@ignore": {
     "type": "text",
     "placeholders": {}
   },
-  "anchor": "主播",
+  "anchor": "Speakers",
   "@anchor": {
     "type": "text",
     "placeholders": {}
   },
-  "audience": "听众",
+  "audience": "Audiences",
   "@audience": {
     "type": "text",
     "placeholders": {}
   },
-  "kickMic": "要求下麦",
+  "kickMic": "Move to the audience",
   "@kickMic": {
     "type": "text",
     "placeholders": {}
   },
-  "raiseUpList": "举手列表",
+  "raiseUpList": "Raised hands",
   "@raiseUpList": {
     "type": "text",
     "placeholders": {}
   },
-  "leaveTips": "安静离开~",
+  "leaveTips": "Leave quietly ",
   "@leaveTips": {
     "type": "text",
     "placeholders": {}
