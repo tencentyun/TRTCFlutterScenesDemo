@@ -5,6 +5,7 @@ import '../utils/constants.dart' as constants;
 import '../debug/GenerateTestUserSig.dart';
 import '../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
 import '../TRTCChatSalonDemo/model/TRTCChatSalonDef.dart';
+import '../i10n/localization_intl.dart';
 
 /*
  *  登录界面
@@ -26,11 +27,11 @@ class LoginPageState extends State<LoginPage> {
 
   login(context) async {
     if (userId == '') {
-      TxUtils.showErrorToast('请输入用户ID', context);
+      TxUtils.showErrorToast(Languages.of(context).errorUserIDInput, context);
       return;
     }
     if (double.tryParse(userId) == null) {
-      TxUtils.showErrorToast('用户ID必须为数字', context);
+      TxUtils.showErrorToast(Languages.of(context).errorUserIDNumber, context);
       return;
     }
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
@@ -43,7 +44,7 @@ class LoginPageState extends State<LoginPage> {
     await trtcVoiceRoom.setSelfProfile(
         'ID:' + userId, constants.DEFAULT_ROOM_IMAGE);
     if (resValue.code == 0) {
-      TxUtils.showToast('登录成功', context);
+      TxUtils.showToast(Languages.of(context).successLogin, context);
       TxUtils.setStorageByKey(constants.USERID_KEY, userId);
       Navigator.pushNamed(context, "/index");
     } else {
@@ -70,7 +71,7 @@ class LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('腾讯云TRTC'),
+        title: Text(Languages.of(context).tencentTRTC),
         centerTitle: true,
         elevation: 0,
         // automaticallyImplyLeading: false,
@@ -99,13 +100,11 @@ class LoginPageState extends State<LoginPage> {
                         autofocus: true,
                         focusNode: userFocusNode,
                         decoration: InputDecoration(
-                          labelText: "用户ID",
-                          hintText: "请输入登录的UserID",
-
+                          labelText: Languages.of(context).userIDLabel,
+                          hintText: Languages.of(context).userIDHintText,
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
-                          //border: InputBorder.none,
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -122,7 +121,7 @@ class LoginPageState extends State<LoginPage> {
                     Expanded(
                       child: RaisedButton(
                         padding: EdgeInsets.all(15.0),
-                        child: Text("登录"),
+                        child: Text(Languages.of(context).login),
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         onPressed: () => login(context),

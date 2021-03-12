@@ -1,8 +1,17 @@
 {
-  "@@last_modified": "2021-03-12T14:51:11.179997",
-  "@@locale": "zh_CN",
-  "title": "实时音视频",
-  "@title": {
+  "@@last_modified": "2021-03-12T15:34:51.473478",
+  "trtc": "TRTC",
+  "@trtc": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "logout": "退出",
+  "@logout": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "salonTitle": "语音沙龙",
+  "@salonTitle": {
     "type": "text",
     "placeholders": {}
   },
@@ -21,8 +30,48 @@
     "type": "text",
     "placeholders": {}
   },
-  "canalText": "取消",
-  "@canalText": {
+  "cancelText": "取消",
+  "@cancelText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tipsText": "提示",
+  "@tipsText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "logoutContent": "确定退出登录吗?",
+  "@logoutContent": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserIDInput": "请输入用户ID",
+  "@errorUserIDInput": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "errorUserIDNumber": "用户ID必须为数字",
+  "@errorUserIDNumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "successLogin": "登录成功",
+  "@successLogin": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tencentTRTC": "腾讯云TRTC",
+  "@tencentTRTC": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userIDLabel": "用户ID",
+  "@userIDLabel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "userIDHintText": "请输入登录的UserID",
+  "@userIDHintText": {
     "type": "text",
     "placeholders": {}
   }

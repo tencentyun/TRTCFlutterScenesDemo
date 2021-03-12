@@ -18,12 +18,31 @@ class Languages {
     return Localizations.of<Languages>(context, Languages);
   }
 
-  String get title => Intl.message('TRTC', name: 'title');
+  /*
+   * index.dart start
+   */
+  String get trtc => Intl.message('TRTC', name: 'trtc');
+  String get logout => Intl.message('退出', name: 'logout');
+  String get salonTitle => Intl.message('语音沙龙', name: 'salonTitle');
   String get titleTRTC => Intl.message('TRTC', name: 'titleTRTC');
-
   String get login => Intl.message('登录', name: 'login');
   String get okText => Intl.message('确定', name: 'okText');
-  String get canalText => Intl.message('取消', name: 'canalText');
+  String get cancelText => Intl.message('取消', name: 'cancelText');
+  String get tipsText => Intl.message('提示', name: 'tipsText');
+  String get logoutContent => Intl.message('确定退出登录吗?', name: 'logoutContent');
+
+  /*
+   * login.dart start
+   */
+  String get errorUserIDInput =>
+      Intl.message('请输入用户ID', name: 'errorUserIDInput');
+  String get errorUserIDNumber =>
+      Intl.message('用户ID必须为数字', name: 'errorUserIDNumber');
+  String get successLogin => Intl.message('登录成功', name: 'successLogin');
+  String get tencentTRTC => Intl.message('腾讯云TRTC', name: 'tencentTRTC');
+  String get userIDLabel => Intl.message('用户ID', name: 'userIDLabel');
+  String get userIDHintText =>
+      Intl.message('请输入登录的UserID', name: 'userIDHintText');
 }
 
 //Locale代理类

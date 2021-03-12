@@ -21,10 +21,20 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-    "canalText" : MessageLookupByLibrary.simpleMessage("取消"),
+    "cancelText" : MessageLookupByLibrary.simpleMessage("取消"),
+    "errorUserIDInput" : MessageLookupByLibrary.simpleMessage("请输入用户ID"),
+    "errorUserIDNumber" : MessageLookupByLibrary.simpleMessage("用户ID必须为数字"),
     "login" : MessageLookupByLibrary.simpleMessage("登录"),
+    "logout" : MessageLookupByLibrary.simpleMessage("退出"),
+    "logoutContent" : MessageLookupByLibrary.simpleMessage("确定退出登录吗?"),
     "okText" : MessageLookupByLibrary.simpleMessage("确定"),
-    "title" : MessageLookupByLibrary.simpleMessage("TRTC"),
-    "titleTRTC" : MessageLookupByLibrary.simpleMessage("TRTC")
+    "salonTitle" : MessageLookupByLibrary.simpleMessage("语音沙龙"),
+    "successLogin" : MessageLookupByLibrary.simpleMessage("登录成功"),
+    "tencentTRTC" : MessageLookupByLibrary.simpleMessage("腾讯云TRTC"),
+    "tipsText" : MessageLookupByLibrary.simpleMessage("提示"),
+    "titleTRTC" : MessageLookupByLibrary.simpleMessage("TRTC"),
+    "trtc" : MessageLookupByLibrary.simpleMessage("TRTC"),
+    "userIDHintText" : MessageLookupByLibrary.simpleMessage("请输入登录的UserID"),
+    "userIDLabel" : MessageLookupByLibrary.simpleMessage("用户ID")
   };
 }
