@@ -160,7 +160,7 @@ static void destroySharedInstance()
 
 设置事件监听
 
-```java
+```
 void registerListener(VoiceListenerFunc func)
 ```
 
@@ -322,7 +322,7 @@ Future<UserListCallback> getUserInfoList(List<String> userIdList)
 
 >?上麦成功后，房间内所有成员会收到`onAnchorEnterSeat`的事件通知。
 
-```java
+```
 Future<ActionCallback> enterMic();
 ```
 
