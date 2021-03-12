@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../debug/Config.dart';
+import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 
 class YunApiHelper {
   static String _url =
@@ -11,7 +11,7 @@ class YunApiHelper {
       _url,
       queryParameters: {
         "method": "createRoom",
-        "appId": Config.sdkAppId,
+        "appId": GenerateTestUserSig.sdkAppId,
         "type": 'voiceRoom',
         "roomId": roomId
       },
@@ -25,7 +25,7 @@ class YunApiHelper {
       _url,
       queryParameters: {
         "method": "destroyRoom",
-        "appId": Config.sdkAppId,
+        "appId": GenerateTestUserSig.sdkAppId,
         "type": 'voiceRoom',
         "roomId": roomId
       },
@@ -39,7 +39,7 @@ class YunApiHelper {
       _url,
       queryParameters: {
         "method": "getRoomList",
-        "appId": Config.sdkAppId,
+        "appId": GenerateTestUserSig.sdkAppId,
         "type": 'voiceRoom'
       },
     );
