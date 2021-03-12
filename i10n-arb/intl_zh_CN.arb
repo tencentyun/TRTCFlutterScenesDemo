@@ -1,0 +1,29 @@
+{
+  "@@last_modified": "2021-03-12T14:51:11.179997",
+  "@@locale": "zh_CN",
+  "title": "实时音视频",
+  "@title": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "titleTRTC": "TRTC",
+  "@titleTRTC": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "login": "登录",
+  "@login": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "okText": "确定",
+  "@okText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "canalText": "取消",
+  "@canalText": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a messages locale. All the
+// This is a library that provides messages for a en_US locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -17,14 +17,14 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'messages';
+  String get localeName => 'en_US';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "canalText" : MessageLookupByLibrary.simpleMessage("取消"),
     "login" : MessageLookupByLibrary.simpleMessage("登录"),
     "okText" : MessageLookupByLibrary.simpleMessage("确定"),
-    "title" : MessageLookupByLibrary.simpleMessage("TRTC"),
+    "title" : MessageLookupByLibrary.simpleMessage("TRTC--"),
     "titleTRTC" : MessageLookupByLibrary.simpleMessage("TRTC")
   };
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import './messages_all.dart';
 import 'package:intl/intl.dart';
+import 'messages_all.dart'; //1
 
-////国际化
 class Languages {
   static Future<Languages> load(Locale locale) {
     final String name =
         locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
+    //2
     return initializeMessages(localeName).then((b) {
       Intl.defaultLocale = localeName;
       return new Languages();
@@ -19,7 +19,11 @@ class Languages {
   }
 
   String get title => Intl.message('TRTC', name: 'title');
-  String get about => Intl.message('About', name: 'about');
+  String get titleTRTC => Intl.message('TRTC', name: 'titleTRTC');
+
+  String get login => Intl.message('登录', name: 'login');
+  String get okText => Intl.message('确定', name: 'okText');
+  String get canalText => Intl.message('取消', name: 'canalText');
 }
 
 //Locale代理类
