@@ -185,14 +185,16 @@ class _AnchorItemState extends State<AnchorItem>
                             "assets/images/Administrator.png",
                             height: 14,
                           ),
-                          Expanded(
-                            //flex: 0,
-                            //width: 60,
+                          Container(
+                            padding: EdgeInsets.only(left: 5),
+                            constraints: BoxConstraints(
+                              maxWidth: 61,
+                            ),
                             child: Text(
-                              ' ' + widget.userName,
+                              widget.userName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
+                              textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
