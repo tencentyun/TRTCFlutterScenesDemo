@@ -298,6 +298,30 @@ Future<RoomInfoCallback> getRoomInfoList(List<String> roomIdList)
 | ---------- | ------------------- | ------------------ |
 | roomIdList | List&lt;Integer&gt; | 房间号列表。       |
 
+### getRoomMemberList
+
+获取房间内所有成员列表
+
+>?IM直播聊天群默认只能拉取最近31个成员列表
+
+
+```dart
+Future<MemberListCallback> getRoomMemberList(double nextSeq)
+```
+
+参数如下表所示：
+
+| 参数       | 类型                | 含义               |
+| ---------- | ------------------- | ------------------ |
+| nextSeq | double| 分页拉取标志，第一次拉取填0，回调成功如果 nextSeq 不为零，需要分页，传入再次拉取，直至为0。       |
+
+### getArchorInfoList
+
+获取房间内主播列表。
+
+```dart
+Future<UserListCallback> getArchorInfoList()
+```
 
 ### getUserInfoList
 
