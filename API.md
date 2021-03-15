@@ -94,7 +94,7 @@ TRTCChatSalon 是一个开源的 Class，依赖腾讯云的两个闭源 SDK，�
 | ------------------------- | ---------- |
 | [onError](#onerror)       | 错误回调。 |
 | [onWarning](#onwarning)   | 警告回调。 |
-| [onKickedOffline](#onKickedOffline)   | 警告回调。 |
+| [onKickedOffline](#onKickedOffline)   | 登录同一账号，被踢下线。 |
 
 ### 房间事件回调
 
@@ -362,6 +362,16 @@ Future<ActionCallback> enterMic();
 Future<ActionCallback> leaveMic()
 ```
 
+### muteMic
+
+静音/解除静音某个麦位（主播调用）
+
+>? 改变麦位的状态后，房间内所有成员会收到`onAnchorListChange`和`onMicMute`的事件通。
+
+```dart
+Future<ActionCallback> muteMic(bool mute)
+```
+
 
 ### kickMic
 
@@ -594,6 +604,10 @@ Future<ActionCallback> refuseToSpeak(String userId)
 | warningCode    | int    | 错误码。   |
 | warningMsg | String | 警告信息。 |
 | extraInfo | String | 扩展信息字段，个别错误码可能会带额外的信息帮助定位问题。 |
+
+### onKickedOffline
+
+其他用户登录了同一账号，被踢下线。
    
 
 ## 房间事件回调
@@ -601,6 +615,17 @@ Future<ActionCallback> refuseToSpeak(String userId)
 ### onRoomDestroy
 
 房间被销毁的回调。主播解散房间时，房间内的所有用户都会收到此通知。
+
+### onAnchorListChange
+
+主播列表发生变化的通知
+
+参数如下表所示：
+
+| 参数   | 类型   | 含义                      |
+| ------ | ------ | ------------------------- |
+| userId | String | 用户 ID。                 |
+| mute | bool    | 静音状态。 |
    
 
 ### onUserVolumeUpdate
@@ -641,6 +666,16 @@ Future<ActionCallback> refuseToSpeak(String userId)
 | ----- | -------- | -------------------- |
 | userId  | String | 下麦的用户id。 |
 
+### onMicMute
+
+主播是否禁麦
+
+参数如下表所示：
+
+| 参数  | 类型     | 含义                 |
+| ----- | -------- | -------------------- |
+| userId  | String | 下麦的用户id。 |
+| mute  | bool | 麦位状态。 |
 
 ## 观众进出事件回调
 

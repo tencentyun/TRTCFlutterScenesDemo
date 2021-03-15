@@ -33,21 +33,21 @@ dependencies:
   toast: ^0.1.5
   url_launcher: ^5.1.2
   flutter_easyrefresh: ^2.1.8
-  intl: ^0.16.1
+  # intl: ^0.16.1
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
 
+# dependency_overrides:
+#   intl: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   # cupertino_icons: ^1.0.1
 
 dev_dependencies:
-  intl_translation: ^0.17.2
-  flutter_test:
-    sdk: flutter
+  # intl_translation: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
