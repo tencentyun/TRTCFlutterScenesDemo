@@ -121,7 +121,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
               tooltip: Languages.of(context).helpTooltip,
               onPressed: () {
                 this.openUrl(
-                    'https://cloud.tencent.com/document/product/647/35428');
+                    'https://cloud.tencent.com/document/product/647/53582');
               },
             ),
           ]),
