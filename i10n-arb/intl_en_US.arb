@@ -110,14 +110,14 @@
     "type": "text",
     "placeholders": {}
   },
-  "onLineCount": "{memberCount} people online",
+  "onLineCount": "{memberCount} watching",
   "@onLineCount": {
     "type": "text",
     "placeholders": {
       "memberCount": {}
     }
   },
-  "defaultChatTitle": "{userName} default room topic",
+  "defaultChatTitle": "the topic of {userName}s",
   "@defaultChatTitle": {
     "type": "text",
     "placeholders": {
