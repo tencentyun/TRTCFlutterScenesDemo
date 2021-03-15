@@ -73,7 +73,6 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
       TxUtils.showErrorToast(Languages.of(context).errorSecretKey, context);
       return false;
     }
-    meetTitle = meetTitle.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     if (meetTitle == '') {
       TxUtils.showErrorToast(Languages.of(context).errorMeetTitle, context);
       return false;

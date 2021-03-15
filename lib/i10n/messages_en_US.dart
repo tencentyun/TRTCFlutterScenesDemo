@@ -19,9 +19,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en_US';
 
-  static m0(userName) => "${userName} default room topic";
+  static m0(userName) => "the topic of ${userName}s";
 
-  static m1(memberCount) => "${memberCount} people online";
+  static m1(memberCount) => "${memberCount} watching";
 
   static m2(userName) => "${userName} applies to become a speaker";
 
