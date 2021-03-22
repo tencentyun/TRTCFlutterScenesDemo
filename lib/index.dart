@@ -78,6 +78,13 @@ class IndexPageState extends State<IndexPage> {
     );
   }
 
+  goVideoCallDemo() {
+    Navigator.pushReplacementNamed(
+      context,
+      "/calling/videoContact",
+    );
+  }
+
   Widget getTitleItem(String title, String imgUrl, Function onTap) {
     var titleItem = Container(
       height: 80.0,
@@ -160,10 +167,19 @@ class IndexPageState extends State<IndexPage> {
               crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 30),
           children: <Widget>[
             this.getTitleItem(
-                Languages.of(context).salonTitle, "assets/images/ChatSalon.png",
-                () {
-              goVoiceRoomDemo();
-            })
+              Languages.of(context).salonTitle,
+              "assets/images/ChatSalon.png",
+              () {
+                goVoiceRoomDemo();
+              },
+            ),
+            this.getTitleItem(
+              "视频通话",
+              "assets/images/callingDemo/videoCall.png",
+              () {
+                goVideoCallDemo();
+              },
+            ),
           ],
         ),
       ),
