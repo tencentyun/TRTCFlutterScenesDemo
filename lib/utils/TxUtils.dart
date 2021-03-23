@@ -50,6 +50,10 @@ class TxUtils {
     return _defaltUrlList[rng.nextInt(_defaltUrlList.length)];
   }
 
+  static getDefaltAvatarUrl() {
+    return _defaltUrlList[0];
+  }
+
   static showToast(text, context) {
     Toast.show(
       text,

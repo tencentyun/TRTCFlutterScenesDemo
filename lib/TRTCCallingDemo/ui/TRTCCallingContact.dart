@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../utils/TxUtils.dart';
+import '../../login/ProfileManager_Mock.dart';
 
 enum CallType {
   VideoOneVOne, //一对一视频通话
@@ -18,6 +19,7 @@ class TRTCCallingContact extends StatefulWidget {
 class _TRTCCallingContactState extends State<TRTCCallingContact> {
   String searchText = '';
   String myLoginInfoId = '';
+  List<UserModel> userList = [];
   goIndex() {
     Navigator.pushReplacementNamed(
       context,
@@ -34,9 +36,25 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
     return true;
   }
 
-  onSearchClick() {}
+  //搜索
+  onSearchClick() async {
+    List<UserModel> ls =
+        await ProfileManager.getInstance().queryUserInfo(searchText);
+    setState(() {
+      userList = ls;
+    });
+  }
 
-  onCallClick() {}
+  //发起通话
+  onCallClick(userInfo) {
+    Navigator.pushReplacementNamed(
+      context,
+      "/calling/videoCall",
+      arguments: {
+        "remoteUserInfo": userInfo,
+      },
+    );
+  }
 
   initUserInfo() async {
     String loginId = await TxUtils.getLoginUserId();
@@ -77,6 +95,69 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
     );
   }
 
+  getSearchResult() {
+    return CustomScrollView(
+      slivers: [
+        SliverFixedExtentList(
+          itemExtent: 55.0,
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              var userInfo = userList[index];
+              return Container(
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  children: [
+                    Container(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(44),
+                        child: Image.network(
+                          userInfo.avatar,
+                          height: 44,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        child: Text(
+                          userInfo.name,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: RaisedButton(
+                        color: Colors.green,
+                        onPressed: () {
+                          onCallClick(userInfo);
+                        },
+                        child: Text(
+                          '呼叫',
+                          style: TextStyle(fontSize: 16.0, color: Colors.white),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide.none,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+            childCount: userList.length,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var searchBtn = Row(
@@ -108,13 +189,12 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
         ),
         Container(
           margin: EdgeInsets.only(right: 20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(20.0),
-            ),
-          ),
           child: RaisedButton(
             color: Color.fromRGBO(0, 110, 255, 1.000),
+            shape: RoundedRectangleBorder(
+              side: BorderSide.none,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
             onPressed: () {
               onSearchClick();
             },
@@ -158,7 +238,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
             myInfo,
             Expanded(
               flex: 1,
-              child: getGuideSearchWidget(),
+              child: getSearchResult(), //getGuideSearchWidget(),
             ),
           ],
         ),
