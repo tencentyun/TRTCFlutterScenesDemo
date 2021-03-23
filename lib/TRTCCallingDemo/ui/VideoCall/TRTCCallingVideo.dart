@@ -154,7 +154,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                         child: Image.asset(
                           'assets/images/callingDemo/switch-camera.png',
                           height: 32,
-                          color: Colors.black,
+                          color: Color.fromRGBO(125, 123, 123, 1.0),
                         ),
                       ),
                     )
@@ -182,6 +182,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             // ExtendButton(
             //     imgUrl: "assets/images/callingDemo/switchToAudio.png",
             //     imgHieght: 18,
+            //     imgColor: Color.fromRGBO(125, 123, 123, 1.0),
             //     tips: "切到语音通话",
             //     onTap: () {},
             //   ),
