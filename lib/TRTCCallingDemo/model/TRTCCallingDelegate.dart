@@ -213,6 +213,8 @@ class VoiceRoomListener {
   }
 
   signalingListener(V2TimEventCallback data) {
+    print("==signalingListener data type=" + data.type.toString());
+    print("==signalingListener data data=" + data.data.toString());
     if (data.type == 'onInviteeAccepted') {
     } else if (data.type == 'onInviteeRejected') {
     } else if (data.type == 'onInvitationCancelled') {

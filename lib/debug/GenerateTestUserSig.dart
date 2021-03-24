@@ -19,6 +19,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'Config.dart';
 
 class GenerateTestUserSig {
   /*
@@ -27,7 +28,7 @@ class GenerateTestUserSig {
    * 进入腾讯云实时音视频[控制台](https://console.cloud.tencent.com/trtc ) 创建应用，即可看到 SDKAppId，
    * 它是腾讯云用于区分客户的唯一标识。
    */
-  static int sdkAppId = PLACEHOLDER;
+  static int sdkAppId = Config.sdkAppId;
 
   /*
    * 签名过期时间，建议不要设置的过短
@@ -47,7 +48,7 @@ class GenerateTestUserSig {
    * 注意：该方案仅适用于调试Demo，正式上线前请将 UserSig 计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
    * 文档：https://cloud.tencent.com/document/product/647/17275#Server
    */
-  static String secretKey = PLACEHOLDER;
+  static String secretKey = Config.secretKey;
 
   ///生成UserSig
   static genTestSig(String userId) {

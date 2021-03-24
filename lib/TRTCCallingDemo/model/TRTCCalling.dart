@@ -26,6 +26,9 @@ abstract class TRTCCalling {
     TRTCCallingImpl.destroySharedInstance();
   }
 
+  /// 销毁函数，如果不需要再运行该实例，请调用该接口
+  void destroy();
+
   //////////////////////////////////////////////////////////
   //
   //                 基础接口

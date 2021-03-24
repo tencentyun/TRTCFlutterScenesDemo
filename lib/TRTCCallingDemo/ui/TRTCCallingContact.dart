@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../utils/TxUtils.dart';
 import '../../login/ProfileManager_Mock.dart';
+import '../model/TRTCCalling.dart';
 
 enum CallType {
   VideoOneVOne, //一对一视频通话
@@ -40,6 +41,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   onSearchClick() async {
     List<UserModel> ls =
         await ProfileManager.getInstance().queryUserInfo(searchText);
+
     setState(() {
       userList = ls;
     });

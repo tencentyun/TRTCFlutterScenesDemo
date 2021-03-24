@@ -45,6 +45,8 @@ class TRTCCallingImpl extends TRTCCalling {
   String mCurCallID = "";
   int mCurRoomID = 0;
   String mCurGroupId = ""; //当前群组通话的群组ID
+  String mNickName;
+  String mFaceUrl;
   /*
    * 当前邀请列表
    * C2C通话时会记录自己邀请的用户
@@ -97,6 +99,13 @@ class TRTCCallingImpl extends TRTCCalling {
       sInstance = null;
     }
     TRTCCloud.destroySharedInstance();
+  }
+
+  @override
+  void destroy() {
+    mTRTCCloud.stopLocalPreview();
+    mTRTCCloud.stopLocalAudio();
+    mTRTCCloud.exitRoom();
   }
 
   @override
@@ -154,6 +163,10 @@ class TRTCCallingImpl extends TRTCCalling {
   @override
   Future<ActionCallback> logout() async {
     V2TimCallback loginRes = await timManager.logout();
+    _stopCall();
+    _exitRoom();
+    mNickName = "";
+    mFaceUrl = "";
     return ActionCallback(code: loginRes.code, desc: loginRes.desc);
   }
 
