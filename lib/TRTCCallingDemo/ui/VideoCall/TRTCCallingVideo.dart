@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:trtc_scenes_demo/login/ProfileManager_Mock.dart';
+import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 import 'dart:async';
 import '../base/ExtendButton.dart';
 import '../base/CallStatus.dart';
@@ -268,10 +269,15 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
           fit: StackFit.expand,
           children: [
             Container(
-              decoration: BoxDecoration(),
-              child: Center(
-                child: Text('本地'),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(TxUtils.getRandoAvatarUrl()),
+                  fit: BoxFit.cover,
+                ),
               ),
+              child: Center(
+                  //child: //Text('本地'),
+                  ),
             ),
             remotePanel,
             getTopBarWidget(),
