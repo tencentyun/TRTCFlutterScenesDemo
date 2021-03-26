@@ -4,11 +4,13 @@ import 'dart:math';
 import 'package:tencent_im_sdk_plugin/enum/group_add_opt_type.dart';
 import 'package:tencent_im_sdk_plugin/enum/group_member_filter_type.dart';
 import 'package:tencent_im_sdk_plugin/enum/message_priority.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_event_callback.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_full_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_info_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_signal_fullinfo.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
 import 'package:tencent_trtc_cloud/tx_beauty_manager.dart';
 
@@ -29,10 +31,45 @@ import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 
+final int VALUE_PROTOCOL_VERSION = 1;
+// 系统错误
+final int VIDEO_CALL_ACTION_ERROR = -1;
+// 未知信令
+final int VIDEO_CALL_ACTION_UNKNOWN = 0;
+// 正在呼叫
+final int VIDEO_CALL_ACTION_DIALING = 1;
+// 发起人取消
+final int VIDEO_CALL_ACTION_SPONSOR_CANCEL = 2;
+// 拒接电话
+final int VIDEO_CALL_ACTION_REJECT = 3;
+//无人接听
+final int VIDEO_CALL_ACTION_SPONSOR_TIMEOUT = 4;
+//挂断
+final int VIDEO_CALL_ACTION_HANGUP = 5;
+//电话占线
+final int VIDEO_CALL_ACTION_LINE_BUSY = 6;
+// 接听电话
+final int VIDEO_CALL_ACTION_ACCEPT = 7;
+Map<String, dynamic> initCallModel = {
+  'action': VIDEO_CALL_ACTION_UNKNOWN,
+  'version': 0,
+  'callId': null,
+  'roomId': 0,
+  'groupId': '',
+  'callType': 0,
+  'invitedList': null,
+  'duration': 0,
+  'code': 0,
+  'timestamp': 0,
+  'sender': null,
+  'timeout': null,
+  'data': null
+};
+
 class TRTCCallingImpl extends TRTCCalling {
-  String logTag = "VoiceRoomFlutterSdk";
+  String logTag = "TRTCCallingImpl";
+  VoiceListenerFunc emitEvent;
   static TRTCCallingImpl sInstance;
-  static VoiceRoomListener listener;
 
   int TIME_OUT_COUNT = 30; //超时时间，默认30s
 
@@ -47,6 +84,9 @@ class TRTCCallingImpl extends TRTCCalling {
   String mCurGroupId = ""; //当前群组通话的群组ID
   String mNickName;
   String mFaceUrl;
+
+  //最近使用的通话信令，用于快速处理
+  Map<String, dynamic> mLastCallModel = new Map.from(initCallModel);
   /*
    * 当前邀请列表
    * C2C通话时会记录自己邀请的用户
@@ -54,6 +94,9 @@ class TRTCCallingImpl extends TRTCCalling {
    * 当用户接听、拒绝、忙线、超时会从列表中移除该用户
    */
   List<String> mCurInvitedList = [];
+
+  //当前语音通话中的远端用户
+  Set mCurRoomRemoteUserSet = new Set();
   /*
   * C2C通话的邀请人
   * 例如A邀请B，B存储的mCurSponsorForMe为A
@@ -109,16 +152,175 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  void registerListener(VoiceListenerFunc func) async {
-    if (listener == null) {
-      listener = VoiceRoomListener(mTRTCCloud, timManager);
-    }
-    listener.addListener(func);
+  void registerListener(VoiceListenerFunc func) {
+    emitEvent = func;
+    //监听im事件
+    timManager.getSignalingManager().addSignalingListener(
+          listener: signalingListener,
+        );
+    //监听trtc事件
+    mTRTCCloud.registerListener(rtcListener);
   }
 
   @override
-  void unRegisterListener(VoiceListenerFunc func) async {
-    listener.removeListener(func, mTRTCCloud, timManager);
+  void unRegisterListener(VoiceListenerFunc func) {
+    emitEvent = null;
+    timManager
+        .getSignalingManager()
+        .removeSignalingListener(listener: signalingListener);
+    mTRTCCloud.unRegisterListener(rtcListener);
+  }
+
+  rtcListener(rtcType, param) {
+    String typeStr = rtcType.toString();
+    TRTCCallingDelegate type;
+    typeStr = typeStr.replaceFirst("TRTCCloudListener.", "");
+    if (typeStr == "onEnterRoom") {
+      if (param < 0) {
+        _stopCall();
+      } else {
+        mIsInRoom = true;
+      }
+    } else if (typeStr == "onError") {
+      type = TRTCCallingDelegate.onError;
+      emitEvent(type, param);
+    } else if (typeStr == "onUserVoiceVolume") {
+      type = TRTCCallingDelegate.onUserVolumeUpdate;
+      emitEvent(type, param);
+    } else if (typeStr == "onUserVideoAvailable") {
+      type = TRTCCallingDelegate.onUserVideoAvailable;
+      emitEvent(type, param);
+    } else if (typeStr == "onUserAudioAvailable") {
+      type = TRTCCallingDelegate.onUserAudioAvailable;
+      emitEvent(type, param);
+    } else if (typeStr == "onRemoteUserEnterRoom") {
+      mCurRoomRemoteUserSet.add(param);
+      // 只有单聊这个时间才是正确的，因为单聊只会有一个用户进群，群聊这个时间会被后面的人重置
+      mEnterRoomTime = DateTime.now().millisecondsSinceEpoch;
+      type = TRTCCallingDelegate.onUserEnter;
+      emitEvent(type, param);
+    } else if (typeStr == "onRemoteUserLeaveRoom") {
+      mCurRoomRemoteUserSet.remove(param['userId']);
+      mCurInvitedList.remove(param['userId']);
+      type = TRTCCallingDelegate.onUserLeave;
+      emitEvent(type, param['userId']);
+      _preExitRoom(param['userId']);
+    }
+  }
+
+  /*
+  * 重要：用于判断是否需要结束本次通话
+  * 在用户超时、拒绝、忙线、有人退出房间时需要进行判断
+  */
+  _preExitRoom(String userId) {
+    if (mCurRoomRemoteUserSet.isEmpty && mCurInvitedList.isEmpty && mIsInRoom) {
+      // 当没有其他用户在房间里了，则结束通话。
+      // if (!TextUtils.isEmpty(leaveUser)) {
+      //   if (TextUtils.isEmpty(mCurGroupId)) {
+      //     sendModel(leaveUser, CallModel.VIDEO_CALL_ACTION_HANGUP);
+      //   } else {
+      //     sendModel("", CallModel.VIDEO_CALL_ACTION_HANGUP);
+      //   }
+      // }
+      _exitRoom();
+      _stopCall();
+      emitEvent(TRTCCallingDelegate.onCallEnd, {});
+    }
+  }
+
+  signalingListener(V2TimEventCallback data) {
+    print("==signalingListener data type=" + data.type.toString());
+    print("==signalingListener data data=" + data.data.toString());
+    print("==signalingListener data inviteID=" + data.data.inviteID.toString());
+    print("==signalingListener data inviter=" + data.data.inviter.toString());
+    TRTCCallingDelegate type;
+    V2TimSignalFullinfo infoData = data.data;
+    if (data.type == 'onInviteeAccepted') {
+      if (!_isCallingData(infoData.data)) {
+        return;
+      }
+      mCurInvitedList.remove(infoData.invitee);
+    } else if (data.type == 'onInviteeRejected') {
+      if (!_isCallingData(infoData.data)) {
+        return;
+      }
+      if (mCurCallID == infoData.inviteID) {
+        try {
+          Map<String, dynamic> customMap = jsonDecode(infoData.data);
+          mCurInvitedList.remove(infoData.invitee);
+          if (customMap != null && customMap.containsKey('line_busy')) {
+            emitEvent(TRTCCallingDelegate.onLineBusy, infoData.invitee);
+          } else {
+            emitEvent(TRTCCallingDelegate.onReject, infoData.invitee);
+          }
+          _preExitRoom(null);
+        } catch (e) {
+          print(logTag +
+              "=onInviteeRejected JsonSyntaxException:" +
+              e.toString());
+        }
+      }
+    } else if (data.type == 'onInvitationCancelled') {
+      if (!_isCallingData(infoData.data)) {
+        return;
+      }
+      if (infoData.inviteID == mCurCallID) {
+        _stopCall();
+        emitEvent(TRTCCallingDelegate.onCallingCancel, {});
+      }
+    } else if (data.type == 'onInvitationTimeout') {
+      if (mCurCallID != infoData.inviteID) {
+        return;
+      }
+      //邀请者
+      if (mCurSponsorForMe.isEmpty) {
+        for (var i = 0; i < infoData.inviteeList.length; i++) {
+          emitEvent(TRTCCallingDelegate.onNoResp, infoData.inviteeList[i]);
+          mCurInvitedList.remove(infoData.inviteeList[i]);
+        }
+      } else {
+        //被邀请者
+        if (infoData.inviteeList.contains(mCurUserId)) {
+          _stopCall();
+          emitEvent(TRTCCallingDelegate.onCallingTimeout, {});
+        }
+        mCurInvitedList.remove(infoData.inviteeList);
+      }
+      // 每次超时都需要判断当前是否需要结束通话
+      _preExitRoom(null);
+      type = TRTCCallingDelegate.onCallingTimeout;
+      emitEvent(type, infoData);
+    } else if (data.type == 'onReceiveNewInvitation') {
+      if (!_isCallingData(infoData.data)) {
+        return;
+      }
+      try {
+        Map<String, dynamic> customMap = jsonDecode(infoData.data);
+        if (customMap == null) {
+          print(logTag + "onReceiveNewInvitation extraMap is null, ignore");
+          return;
+        }
+        if (customMap.containsKey('call_end')) {
+          _preExitRoom(null);
+          return;
+        }
+      } catch (e) {
+        print(logTag +
+            "=onReceiveNewInvitation JsonSyntaxException:" +
+            e.toString());
+      }
+      mCurSponsorForMe = infoData.inviter;
+      mCurCallID = infoData.inviteID;
+      type = TRTCCallingDelegate.onInvited;
+      emitEvent(type, infoData);
+    }
+  }
+
+  _initImLisener(V2TimEventCallback data) {
+    if (data.type == "onKickedOffline") {
+      TRTCCallingDelegate type = TRTCCallingDelegate.onKickedOffline;
+      emitEvent(type, {});
+    }
   }
 
   @override
@@ -129,13 +331,11 @@ class TRTCCallingImpl extends TRTCCalling {
     mCurUserSig = userSig;
 
     if (!mIsInitIMSDK) {
-      listener = VoiceRoomListener(mTRTCCloud, timManager);
       //初始化SDK
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
-        sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
-        loglevel: LogLevel.V2TIM_LOG_ERROR,
-        listener: listener.initImLisener,
-      );
+          sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
+          loglevel: LogLevel.V2TIM_LOG_ERROR,
+          listener: _initImLisener);
       if (initRes.code != 0) {
         //初始化sdk错误
         return ActionCallback(code: 0, desc: 'init im sdk error');
@@ -179,6 +379,13 @@ class TRTCCallingImpl extends TRTCCalling {
       _enterTRTCRoom();
       isOnCalling = true;
     }
+    mCurInvitedList.add(userId);
+
+    mLastCallModel['action'] = VIDEO_CALL_ACTION_DIALING;
+    mLastCallModel['invitedList'] = mCurInvitedList;
+    mLastCallModel['roomId'] = mCurRoomID;
+    mLastCallModel['groupId'] = mCurGroupId;
+    mLastCallModel['callType'] = mCurCallType;
 
     V2TimValueCallback res = await timManager.getSignalingManager().invite(
         invitee: userId,
@@ -186,11 +393,26 @@ class TRTCCallingImpl extends TRTCCalling {
         timeout: TIME_OUT_COUNT,
         onlineUserOnly: false);
     mCurCallID = res.data;
+    mLastCallModel['callId'] = mCurCallID;
+    print("==mCurCallID=" + mCurCallID.toString());
     return ActionCallback(code: res.code, desc: res.desc);
   }
 
+  _isCallingData(String data) {
+    try {
+      Map<String, dynamic> customMap = jsonDecode(data);
+      if (customMap.containsKey('call_type')) {
+        return true;
+      }
+    } catch (e) {
+      print("isCallingData json parse error");
+      return false;
+    }
+    return false;
+  }
+
   _getCurMap() {
-    Map<String, Object> customMap;
+    Map<String, dynamic> customMap = new Map<String, dynamic>();
     customMap['version'] = 1;
     customMap['call_type'] = mCurCallType;
     customMap['room_id'] = mCurRoomID;
@@ -269,6 +491,12 @@ class TRTCCallingImpl extends TRTCCalling {
     }
     mCurInvitedList = filterInvitedList;
 
+    mLastCallModel['action'] = VIDEO_CALL_ACTION_DIALING;
+    mLastCallModel['invitedList'] = mCurInvitedList;
+    mLastCallModel['roomId'] = mCurRoomID;
+    mLastCallModel['groupId'] = mCurGroupId;
+    mLastCallModel['callType'] = mCurCallType;
+
     Map<String, Object> customMap;
     customMap['version'] = 1;
     customMap['call_type'] = mCurCallType;
@@ -283,11 +511,16 @@ class TRTCCallingImpl extends TRTCCalling {
             timeout: TIME_OUT_COUNT,
             onlineUserOnly: false);
     mCurCallID = res.data;
+    mLastCallModel['callId'] = mCurCallID;
     return ActionCallback(code: res.code, desc: res.data);
   }
 
   _isListEmpty(List list) {
     return list == null || list.length == 0;
+  }
+
+  _isEmpty(String data) {
+    return data == null || data == "";
   }
 
   /*
@@ -315,7 +548,7 @@ class TRTCCallingImpl extends TRTCCalling {
     _enterTRTCRoom();
     V2TimCallback res = await timManager
         .getSignalingManager()
-        .accept(inviteID: mCurSponsorForMe, data: _getCurMap());
+        .accept(inviteID: mCurCallID, data: _getCurMap());
     return ActionCallback(code: res.code, desc: res.desc);
   }
 
@@ -331,7 +564,12 @@ class TRTCCallingImpl extends TRTCCalling {
       return;
     }
 
-    if (mCurGroupId == "" || mCurGroupId == null) {
+    if (mCurGroupId.isEmpty) {
+      if (mEnterRoomTime != 0) {
+        // realCallModel.duration =
+        //     (int)(System.currentTimeMillis() - mEnterRoomTime) / 1000;
+        mEnterRoomTime = 0;
+      }
     } else {}
     V2TimCallback res = await timManager
         .getSignalingManager()
@@ -358,7 +596,7 @@ class TRTCCallingImpl extends TRTCCalling {
   Future<ActionCallback> reject() async {
     V2TimCallback res = await timManager
         .getSignalingManager()
-        .reject(inviteID: mCurSponsorForMe, data: _getCurMap());
+        .reject(inviteID: mCurCallID, data: _getCurMap());
     _stopCall();
     return ActionCallback(code: res.code, desc: res.desc);
   }
@@ -420,3 +658,7 @@ class TRTCCallingImpl extends TRTCCalling {
     }
   }
 }
+
+/// @nodoc
+typedef VoiceListenerFunc<P> = void Function(
+    TRTCCallingDelegate type, P params);

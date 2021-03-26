@@ -1,6 +1,6 @@
 import 'TRTCCallingDef.dart';
 import 'impl/TRTCCallingImpl.dart';
-import 'TRTCCallingDelegate.dart';
+// import 'TRTCCallingDelegate.dart';
 
 abstract class TRTCCalling {
   static int TYPE_UNKNOWN = 0;

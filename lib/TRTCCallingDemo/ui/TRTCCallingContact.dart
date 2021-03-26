@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
+import 'package:trtc_scenes_demo/debug/Config.dart';
+import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import '../../utils/TxUtils.dart';
 import '../../login/ProfileManager_Mock.dart';
 import '../model/TRTCCalling.dart';
@@ -21,6 +24,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   String searchText = '';
   String myLoginInfoId = '';
   List<UserModel> userList = [];
+  TRTCCalling sInstance;
   goIndex() {
     Navigator.pushReplacementNamed(
       context,
@@ -37,8 +41,21 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
     return true;
   }
 
+  onRtcListener(type, param) {
+    print("==onRtcListener type=" + type.toString());
+    if (type == TRTCCallingDelegate.onInvited) {
+      // sInstance.accept();
+      sInstance.reject();
+    }
+  }
+
   //搜索
   onSearchClick() async {
+    String userId = "3221";
+    await sInstance.login(GenerateTestUserSig.sdkAppId, userId,
+        await GenerateTestUserSig.genTestSig(userId));
+    sInstance.registerListener(onRtcListener);
+    // sInstance.call('3221', TRTCCalling.TYPE_AUDIO_CALL);
     List<UserModel> ls =
         await ProfileManager.getInstance().queryUserInfo(searchText);
 
@@ -59,6 +76,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   }
 
   initUserInfo() async {
+    sInstance = await TRTCCalling.sharedInstance();
     String loginId = await TxUtils.getLoginUserId();
     if (loginId == null || loginId == '') {
       TxUtils.showErrorToast("请先登录。", context);
@@ -74,6 +92,12 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   void initState() {
     super.initState();
     initUserInfo();
+  }
+
+  @override
+  void dispose() {
+    sInstance.unRegisterListener(onRtcListener);
+    super.dispose();
   }
 
   getGuideSearchWidget() {

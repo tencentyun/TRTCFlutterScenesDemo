@@ -122,7 +122,7 @@ abstract class TRTCChatSalon {
   * 拉取房间内所有成员列表
   * @param nextSeq	分页拉取标志，第一次拉取填0，回调成功如果 nextSeq 不为零，需要分页，传入再次拉取，直至为0。
   */
-  Future<MemberListCallback> getRoomMemberList(double nextSeq);
+  Future<MemberListCallback> getRoomMemberList(int nextSeq);
 
   /*
   * 拉取房间内所有在线成员总数

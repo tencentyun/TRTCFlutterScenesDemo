@@ -471,7 +471,7 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
         return;
       }
       MemberListCallback _memberResp =
-          await trtcVoiceRoom.getRoomMemberList(_audienceNextSeq.toDouble());
+          await trtcVoiceRoom.getRoomMemberList(_audienceNextSeq);
       if (_memberResp.code == 0) {
         Map<int, UserInfo> userList = {};
         _memberResp.list.forEach((item) {
