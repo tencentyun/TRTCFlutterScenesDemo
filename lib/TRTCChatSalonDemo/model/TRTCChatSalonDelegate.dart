@@ -1,5 +1,8 @@
+import 'package:tencent_im_sdk_plugin/enum/V2TimGroupListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSimpleMsgListener.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
-import 'package:tencent_im_sdk_plugin/models/v2_tim_event_callback.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_attribute_changed.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_member_enter.dart';
@@ -164,11 +167,11 @@ class VoiceRoomListener {
     timManager = _timManager;
   }
 
-  void initImLisener(V2TimEventCallback data) {
-    if (data.type == "onKickedOffline") {
+  initImLisener() {
+    return new V2TimSDKListener(onKickedOffline: () {
       TRTCChatSalonDelegate type = TRTCChatSalonDelegate.onKickedOffline;
       emitEvent(type, {});
-    }
+    });
   }
 
   void initData(String userId, attr) {
@@ -184,9 +187,9 @@ class VoiceRoomListener {
       mTRTCCloud.registerListener(rtcListener);
       //监听im事件
       timManager.addSimpleMsgListener(
-        listener: simpleMsgListener,
+        listener: simpleMsgListener(),
       );
-      timManager.setGroupListener(listener: groupListener);
+      timManager.setGroupListener(listener: groupListener());
     }
   }
 
@@ -199,8 +202,8 @@ class VoiceRoomListener {
     // timManager.unInitSDK();
   }
 
-  groupAttriChange(V2TimGroupAttributeChanged data) {
-    Map<String, String> groupAttributeMap = data.groupAttributeMap;
+  groupAttriChange(Map<String, String> data) {
+    Map<String, String> groupAttributeMap = data;
     TRTCChatSalonDelegate type;
 
     List newGroupList = [];
@@ -263,68 +266,73 @@ class VoiceRoomListener {
     mOldAttributeMap = groupAttributeMap;
   }
 
-  groupListener(V2TimEventCallback event) {
+  groupListener() {
     TRTCChatSalonDelegate type;
-    if (event.type == 'onGroupAttributeChanged') {
-      //群属性发生变更
-      groupAttriChange(event.data);
-    } else if (event.type == 'onMemberEnter') {
-      type = TRTCChatSalonDelegate.onAudienceEnter;
-      V2TimMemberEnter data = event.data;
-      List<V2TimGroupMemberInfo> memberList = data.memberList;
-      List newList = [];
-      for (var i = 0; i < memberList.length; i++) {
-        if (!mOldAttributeMap.containsKey(memberList[i].userID)) {
-          newList.add({
-            'userId': memberList[i].userID,
-            'userName': memberList[i].nickName,
-            'userAvatar': memberList[i].faceUrl
-          });
+    return new V2TimGroupListener(
+      onGroupAttributeChanged:
+          (String groupId, Map<String, String> groupAttributeMap) {
+        //群属性发生变更
+        groupAttriChange(groupAttributeMap);
+      },
+      onMemberEnter: (String groupId, List<V2TimGroupMemberInfo> list) {
+        type = TRTCChatSalonDelegate.onAudienceEnter;
+        List<V2TimGroupMemberInfo> memberList = list;
+        List newList = [];
+        for (var i = 0; i < memberList.length; i++) {
+          if (!mOldAttributeMap.containsKey(memberList[i].userID)) {
+            newList.add({
+              'userId': memberList[i].userID,
+              'userName': memberList[i].nickName,
+              'userAvatar': memberList[i].faceUrl
+            });
+          }
         }
-      }
-      if (newList.length > 0) {
-        emitEvent(type, newList);
-      }
-    } else if (event.type == 'onMemberLeave') {
-      type = TRTCChatSalonDelegate.onAudienceExit;
-      V2TimMemberLeave data = event.data;
-      emitEvent(type, {'userId': data.member.userID});
-    } else if (event.type == 'onGroupDismissed') {
-      //房间被群主解散
-      type = TRTCChatSalonDelegate.onRoomDestroy;
-      emitEvent(type, {});
-    }
+        if (newList.length > 0) {
+          emitEvent(type, newList);
+        }
+      },
+      onMemberLeave: (String groupId, V2TimGroupMemberInfo member) {
+        type = TRTCChatSalonDelegate.onAudienceExit;
+        emitEvent(type, {'userId': member.userID});
+      },
+      onGroupDismissed: (groupID, opUser) {
+        //房间被群主解散
+        type = TRTCChatSalonDelegate.onRoomDestroy;
+        emitEvent(type, {});
+      },
+    );
   }
 
-  simpleMsgListener(V2TimEventCallback data) {
+  simpleMsgListener() {
     TRTCChatSalonDelegate type;
-
-    if (data.type == "onRecvC2CCustomMessage") {
-      // C2C自定义消息
-      if (data.data.customData == "raiseHand") {
-        type = TRTCChatSalonDelegate.onRaiseHand;
-        emitEvent(type, data.data.sender.userID);
-      } else if (data.data.customData == "agreeToSpeak") {
-        type = TRTCChatSalonDelegate.onAgreeToSpeak;
-        emitEvent(type, data.data.sender.userID);
-      } else if (data.data.customData == "refuseToSpeak") {
-        type = TRTCChatSalonDelegate.onRefuseToSpeak;
-        emitEvent(type, data.data.sender.userID);
-      } else if (data.data.customData == "kickMic") {
-        type = TRTCChatSalonDelegate.onKickMic;
-        emitEvent(type, data.data.sender.userID);
-      }
-    } else if (data.type == "onRecvGroupTextMessage") {
-      //群文本消息
-      V2TimRecvGroupTextMessage message = data.data;
-      type = TRTCChatSalonDelegate.onRecvRoomTextMsg;
-      emitEvent(type, {
-        "message": message.text,
-        "sendId": message.sender.userID,
-        "userAvatar": message.sender.faceUrl,
-        "userName": message.sender.nickName
-      });
-    }
+    return new V2TimSimpleMsgListener(
+      onRecvC2CCustomMessage: (msgID, sender, customData) {
+        // C2C自定义消息
+        if (customData == "raiseHand") {
+          type = TRTCChatSalonDelegate.onRaiseHand;
+          emitEvent(type, sender.userID);
+        } else if (customData == "agreeToSpeak") {
+          type = TRTCChatSalonDelegate.onAgreeToSpeak;
+          emitEvent(type, sender.userID);
+        } else if (customData == "refuseToSpeak") {
+          type = TRTCChatSalonDelegate.onRefuseToSpeak;
+          emitEvent(type, sender.userID);
+        } else if (customData == "kickMic") {
+          type = TRTCChatSalonDelegate.onKickMic;
+          emitEvent(type, sender.userID);
+        }
+      },
+      onRecvGroupTextMessage: (msgID, groupID, sender, customData) {
+        //群文本消息
+        type = TRTCChatSalonDelegate.onRecvRoomTextMsg;
+        emitEvent(type, {
+          "message": customData,
+          "sendId": sender.userID,
+          "userAvatar": sender.faceUrl,
+          "userName": sender.nickName
+        });
+      },
+    );
   }
 
   rtcListener(rtcType, param) {

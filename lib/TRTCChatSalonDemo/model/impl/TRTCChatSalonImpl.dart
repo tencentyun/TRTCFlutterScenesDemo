@@ -126,12 +126,21 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       await enableAudioVolumeEvaluation(true);
       mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
       // 设置群信息
+      // timManager.getGroupManager().setGroupInfo(
+      //     addOpt: GroupAddOptType.V2TIM_GROUP_ADD_ANY,
+      //     groupID: roomId.toString(),
+      //     groupName: roomParam.roomName,
+      //     faceUrl: roomParam.coverUrl,
+      //     introduction: mSelfUserName);
+
       timManager.getGroupManager().setGroupInfo(
-          addOpt: GroupAddOptType.V2TIM_GROUP_ADD_ANY,
-          groupID: roomId.toString(),
-          groupName: roomParam.roomName,
-          faceUrl: roomParam.coverUrl,
-          introduction: mSelfUserName);
+          info: V2TimGroupInfo(
+              groupAddOpt: GroupAddOptType.V2TIM_GROUP_ADD_ANY,
+              groupID: roomId.toString(),
+              groupName: roomParam.roomName,
+              faceUrl: roomParam.coverUrl,
+              introduction: mSelfUserName,
+              groupType: "AVChatRoom"));
 
       listener.initData(mOwnerUserId, {mUserId: "1"});
       V2TimCallback initRes = await timManager
@@ -408,7 +417,10 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       String userName, String avatarURL) async {
     mSelfUserName = userName;
     V2TimCallback res =
-        await timManager.setSelfInfo(nickName: userName, faceUrl: avatarURL);
+        // await timManager.setSelfInfo(nickName: userName, faceUrl: avatarURL);
+        await timManager.setSelfInfo(
+            userFullInfo:
+                V2TimUserFullInfo(nickName: userName, faceUrl: avatarURL));
     if (res.code == 0) {
       return ActionCallback(code: 0, desc: "set profile success.");
     } else {
@@ -446,7 +458,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
         sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
         loglevel: LogLevel.V2TIM_LOG_ERROR,
-        listener: listener.initImLisener,
+        listener: listener.initImLisener(),
       );
       if (initRes.code != 0) {
         //初始化sdk错误
