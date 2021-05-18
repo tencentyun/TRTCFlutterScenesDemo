@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
+import 'package:tencent_trtc_cloud/trtc_cloud_video_view.dart';
+import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCalling.dart';
+import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/login/ProfileManager_Mock.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 import 'dart:async';
@@ -18,21 +22,79 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   late DateTime startAnswerTime;
   bool isCameraOff = false;
   bool isMicrophoneOff = false;
+  bool isFrontCamera = true;
 
   double _remoteTop = 64;
   double _remoteRight = 20;
   UserModel? _remoteUserInfo;
 
-  late Timer timer;
+  late TRTCCalling _tRTCCallingService;
+  late int _currentUserViewId;
+  Timer? _calTimer;
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
       this.initRemoteInfo();
     });
-    //for test
-    Future.delayed(Duration(seconds: 5), () {
-      handleOnUserAnswer();
+    initTrtc();
+  }
+
+  initTrtc() async {
+    _tRTCCallingService = await TRTCCalling.sharedInstance();
+    _tRTCCallingService.registerListener((type, params) {
+      switch (type) {
+        case TRTCCallingDelegate.onError:
+          break;
+        case TRTCCallingDelegate.onWarning:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onEnterRoom:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onUserEnter:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onUserLeave:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onGroupCallInviteeListUpdate:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onInvited:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onReject:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onNoResp:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onLineBusy:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onCallingCancel:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onCallingTimeout:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onCallEnd:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onUserVideoAvailable:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onUserAudioAvailable:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onUserVolumeUpdate:
+          // TODO: Handle this case.
+          break;
+        case TRTCCallingDelegate.onKickedOffline:
+          // TODO: Handle this case.
+          break;
+      }
     });
   }
 
@@ -69,10 +131,9 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   _callIngTimeUpdate() {
-    timer = Timer.periodic(Duration(seconds: 1000), (Timer timer) {
+    _calTimer = Timer.periodic(Duration(seconds: 1000), (Timer timer) {
       DateTime now = DateTime.now();
       Duration duration = now.difference(startAnswerTime);
-
       setState(() {
         hadCallingTime = _getDurationTimeString(duration);
       });
@@ -81,12 +142,17 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   @override
   dispose() {
-    timer.cancel();
+    _tRTCCallingService.unRegisterListener((type, params) {});
     super.dispose();
   }
 
   //前后摄像头切换
-  onSwitchCamera() {}
+  onSwitchCamera() {
+    _tRTCCallingService.switchCamera(!isFrontCamera);
+    setState(() {
+      isFrontCamera = !isFrontCamera;
+    });
+  }
 
   //麦克风启用禁用
   onMicrophoneTap() {
@@ -275,15 +341,19 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
           fit: StackFit.expand,
           children: [
             Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(TxUtils.getDefaltAvatarUrl()),
-                  fit: BoxFit.cover,
-                ),
+              color: Color.fromRGBO(93, 91, 90, 1),
+              child: TRTCCloudVideoView(
+                key: ValueKey("_currentUserViewId"),
+                viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                onViewCreated: (viewId) {
+                  _currentUserViewId = viewId;
+                  _tRTCCallingService.openCamera(
+                      isFrontCamera, _currentUserViewId);
+                  Future.delayed(Duration(microseconds: 200), () {
+                    _tRTCCallingService.call(_remoteUserInfo!.userId, 2);
+                  });
+                },
               ),
-              child: Center(
-                  //child: //Text('本地'),
-                  ),
             ),
             remotePanel,
             getTopBarWidget(),
