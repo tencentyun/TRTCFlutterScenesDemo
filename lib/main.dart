@@ -12,9 +12,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
-    // FlutterBugly.postCatchedException(() {});
+    // FlutterBugly.postCatchedException(() {
+    //   // runApp(MyApp());
+    // });
     runApp(MyApp());
-    //FlutterBugly.init(androidAppId: "d43b0e0efa", iOSAppId: "cf07d686e1");
+    FlutterBugly.init(androidAppId: "d43b0e0efa", iOSAppId: "cf07d686e1");
   });
 }
 

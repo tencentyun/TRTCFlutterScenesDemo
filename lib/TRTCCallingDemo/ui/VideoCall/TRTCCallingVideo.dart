@@ -21,7 +21,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   double _remoteTop = 64;
   double _remoteRight = 20;
-  late UserModel _remoteUserInfo;
+  UserModel? _remoteUserInfo;
 
   late Timer timer;
   @override
@@ -69,7 +69,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   _callIngTimeUpdate() {
-    timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    timer = Timer.periodic(Duration(seconds: 1000), (Timer timer) {
       DateTime now = DateTime.now();
       Duration duration = now.difference(startAnswerTime);
 
@@ -124,8 +124,11 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      _remoteUserInfo != null ? _remoteUserInfo.name : "--",
-                      style: TextStyle(fontSize: 24),
+                      _remoteUserInfo != null ? _remoteUserInfo!.name : "--",
+                      style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -134,7 +137,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                   children: [
                     Text(
                       '正在等待对方接受邀请…',
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(fontSize: 12, color: Colors.white),
                     ),
                   ],
                 )
@@ -178,7 +181,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
           Container(
             margin: EdgeInsets.only(bottom: 20),
             child: currentCallStatus == CallStatus.answer
-                ? Text('$hadCallingTime')
+                ? Text(
+                    '$hadCallingTime',
+                    style: TextStyle(color: Colors.white),
+                  )
                 : Spacer(),
             // ExtendButton(
             //     imgUrl: "assets/images/callingDemo/switchToAudio.png",
@@ -250,7 +256,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
           decoration: _remoteUserInfo != null
               ? BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(_remoteUserInfo.avatar),
+                    image: NetworkImage(_remoteUserInfo!.avatar),
                     fit: BoxFit.cover,
                   ),
                 )
@@ -271,7 +277,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(TxUtils.getRandoAvatarUrl()),
+                  image: NetworkImage(TxUtils.getDefaltAvatarUrl()),
                   fit: BoxFit.cover,
                 ),
               ),
