@@ -164,7 +164,6 @@ class TRTCCallingImpl extends TRTCCalling {
 
   signalingListener() {
     TRTCCallingDelegate type;
-
     return new V2TimSignalingListener(
       onInvitationCancelled: (inviteID, inviter, data) {
         if (!_isCallingData(data)) {
@@ -195,8 +194,6 @@ class TRTCCallingImpl extends TRTCCalling {
         }
         // 每次超时都需要判断当前是否需要结束通话
         _preExitRoom(null);
-        type = TRTCCallingDelegate.onCallingTimeout;
-        emitEvent(type, {});
       },
       onInviteeAccepted: (inviteID, invitee, data) {
         if (!_isCallingData(data)) {
@@ -210,7 +207,7 @@ class TRTCCallingImpl extends TRTCCalling {
         }
         if (mCurCallID == inviteID) {
           try {
-            Map<String, dynamic> customMap = jsonDecode(data);
+            Map<String, dynamic>? customMap = jsonDecode(data);
             mCurInvitedList.remove(invitee);
             if (customMap != null && customMap.containsKey('line_busy')) {
               emitEvent(TRTCCallingDelegate.onLineBusy, invitee);
@@ -225,15 +222,19 @@ class TRTCCallingImpl extends TRTCCalling {
           }
         }
       },
-      onReceiveNewInvitation: (inviteID, inviter, groupID, inviteeList, data) {
+      onReceiveNewInvitation:
+          (inviteID, inviter, groupID, inviteeList, data) async {
         if (!_isCallingData(data)) {
           return;
         }
         try {
-          Map<String, dynamic> customMap = jsonDecode(data);
+          Map<String, dynamic>? customMap = jsonDecode(data);
           if (customMap == null) {
             print(logTag + "onReceiveNewInvitation extraMap is null, ignore");
             return;
+          }
+          if (customMap.containsKey('call_type')) {
+            mCurCallType = customMap['call_type'];
           }
           if (customMap.containsKey('call_end')) {
             _preExitRoom(null);
@@ -243,6 +244,13 @@ class TRTCCallingImpl extends TRTCCalling {
           print(logTag +
               "=onReceiveNewInvitation JsonSyntaxException:" +
               e.toString());
+        }
+        if (isOnCalling && inviteeList.contains(mCurUserId)) {
+          // 正在通话时，收到了一个邀请我的通话请求,需要告诉对方忙线
+
+          V2TimCallback res = await timManager
+              .getSignalingManager()
+              .reject(inviteID: mCurCallID, data: _getCurMap());
         }
         mCurSponsorForMe = inviter;
         mCurCallID = inviteID;
@@ -416,7 +424,6 @@ class TRTCCallingImpl extends TRTCCalling {
       // 开启基础美颜
       TXBeautyManager txBeautyManager = mTRTCCloud.getBeautyManager();
       // 自然美颜
-      txBeautyManager.setBeautyStyle(1);
       txBeautyManager.setBeautyLevel(6);
       // 进房前需要设置一下关键参数
       TRTCVideoEncParam encParam = new TRTCVideoEncParam();
@@ -504,11 +511,11 @@ class TRTCCallingImpl extends TRTCCalling {
     return ActionCallback(code: res.code, desc: res.data);
   }
 
-  _isListEmpty(List list) {
+  _isListEmpty(List? list) {
     return list == null || list.length == 0;
   }
 
-  _isEmpty(String data) {
+  _isEmpty(String? data) {
     return data == null || data == "";
   }
 
