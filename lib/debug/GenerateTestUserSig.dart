@@ -79,9 +79,9 @@ class GenerateTestUserSig {
   }
 
   static String _hmacsha256({
-    @required String identifier,
-    @required int currTime,
-    @required int expire,
+    required String identifier,
+    required int currTime,
+    required int expire,
   }) {
     int sdkappid = sdkAppId;
     String contentToBeSigned =
@@ -93,7 +93,7 @@ class GenerateTestUserSig {
   }
 
   static String _escape({
-    @required String content,
+    required String content,
   }) {
     return content
         .replaceAll('\+', '*')

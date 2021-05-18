@@ -152,10 +152,10 @@ enum TRTCChatSalonDelegate {
 class VoiceRoomListener {
   Map<String, String> mOldAttributeMap = {};
   // Set<VoiceListenerFunc> listeners = Set();
-  VoiceListenerFunc listenersSet;
-  TRTCCloud mTRTCCloud;
-  V2TIMManager timManager;
-  String mUserId;
+  VoiceListenerFunc? listenersSet;
+  late TRTCCloud mTRTCCloud;
+  late V2TIMManager timManager;
+  String? mUserId;
 
   VoiceRoomListener(TRTCCloud _mTRTCCloud, V2TIMManager _timManager) {
     mTRTCCloud = _mTRTCCloud;
@@ -214,7 +214,7 @@ class VoiceRoomListener {
         V2TimValueCallback<List<V2TimUserFullInfo>> res =
             await timManager.getUsersInfo(userIDList: [key]);
         if (res.code == 0) {
-          List<V2TimUserFullInfo> userInfo = res.data;
+          List<V2TimUserFullInfo> userInfo = res.data!;
           if (userInfo.length > 0) {
             emitEvent(type, {
               'userId': key,
@@ -241,7 +241,7 @@ class VoiceRoomListener {
         V2TimValueCallback<List<V2TimUserFullInfo>> res =
             await timManager.getUsersInfo(userIDList: [key]);
         if (res.code == 0) {
-          List<V2TimUserFullInfo> userInfo = res.data;
+          List<V2TimUserFullInfo> userInfo = res.data!;
           if (userInfo.length > 0) {
             emitEvent(type, {
               'userId': key,
@@ -353,7 +353,7 @@ class VoiceRoomListener {
   }
 
   emitEvent(type, param) {
-    listenersSet(type, param);
+    listenersSet!(type, param);
     // for (var item in listeners) {
     //   item(type, param);
     // }

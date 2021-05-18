@@ -27,24 +27,24 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 
 class TRTCChatSalonImpl extends TRTCChatSalon {
   String logTag = "VoiceRoomFlutterSdk";
-  static TRTCChatSalonImpl sInstance;
-  static VoiceRoomListener listener;
+  static TRTCChatSalonImpl? sInstance;
+  static VoiceRoomListener? listener;
 
   int codeErr = -1;
 
-  int mSdkAppId;
-  String mUserId;
-  String mUserSig;
-  String mRoomId;
-  String mOwnerUserId;
-  String mSelfUserName;
+  late int mSdkAppId;
+  late String mUserId;
+  late String mUserSig;
+  String? mRoomId;
+  String? mOwnerUserId;
+  String? mSelfUserName;
   bool mIsInitIMSDK = false;
   bool mIsLogin = false;
   String mRole = "audience"; //默认为观众，archor为主播
-  V2TIMManager timManager;
-  TRTCCloud mTRTCCloud;
-  TXAudioEffectManager txAudioManager;
-  TXDeviceManager txDeviceManager;
+  late V2TIMManager timManager;
+  late TRTCCloud mTRTCCloud;
+  late TXAudioEffectManager txAudioManager;
+  late TXDeviceManager txDeviceManager;
 
   TRTCChatSalonImpl() {
     //获取腾讯即时通信IM manager
@@ -53,7 +53,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
   }
 
   initTRTC() async {
-    mTRTCCloud = await TRTCCloud.sharedInstance();
+    mTRTCCloud = (await TRTCCloud.sharedInstance())!;
     txDeviceManager = mTRTCCloud.getDeviceManager();
     txAudioManager = mTRTCCloud.getAudioEffectManager();
   }
@@ -142,10 +142,10 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
               introduction: mSelfUserName,
               groupType: "AVChatRoom"));
 
-      listener.initData(mOwnerUserId, {mUserId: "1"});
+      listener!.initData(mOwnerUserId!, {mUserId: "1"});
       V2TimCallback initRes = await timManager
           .getGroupManager()
-          .initGroupAttributes(groupID: mRoomId, attributes: {mUserId: "1"});
+          .initGroupAttributes(groupID: mRoomId!, attributes: {mUserId: "1"});
 
       if (initRes.code != 0) {
         return ActionCallback(code: initRes.code, desc: initRes.desc);
@@ -160,7 +160,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
 
   @override
   Future<ActionCallback> destroyRoom() async {
-    V2TimCallback dismissRes = await timManager.dismissGroup(groupID: mRoomId);
+    V2TimCallback dismissRes = await timManager.dismissGroup(groupID: mRoomId!);
     if (dismissRes.code == 0) {
       await mTRTCCloud.exitRoom();
       return ActionCallback(code: 0, desc: "dismiss room success.");
@@ -186,14 +186,14 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       V2TimValueCallback<List<V2TimGroupInfoResult>> res = await timManager
           .getGroupManager()
           .getGroupsInfo(groupIDList: [roomId.toString()]);
-      List<V2TimGroupInfoResult> groupResult = res.data;
-      mOwnerUserId = groupResult[0].groupInfo.owner;
+      List<V2TimGroupInfoResult> groupResult = res.data!;
+      mOwnerUserId = groupResult[0].groupInfo!.owner!;
 
       V2TimValueCallback<Map<String, String>> attrRes = await timManager
           .getGroupManager()
-          .getGroupAttributes(groupID: mRoomId, keys: null);
-      Map<String, String> attributeMap = attrRes.data;
-      listener.initData(mUserId, attributeMap);
+          .getGroupAttributes(groupID: mRoomId!, keys: null);
+      Map<String, String> attributeMap = attrRes.data!;
+      listener!.initData(mUserId, attributeMap);
     }
 
     return ActionCallback(code: joinRes.code, desc: joinRes.desc);
@@ -210,12 +210,12 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       //删除群属性
       V2TimCallback deleteRes = await timManager
           .getGroupManager()
-          .deleteGroupAttributes(groupID: mRoomId, keys: [mUserId]);
+          .deleteGroupAttributes(groupID: mRoomId!, keys: [mUserId]);
       if (deleteRes.code != 0) {
         return ActionCallback(code: codeErr, desc: deleteRes.desc);
       }
     }
-    V2TimCallback quitRes = await timManager.quitGroup(groupID: mRoomId);
+    V2TimCallback quitRes = await timManager.quitGroup(groupID: mRoomId!);
     if (quitRes.code != 0) {
       return ActionCallback(code: codeErr, desc: quitRes.desc);
     }
@@ -237,11 +237,11 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       return RoomInfoCallback(code: res.code, desc: res.desc);
     }
 
-    List<V2TimGroupInfoResult> listInfo = res.data;
+    List<V2TimGroupInfoResult> listInfo = res.data!;
 
     List<RoomInfo> newInfo = [];
     for (var i = 0; i < listInfo.length; i++) {
-      V2TimGroupInfo groupInfo = listInfo[i].groupInfo;
+      V2TimGroupInfo groupInfo = listInfo[i].groupInfo!;
       newInfo.add(RoomInfo(
           roomId: int.parse(groupInfo.groupID),
           roomName: groupInfo.groupName,
@@ -261,7 +261,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
         await timManager.getUsersInfo(userIDList: userIdList);
 
     if (res.code == 0) {
-      List<V2TimUserFullInfo> userInfo = res.data;
+      List<V2TimUserFullInfo> userInfo = res.data!;
       List<UserInfo> newInfo = [];
       for (var i = 0; i < userInfo.length; i++) {
         newInfo.add(UserInfo(
@@ -283,9 +283,9 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     }
     V2TimValueCallback<Map<String, String>> attrRes = await timManager
         .getGroupManager()
-        .getGroupAttributes(groupID: mRoomId, keys: null);
+        .getGroupAttributes(groupID: mRoomId!, keys: null);
     if (attrRes.code == 0) {
-      Map<String, String> attrData = attrRes.data;
+      Map<String, String>? attrData = attrRes.data;
       if (attrData == null) {
         return UserListCallback(
             code: 0, desc: 'get archorInfo success.', list: []);
@@ -296,7 +296,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       V2TimValueCallback<List<V2TimUserFullInfo>> res =
           await timManager.getUsersInfo(userIDList: userIdList);
       if (res.code == 0) {
-        List<V2TimUserFullInfo> userInfo = res.data;
+        List<V2TimUserFullInfo> userInfo = res.data!;
         List<UserInfo> newInfo = [];
         for (var i = 0; i < userInfo.length; i++) {
           newInfo.add(UserInfo(
@@ -319,11 +319,11 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
   Future<int> getRoomOnlineMemberCount() async {
     V2TimValueCallback<int> memberRes = await timManager
         .getGroupManager()
-        .getGroupOnlineMemberCount(groupID: mRoomId);
+        .getGroupOnlineMemberCount(groupID: mRoomId!);
     if (memberRes.code != 0) {
       return 0;
     }
-    return memberRes.data;
+    return memberRes.data!;
   }
 
   @override
@@ -331,25 +331,25 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     V2TimValueCallback<V2TimGroupMemberInfoResult> memberRes = await timManager
         .getGroupManager()
         .getGroupMemberList(
-            groupID: mRoomId,
+            groupID: mRoomId!,
             filter: GroupMemberFilterType.V2TIM_GROUP_MEMBER_FILTER_ALL,
             nextSeq: nextSeq);
     if (memberRes.code != 0) {
       return MemberListCallback(code: memberRes.code, desc: memberRes.desc);
     }
-    List<V2TimGroupMemberFullInfo> memberInfoList =
-        memberRes.data.memberInfoList;
+    List<V2TimGroupMemberFullInfo?> memberInfoList =
+        memberRes.data!.memberInfoList!;
     List<UserInfo> newInfo = [];
     for (var i = 0; i < memberInfoList.length; i++) {
       newInfo.add(UserInfo(
-          userId: memberInfoList[i].userID,
-          userName: memberInfoList[i].nickName,
-          userAvatar: memberInfoList[i].faceUrl));
+          userId: memberInfoList[i]!.userID,
+          userName: memberInfoList[i]!.nickName,
+          userAvatar: memberInfoList[i]!.faceUrl));
     }
     return MemberListCallback(
         code: 0,
         desc: 'get member list success',
-        nextSeq: memberRes.data.nextSeq,
+        nextSeq: memberRes.data!.nextSeq!,
         list: newInfo);
   }
 
@@ -404,12 +404,12 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (listener == null) {
       listener = VoiceRoomListener(mTRTCCloud, timManager);
     }
-    listener.addListener(func);
+    listener!.addListener(func);
   }
 
   @override
   void unRegisterListener(VoiceListenerFunc func) async {
-    listener.removeListener(func, mTRTCCloud, timManager);
+    listener!.removeListener(func, mTRTCCloud, timManager);
   }
 
   @override
@@ -458,7 +458,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
         sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
         loglevel: LogLevel.V2TIM_LOG_ERROR,
-        listener: listener.initImLisener(),
+        listener: listener!.initImLisener(),
       );
       if (initRes.code != 0) {
         //初始化sdk错误
@@ -468,7 +468,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     mIsInitIMSDK = true;
 
     // 登陆到 IM
-    String loginedUserId = (await timManager.getLoginUser()).data;
+    String? loginedUserId = (await timManager.getLoginUser()).data;
 
     if (loginedUserId != null && loginedUserId == userId) {
       mIsLogin = true;
@@ -519,7 +519,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     //设置群属性
     V2TimCallback setRes = await timManager
         .getGroupManager()
-        .setGroupAttributes(groupID: mRoomId, attributes: {mUserId: "1"});
+        .setGroupAttributes(groupID: mRoomId!, attributes: {mUserId: "1"});
     if (setRes.code == 0) {
       mRole = "archor";
       //切换trtc角色为主播
@@ -541,7 +541,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     //删除群属性
     V2TimCallback res = await timManager
         .getGroupManager()
-        .deleteGroupAttributes(groupID: mRoomId, keys: [mUserId]);
+        .deleteGroupAttributes(groupID: mRoomId!, keys: [mUserId]);
     if (res.code == 0) {
       mRole = "audience";
       //切换trtc角色为观众
@@ -560,7 +560,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     V2TimCallback setRes = await timManager
         .getGroupManager()
         .setGroupAttributes(
-            groupID: mRoomId, attributes: {mUserId: mute ? "0" : "1"});
+            groupID: mRoomId!, attributes: {mUserId: mute ? "0" : "1"});
     if (setRes.code == 0) {
       mTRTCCloud.muteLocalAudio(mute);
       return ActionCallback(code: 0, desc: 'muteMic success');
@@ -575,7 +575,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       return ActionCallback(code: codeErr, desc: 'mOwnerUserId is not valid');
     }
     V2TimValueCallback<V2TimMessage> res = await timManager
-        .sendC2CCustomMessage(customData: 'raiseHand', userID: mOwnerUserId);
+        .sendC2CCustomMessage(customData: 'raiseHand', userID: mOwnerUserId!);
     if (res.code == 0) {
       return ActionCallback(code: 0, desc: 'raiseHand success');
     } else {

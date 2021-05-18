@@ -40,7 +40,7 @@ class CallModel {
 
   static int version = 0;
   //表示一次通话的唯一ID
-  static String callId;
+  static String? callId;
   //TRTC的房间号
   static int roomId = 0;
   //IM的群组id，在群组内发起通话时使用
@@ -55,15 +55,15 @@ class CallModel {
   */
   static int callType = 0;
   //正在邀请的列表
-  static List<String> invitedList;
+  static List<String>? invitedList;
 
   static int duration = 0;
 
   static int code = 0;
   static int timestamp = 0;
-  static String sender;
+  static String? sender;
   // 超时时间，单位秒
-  static int timeout;
+  static int? timeout;
 
-  static String data;
+  static String? data;
 }

@@ -59,8 +59,8 @@ Map<String, dynamic> initCallModel = {
 
 class TRTCCallingImpl extends TRTCCalling {
   String logTag = "TRTCCallingImpl";
-  VoiceListenerFunc emitEvent;
-  static TRTCCallingImpl sInstance;
+  late VoiceListenerFunc emitEvent;
+  static TRTCCallingImpl? sInstance;
 
   int TIME_OUT_COUNT = 30; //超时时间，默认30s
 
@@ -73,8 +73,8 @@ class TRTCCallingImpl extends TRTCCalling {
   String mCurCallID = "";
   int mCurRoomID = 0;
   String mCurGroupId = ""; //当前群组通话的群组ID
-  String mNickName;
-  String mFaceUrl;
+  String? mNickName;
+  String? mFaceUrl;
 
   //最近使用的通话信令，用于快速处理
   Map<String, dynamic> mLastCallModel = new Map.from(initCallModel);
@@ -94,20 +94,20 @@ class TRTCCallingImpl extends TRTCCalling {
   */
   String mCurSponsorForMe = "";
   //当前通话的类型
-  int mCurCallType;
+  int? mCurCallType;
 
-  int mSdkAppId;
-  String mCurUserId;
-  String mCurUserSig;
-  String mRoomId;
-  String mOwnerUserId;
+  late int mSdkAppId;
+  late String mCurUserId;
+  late String mCurUserSig;
+  String? mRoomId;
+  String? mOwnerUserId;
   bool mIsInitIMSDK = false;
   bool mIsLogin = false;
   String mRole = "audience"; //默认为观众，archor为主播
-  V2TIMManager timManager;
-  TRTCCloud mTRTCCloud;
-  TXAudioEffectManager txAudioManager;
-  TXDeviceManager txDeviceManager;
+  late V2TIMManager timManager;
+  late TRTCCloud mTRTCCloud;
+  late TXAudioEffectManager txAudioManager;
+  late TXDeviceManager txDeviceManager;
 
   TRTCCallingImpl() {
     //获取腾讯即时通信IM manager
@@ -116,7 +116,7 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   initTRTC() async {
-    mTRTCCloud = await TRTCCloud.sharedInstance();
+    mTRTCCloud = (await TRTCCloud.sharedInstance())!;
     txDeviceManager = mTRTCCloud.getDeviceManager();
     txAudioManager = mTRTCCloud.getAudioEffectManager();
   }
@@ -155,7 +155,7 @@ class TRTCCallingImpl extends TRTCCalling {
 
   @override
   void unRegisterListener(VoiceListenerFunc func) {
-    emitEvent = null;
+    // emitEvent = null;
     timManager
         .getSignalingManager()
         .removeSignalingListener(listener: signalingListener);
@@ -293,7 +293,7 @@ class TRTCCallingImpl extends TRTCCalling {
   * 重要：用于判断是否需要结束本次通话
   * 在用户超时、拒绝、忙线、有人退出房间时需要进行判断
   */
-  _preExitRoom(String userId) {
+  _preExitRoom(String? userId) {
     if (mCurRoomRemoteUserSet.isEmpty && mCurInvitedList.isEmpty && mIsInRoom) {
       // 当没有其他用户在房间里了，则结束通话。
       // if (!TextUtils.isEmpty(leaveUser)) {
@@ -333,7 +333,7 @@ class TRTCCallingImpl extends TRTCCalling {
     mIsInitIMSDK = true;
 
     // 登陆到 IM
-    String loginedUserId = (await timManager.getLoginUser()).data;
+    String loginedUserId = (await timManager.getLoginUser()).data!;
 
     if (loginedUserId != null && loginedUserId == userId) {
       mIsLogin = true;
@@ -486,9 +486,9 @@ class TRTCCallingImpl extends TRTCCalling {
     mLastCallModel['groupId'] = mCurGroupId;
     mLastCallModel['callType'] = mCurCallType;
 
-    Map<String, Object> customMap;
+    Map<String, Object> customMap = {};
     customMap['version'] = 1;
-    customMap['call_type'] = mCurCallType;
+    customMap['call_type'] = mCurCallType!;
     customMap['room_id'] = mCurRoomID;
 
     V2TimValueCallback res = await timManager
@@ -627,24 +627,6 @@ class TRTCCallingImpl extends TRTCCalling {
       numStr += rng.nextInt(9).toString();
     }
     return int.tryParse(numStr);
-  }
-
-  _sendModel(String model) {
-    switch (model) {
-      case 'ACTION_DIALING_ONE':
-        {
-          timManager.getSignalingManager().invite(
-              invitee: null,
-              data: null,
-              timeout: TIME_OUT_COUNT,
-              onlineUserOnly: null);
-          break;
-        }
-      case 'ACTION_DIALING_GROUP':
-        {
-          break;
-        }
-    }
   }
 }
 
