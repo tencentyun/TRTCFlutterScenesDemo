@@ -34,7 +34,7 @@ class ExtendButton extends StatelessWidget {
             margin: EdgeInsets.only(top: 10),
             child: Text(
               tips,
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: 12, color: Colors.white),
             ),
           ),
         ],
