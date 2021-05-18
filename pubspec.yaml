@@ -23,15 +23,15 @@ environment:
 dependencies:
   tencent_trtc_cloud: ^1.0.1
   tencent_im_sdk_plugin: ^3.1.4
-  shared_preferences: 0.5.12+2
-  provider: 4.3.2
-  crypto: 2.1.5
-  dio: ^3.0.9
-  badges: ^1.1.6
-  flutter_bugly: ^0.2.8
-  permission_handler: 5.0.1+1
-  toast: ^0.1.5
-  url_launcher: ^5.1.2
+  shared_preferences: ^2.0.5
+  provider: ^5.0.0
+  crypto: ^3.0.1
+  dio: ^4.0.0
+  badges: ^2.0.1
+  flutter_bugly: ^0.3.2+1
+  permission_handler: ^7.1.0
+  fluttertoast: ^8.0.6
+  url_launcher: ^6.0.3
   flutter_easyrefresh: ^2.1.8
   # intl: ^0.16.1
   flutter:

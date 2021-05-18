@@ -191,7 +191,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
 
       V2TimValueCallback<Map<String, String>> attrRes = await timManager
           .getGroupManager()
-          .getGroupAttributes(groupID: mRoomId!, keys: null);
+          .getGroupAttributes(groupID: mRoomId!, keys: []);
       Map<String, String> attributeMap = attrRes.data!;
       listener!.initData(mUserId, attributeMap);
     }
@@ -283,7 +283,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     }
     V2TimValueCallback<Map<String, String>> attrRes = await timManager
         .getGroupManager()
-        .getGroupAttributes(groupID: mRoomId!, keys: null);
+        .getGroupAttributes(groupID: mRoomId!, keys: []);
     if (attrRes.code == 0) {
       Map<String, String>? attrData = attrRes.data;
       if (attrData == null) {

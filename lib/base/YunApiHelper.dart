@@ -44,7 +44,7 @@ class YunApiHelper {
       },
     );
     var data = resp.data;
-    List<String> roomIdls = new List<String>();
+    List<String> roomIdls = [];
     if (data["errorCode"] == 0) {
       List<dynamic> resList = data["data"] as List<dynamic>;
       for (int i = 0; i < resList.length; i++) {

@@ -7,14 +7,14 @@ import './TRTCChatSalonDemo/model/TRTCChatSalon.dart';
 import './i10n/localization_intl.dart';
 
 class IndexPage extends StatefulWidget {
-  IndexPage({Key key}) : super(key: key);
+  IndexPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => IndexPageState();
 }
 
 class IndexPageState extends State<IndexPage> {
-  TRTCChatSalon trtcVoiceRoom;
+  late TRTCChatSalon trtcVoiceRoom;
   @override
   void initState() {
     super.initState();
@@ -40,20 +40,22 @@ class IndexPageState extends State<IndexPage> {
     }
   }
 
-  Future<bool> logout() {
-    return showDialog<bool>(
+  Future<bool?>? logout() {
+    var showDialog2 = showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(Languages.of(context).tipsText),
-          content: Text(Languages.of(context).logoutContent),
+          title: Text(Languages.of(context)!.tipsText),
+          content: Text(Languages.of(context)!.logoutContent),
           actions: <Widget>[
+            // ignore: deprecated_member_use
             FlatButton(
-              child: Text(Languages.of(context).cancelText),
+              child: Text(Languages.of(context)!.cancelText),
               onPressed: () => Navigator.of(context).pop(), // 关闭对话框
             ),
+            // ignore: deprecated_member_use
             FlatButton(
-              child: Text(Languages.of(context).okText),
+              child: Text(Languages.of(context)!.okText),
               onPressed: () {
                 //关闭对话框并返回true
                 trtcVoiceRoom.logout();
@@ -69,6 +71,7 @@ class IndexPageState extends State<IndexPage> {
         );
       },
     );
+    return showDialog2;
   }
 
   goVoiceRoomDemo() {
@@ -133,12 +136,12 @@ class IndexPageState extends State<IndexPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.person),
-          tooltip: Languages.of(context).logout,
+          tooltip: Languages.of(context)!.logout,
           onPressed: () async {
             await logout();
           },
         ),
-        title: Text(Languages.of(context).trtc),
+        title: Text(Languages.of(context)!.trtc),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Color.fromRGBO(14, 25, 44, 1),
@@ -167,7 +170,7 @@ class IndexPageState extends State<IndexPage> {
               crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 30),
           children: <Widget>[
             this.getTitleItem(
-              Languages.of(context).salonTitle,
+              Languages.of(context)!.salonTitle,
               "assets/images/ChatSalon.png",
               () {
                 goVoiceRoomDemo();

@@ -4,8 +4,13 @@ import 'messages_all.dart'; //1
 
 class Languages {
   static Future<Languages> load(Locale locale) {
-    final String name =
-        locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
+    final String name;
+    var countryCode = locale.countryCode;
+    if (countryCode!.isEmpty) {
+      name = locale.languageCode;
+    } else {
+      name = locale.toString();
+    }
     final String localeName = Intl.canonicalizedLocale(name);
     //2
     return initializeMessages(localeName).then((b) {
@@ -14,7 +19,7 @@ class Languages {
     });
   }
 
-  static Languages of(BuildContext context) {
+  static Languages? of(BuildContext context) {
     return Localizations.of<Languages>(context, Languages);
   }
 

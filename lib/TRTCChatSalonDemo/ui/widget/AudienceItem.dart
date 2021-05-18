@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class AudienceItem extends StatefulWidget {
   AudienceItem({
-    Key key,
+    Key? key,
     this.userName = "",
     this.userImgUrl = "",
   }) : super(key: key);

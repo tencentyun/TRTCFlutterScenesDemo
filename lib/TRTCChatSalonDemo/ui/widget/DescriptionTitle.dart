@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionTitle extends StatelessWidget {
-  DescriptionTitle(this.imgUrl, this.title, {Key key}) : super(key: key);
+  DescriptionTitle(this.imgUrl, this.title, {Key? key}) : super(key: key);
   final String imgUrl;
   final String title;
   @override

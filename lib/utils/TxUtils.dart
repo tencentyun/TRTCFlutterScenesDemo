@@ -1,6 +1,6 @@
 import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './constants.dart' as constants;
 import 'dart:math';
@@ -16,12 +16,21 @@ class TxUtils {
   }
 
   static showErrorToast(text, context) {
-    Toast.show(
-      text,
-      context,
-      backgroundColor: Colors.red[400],
-      duration: Toast.LENGTH_LONG,
-      gravity: Toast.CENTER,
+    // Toast.show(
+    //   text,
+    //   context,
+    //   backgroundColor: Colors.red[400],
+    //   duration: Toast.LENGTH_LONG,
+    //   gravity: Toast.CENTER,
+    // );
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 3,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
     print(text);
   }
@@ -55,12 +64,19 @@ class TxUtils {
   }
 
   static showToast(text, context) {
-    Toast.show(
-      text,
-      context,
-      backgroundColor: Colors.green[400],
-      duration: Toast.LENGTH_LONG,
-      gravity: Toast.BOTTOM,
+    // Toast.show(
+    //   text,
+    //   context,
+    //   backgroundColor: Colors.green[400],
+    //   duration: Toast.LENGTH_LONG,
+    //   gravity: Toast.BOTTOM,
+    // );
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 3,
+      fontSize: 16.0,
     );
   }
 
@@ -74,7 +90,7 @@ class TxUtils {
 
   static Future<String> getStorageByKey(key) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString(key);
+    return sharedPreferences.getString(key)!;
   }
 
   static Future<String> getLoginUserId() {
@@ -87,7 +103,7 @@ class TxUtils {
   static Future<Null> uploadException(
       String title, //标题
       String detail, //内容
-      {Map data} //data为文本附件, Android 错误分析=>跟踪数据=>extraMessage.txt
+      {Map? data} //data为文本附件, Android 错误分析=>跟踪数据=>extraMessage.txt
       //iOS 错误分析=>跟踪数据=>crash_attach.log
       ) {
     return FlutterBugly.uploadException(

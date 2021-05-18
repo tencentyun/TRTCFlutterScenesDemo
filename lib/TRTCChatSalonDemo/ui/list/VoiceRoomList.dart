@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:toast/toast.dart';
 import '../../../utils/TxUtils.dart';
 import '../../../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
 import '../../../TRTCChatSalonDemo/model/TRTCChatSalonDef.dart';
@@ -13,24 +13,29 @@ import '../../../i10n/localization_intl.dart';
  * 房间列表
  */
 class VoiceRoomListPage extends StatefulWidget {
-  VoiceRoomListPage({Key key}) : super(key: key);
+  VoiceRoomListPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => VoiceRoomListPageState();
 }
 
 class VoiceRoomListPageState extends State<VoiceRoomListPage> {
-  TRTCChatSalon trtcVoiceRoom;
-  List<RoomInfo> roomInfList = new List<RoomInfo>();
+  late TRTCChatSalon trtcVoiceRoom;
+  List<RoomInfo> roomInfList = [];
   openUrl(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      Toast.show(
-        Languages.of(context).errorOpenUrl,
-        context,
-        duration: Toast.LENGTH_SHORT,
-        gravity: Toast.CENTER,
+      // Toast.show(
+      //   Languages.of(context)!.errorOpenUrl,
+      //   context,
+      //   duration: Toast.LENGTH_SHORT,
+      //   gravity: Toast.CENTER,
+      // );
+      Fluttertoast.showToast(
+        msg: Languages.of(context)!.errorOpenUrl,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
       );
     }
   }
@@ -61,7 +66,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
     RoomInfoCallback resp = await trtcVoiceRoom.getRoomInfoList(roomIdls);
     if (resp.code == 0) {
       setState(() {
-        roomInfList = resp.list;
+        roomInfList = resp.list!;
       });
     } else {
       TxUtils.showErrorToast(resp.desc, context);
@@ -101,7 +106,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(Languages.of(context).salonTitle),
+          title: Text(Languages.of(context)!.salonTitle),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios), //color: Colors.black
@@ -118,7 +123,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.contact_support),
-              tooltip: Languages.of(context).helpTooltip,
+              tooltip: Languages.of(context)!.helpTooltip,
               onPressed: () {
                 this.openUrl(
                     'https://cloud.tencent.com/document/product/647/53582');
@@ -147,16 +152,16 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
           ),
           child: EasyRefresh(
             header: ClassicalHeader(
-              refreshText: Languages.of(context).refreshText,
-              refreshReadyText: Languages.of(context).refreshReadyText,
-              refreshingText: Languages.of(context).refreshingText,
-              refreshedText: Languages.of(context).refreshedText,
+              refreshText: Languages.of(context)!.refreshText,
+              refreshReadyText: Languages.of(context)!.refreshReadyText,
+              refreshingText: Languages.of(context)!.refreshingText,
+              refreshedText: Languages.of(context)!.refreshedText,
               showInfo: false,
             ),
             emptyWidget: roomCount <= 0
                 ? Center(
                     child: Text(
-                      Languages.of(context).noHadSalon,
+                      Languages.of(context)!.noHadSalon,
                       style: TextStyle(color: Colors.white),
                     ),
                   )
@@ -202,9 +207,9 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                       constraints:
                                           BoxConstraints(maxWidth: 140),
                                       child: Text(
-                                        info.roomName == null
+                                        (info.roomName == null
                                             ? "--"
-                                            : info.roomName,
+                                            : info.roomName)!,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 18),
@@ -222,9 +227,9 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      info.ownerName == null
+                                      (info.ownerName == null
                                           ? "--"
-                                          : info.ownerName,
+                                          : info.ownerName)!,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -240,8 +245,8 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      Languages.of(context)
-                                          .onLineCount(info.memberCount),
+                                      Languages.of(context)!
+                                          .onLineCount(info.memberCount!),
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -270,7 +275,7 @@ class VoiceRoomListPageState extends State<VoiceRoomListPage> {
             "/chatSalon/roomCreate",
           )
         },
-        tooltip: Languages.of(context).createSalonTooltip,
+        tooltip: Languages.of(context)!.createSalonTooltip,
         child: Icon(Icons.add),
       ),
     );

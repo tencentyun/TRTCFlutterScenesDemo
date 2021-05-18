@@ -5,24 +5,24 @@ import '../../../i10n/localization_intl.dart';
 
 class AnchorItem extends StatefulWidget {
   AnchorItem({
-    Key key,
+    Key? key,
     this.userName = "",
     this.userImgUrl = "",
     this.isAdministrator = false,
     this.onKickOutUser,
     this.roomOwnerId,
-    this.isMute,
+    this.isMute = false,
     this.userId,
-    this.isVolumeUpdate,
+    this.isVolumeUpdate = false,
   }) : super(key: key);
 
   final String userName;
   final String userImgUrl;
   final bool isAdministrator;
-  final int roomOwnerId;
-  final Function onKickOutUser;
+  final int? roomOwnerId;
+  final Function? onKickOutUser;
   final bool isMute;
-  final String userId;
+  final String? userId;
   final bool isVolumeUpdate;
   @override
   State<StatefulWidget> createState() => _AnchorItemState();
@@ -45,10 +45,12 @@ class _AnchorItemState extends State<AnchorItem>
                     ListTile(
                       onTap: () {
                         Navigator.pop(context);
-                        widget.onKickOutUser();
+                        if (widget.onKickOutUser != null) {
+                          widget.onKickOutUser?.call();
+                        }
                       },
                       title: Text(
-                        Languages.of(context).kickMic,
+                        Languages.of(context)!.kickMic,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color.fromRGBO(235, 240, 250, 1),
@@ -71,7 +73,7 @@ class _AnchorItemState extends State<AnchorItem>
                         Navigator.pop(context);
                       },
                       title: Text(
-                        Languages.of(context).cancelText,
+                        Languages.of(context)!.cancelText,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color.fromRGBO(235, 240, 250, 0.5),
