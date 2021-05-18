@@ -224,6 +224,7 @@ class TRTCCallingImpl extends TRTCCalling {
       },
       onReceiveNewInvitation:
           (inviteID, inviter, groupID, inviteeList, data) async {
+        print("==inviteeList=" + inviteeList.toString());
         if (!_isCallingData(data)) {
           return;
         }
@@ -247,15 +248,35 @@ class TRTCCallingImpl extends TRTCCalling {
         }
         if (isOnCalling && inviteeList.contains(mCurUserId)) {
           // 正在通话时，收到了一个邀请我的通话请求,需要告诉对方忙线
-
+          Map<String, dynamic> busyMap = _getCustomMap();
+          busyMap['line_busy'] = 'line_busy';
           V2TimCallback res = await timManager
               .getSignalingManager()
-              .reject(inviteID: mCurCallID, data: _getCurMap());
+              .reject(inviteID: mCurCallID, data: jsonEncode(busyMap));
+          return;
         }
+        // 与对方处在同一个群中，此时收到了邀请群中其他人通话的请求，界面上展示连接动画
+        if (!_isEmpty(groupID) && !_isEmpty(mCurGroupId)) {
+          mCurInvitedList.addAll(inviteeList);
+          TRTCCallingDelegate type =
+              TRTCCallingDelegate.onGroupCallInviteeListUpdate;
+          emitEvent(type, mCurInvitedList);
+        }
+        if (!inviteeList.contains(mCurUserId)) {
+          return;
+        }
+        isOnCalling = true;
+
         mCurSponsorForMe = inviter;
         mCurCallID = inviteID;
+        mCurGroupId = groupID;
         type = TRTCCallingDelegate.onInvited;
-        emitEvent(type, data);
+        emitEvent(type, {
+          'sponsor': inviter,
+          'userIds': inviteeList.remove(mCurUserId),
+          'isFromGroup': !_isEmpty(groupID),
+          'type': mCurCallType
+        });
       },
     );
   }
@@ -416,6 +437,14 @@ class TRTCCallingImpl extends TRTCCalling {
     return jsonEncode(customMap);
   }
 
+  _getCustomMap() {
+    Map<String, dynamic> customMap = new Map<String, dynamic>();
+    customMap['version'] = 1;
+    customMap['call_type'] = mCurCallType;
+    customMap['room_id'] = mCurRoomID;
+    return customMap;
+  }
+
   /*
   * trtc 进房
   */
@@ -424,6 +453,7 @@ class TRTCCallingImpl extends TRTCCalling {
       // 开启基础美颜
       TXBeautyManager txBeautyManager = mTRTCCloud.getBeautyManager();
       // 自然美颜
+      txBeautyManager.setBeautyStyle(1);
       txBeautyManager.setBeautyLevel(6);
       // 进房前需要设置一下关键参数
       TRTCVideoEncParam encParam = new TRTCVideoEncParam();
