@@ -6,13 +6,15 @@ import './i10n/localization_intl.dart';
 import './routes/routes.dart' as router;
 
 void main() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+  };
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
-    FlutterBugly.postCatchedException(() {
-      runApp(MyApp());
-    });
-    FlutterBugly.init(androidAppId: "d43b0e0efa", iOSAppId: "cf07d686e1");
+    // FlutterBugly.postCatchedException(() {});
+    runApp(MyApp());
+    //FlutterBugly.init(androidAppId: "d43b0e0efa", iOSAppId: "cf07d686e1");
   });
 }
 

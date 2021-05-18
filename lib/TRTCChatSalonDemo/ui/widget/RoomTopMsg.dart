@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class RoomTopMessage extends StatefulWidget {
   RoomTopMessage({
-    Key key,
-    this.message,
-    this.visible,
-    this.isShowBtn,
+    Key? key,
+    this.message = '',
+    this.visible = false,
+    this.isShowBtn = false,
     this.okTitle,
     this.cancelTitle,
     this.onOkTab,
@@ -14,10 +14,10 @@ class RoomTopMessage extends StatefulWidget {
   }) : super(key: key);
   final String message;
   final bool visible;
-  final String okTitle;
-  final String cancelTitle;
-  final Function onOkTab;
-  final Function onCancelTab;
+  final String? okTitle;
+  final String? cancelTitle;
+  final Function? onOkTab;
+  final Function? onCancelTab;
   final bool isShowBtn;
   @override
   State<StatefulWidget> createState() => _RoomTopMessageState();
@@ -32,14 +32,15 @@ class _RoomTopMessageState extends State<RoomTopMessage> {
               Container(
                 margin: EdgeInsets.fromLTRB(0, 0, 30, 10),
                 height: 36,
+                // ignore: deprecated_member_use
                 child: FlatButton(
                   color: Color.fromRGBO(15, 169, 104, 1.0),
                   child: Text(
-                    widget.okTitle,
+                    widget.okTitle!,
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    widget.onOkTab();
+                    widget.onOkTab!();
                   },
                 ),
               ),
@@ -57,11 +58,11 @@ class _RoomTopMessageState extends State<RoomTopMessage> {
                 height: 36,
                 child: FlatButton(
                   child: Text(
-                    widget.cancelTitle,
+                    widget.cancelTitle!,
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    widget.onCancelTab();
+                    widget.onCancelTab!();
                   },
                 ),
               ),

@@ -11,14 +11,14 @@ import '../i10n/localization_intl.dart';
  *  登录界面
  */
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => LoginPageState();
 }
 
 class LoginPageState extends State<LoginPage> {
-  TRTCChatSalon trtcVoiceRoom;
+  late TRTCChatSalon trtcVoiceRoom;
 
   final userFocusNode = FocusNode();
 
@@ -27,11 +27,11 @@ class LoginPageState extends State<LoginPage> {
 
   login(context) async {
     if (userId == '') {
-      TxUtils.showErrorToast(Languages.of(context).errorUserIDInput, context);
+      TxUtils.showErrorToast(Languages.of(context)!.errorUserIDInput, context);
       return;
     }
     if (double.tryParse(userId) == null) {
-      TxUtils.showErrorToast(Languages.of(context).errorUserIDNumber, context);
+      TxUtils.showErrorToast(Languages.of(context)!.errorUserIDNumber, context);
       return;
     }
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
@@ -44,7 +44,7 @@ class LoginPageState extends State<LoginPage> {
     await trtcVoiceRoom.setSelfProfile(
         'ID:' + userId, constants.DEFAULT_ROOM_IMAGE);
     if (resValue.code == 0) {
-      TxUtils.showToast(Languages.of(context).successLogin, context);
+      TxUtils.showToast(Languages.of(context)!.successLogin, context);
       TxUtils.setStorageByKey(constants.USERID_KEY, userId);
       Navigator.pushNamed(context, "/index");
     } else {
@@ -71,7 +71,7 @@ class LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(Languages.of(context).tencentTRTC),
+        title: Text(Languages.of(context)!.tencentTRTC),
         centerTitle: true,
         elevation: 0,
         // automaticallyImplyLeading: false,
@@ -100,8 +100,8 @@ class LoginPageState extends State<LoginPage> {
                         autofocus: true,
                         focusNode: userFocusNode,
                         decoration: InputDecoration(
-                          labelText: Languages.of(context).userIDLabel,
-                          hintText: Languages.of(context).userIDHintText,
+                          labelText: Languages.of(context)!.userIDLabel,
+                          hintText: Languages.of(context)!.userIDHintText,
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
@@ -121,7 +121,7 @@ class LoginPageState extends State<LoginPage> {
                     Expanded(
                       child: RaisedButton(
                         padding: EdgeInsets.all(15.0),
-                        child: Text(Languages.of(context).login),
+                        child: Text(Languages.of(context)!.login),
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         onPressed: () => login(context),

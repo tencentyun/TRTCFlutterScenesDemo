@@ -13,7 +13,7 @@ enum CallType {
 }
 
 class TRTCCallingContact extends StatefulWidget {
-  TRTCCallingContact(this.callType, {Key key}) : super(key: key);
+  TRTCCallingContact(this.callType, {Key? key}) : super(key: key);
   final CallType callType;
 
   @override
@@ -24,7 +24,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   String searchText = '';
   String myLoginInfoId = '';
   List<UserModel> userList = [];
-  TRTCCalling sInstance;
+  late TRTCCalling sInstance;
   goIndex() {
     Navigator.pushReplacementNamed(
       context,

@@ -5,11 +5,12 @@ class UserModel {
   String name;
   String avatar;
   String userId;
-  UserModel({this.phone, this.name, this.avatar, this.userId});
+  UserModel(
+      {this.phone = '', this.name = '', this.avatar = '', this.userId = ''});
 }
 
 class ProfileManager {
-  static ProfileManager _instance;
+  static ProfileManager? _instance;
 
   static getInstance() {
     if (_instance == null) {

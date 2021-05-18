@@ -17,14 +17,18 @@ class RaiseHandInfo {
   //是否可以通过
   bool isCanAgree;
 
-  RaiseHandInfo({this.userId, this.userName, this.userAvatar, this.isCanAgree});
+  RaiseHandInfo(
+      {this.userId = "",
+      this.userName = "",
+      this.userAvatar = "",
+      this.isCanAgree = false});
 }
 
 class RoomBottomBar extends StatefulWidget {
   RoomBottomBar({
-    Key key,
-    this.userType,
-    this.userStatus,
+    Key? key,
+    this.userType = UserType.Audience,
+    this.userStatus = UserStatus.Mute,
     this.onLeave,
     this.raiseHandList,
     this.onRaiseHand,
@@ -34,12 +38,12 @@ class RoomBottomBar extends StatefulWidget {
   }) : super(key: key);
   final UserType userType;
   final UserStatus userStatus;
-  final Function onLeave;
-  final List<RaiseHandInfo> raiseHandList;
-  final Function onRaiseHand;
-  final Function onMuteAudio;
-  final Function onAnchorLeaveMic;
-  final Function onAgreeToSpeak;
+  final Function? onLeave;
+  final List<RaiseHandInfo>? raiseHandList;
+  final Function? onRaiseHand;
+  final Function? onMuteAudio;
+  final Function? onAnchorLeaveMic;
+  final Function? onAgreeToSpeak;
   @override
   _RoomBottomBarState createState() => _RoomBottomBarState();
 }
@@ -56,11 +60,11 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
     setState(() {
       hadHandUp = true;
     });
-    widget.onRaiseHand();
+    widget.onRaiseHand?.call();
   }
 
   onMuteAudioClick(bool isMute) {
-    widget.onMuteAudio(isMute);
+    widget.onMuteAudio?.call(isMute);
   }
 
   onShowHandList(raiseHandList) {
@@ -78,7 +82,7 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                   backgroundColor: Color.fromRGBO(19, 35, 63, 1),
                   shadowColor: Color.fromRGBO(19, 35, 63, 1),
                   title: Text(
-                    Languages.of(context).raiseUpList,
+                    Languages.of(context)!.raiseUpList,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -129,7 +133,8 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
                                   //同意or拒绝
                                   Navigator.pop(context);
                                   if (userInfo.isCanAgree) {
-                                    widget.onAgreeToSpeak(userInfo.userId);
+                                    widget.onAgreeToSpeak
+                                        ?.call(userInfo.userId);
                                     this.setState(() {
                                       hadAgreeMap[userInfo.userId] = true;
                                     });
@@ -164,11 +169,11 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
   }
 
   anchorLeaveMic() {
-    widget.onAnchorLeaveMic();
+    widget.onAnchorLeaveMic?.call();
   }
 
   onLeave() {
-    widget.onLeave();
+    widget.onLeave?.call();
   }
 
   @override
@@ -190,9 +195,11 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
             ? "assets/images/DownWheat.png"
             : "";
     int validRaiseHandCount = 0;
-    widget.raiseHandList.forEach((element) {
-      if (element.isCanAgree) validRaiseHandCount = validRaiseHandCount + 1;
-    });
+    if (widget.raiseHandList != null) {
+      widget.raiseHandList?.forEach((element) {
+        if (element.isCanAgree) validRaiseHandCount = validRaiseHandCount + 1;
+      });
+    }
     var lastRighttBtn = Positioned(
       right: 10,
       child: Container(
@@ -222,11 +229,12 @@ class _RoomBottomBarState extends State<RoomBottomBar> {
             Container(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                // ignore: deprecated_member_use
                 child: FlatButton(
                   minWidth: 144,
                   color: Color.fromRGBO(0, 98, 227, 1),
                   child: Text(
-                    Languages.of(context).leaveTips,
+                    Languages.of(context)!.leaveTips,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,

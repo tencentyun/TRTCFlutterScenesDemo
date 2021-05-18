@@ -10,20 +10,20 @@ import '../../../TRTCChatSalonDemo/model/TRTCChatSalon.dart';
 import '../../../i10n/localization_intl.dart';
 
 class VoiceRoomCreatePage extends StatefulWidget {
-  VoiceRoomCreatePage({Key key}) : super(key: key);
+  VoiceRoomCreatePage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => VoiceRoomCreatePageState();
 }
 
 class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
-  TRTCChatSalon trtcVoiceRoom;
+  late TRTCChatSalon trtcVoiceRoom;
 
   /// 用户id
   String userName = 'Test';
 
   /// 登录后签名
-  String userSig;
+  late String userSig;
 
   /// 会议id
   String meetTitle = '''Test's Salon''';
@@ -42,10 +42,8 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
     String userId = await TxUtils.getLoginUserId();
     String loginUserName = await TxUtils.getStorageByKey("loginUserName");
     setState(() {
-      userName = (loginUserName != null && loginUserName != "")
-          ? loginUserName
-          : 'id：$userId';
-      meetTitle = Languages.of(context).defaultChatTitle(userName);
+      userName = (loginUserName != "") ? loginUserName : 'id：$userId';
+      meetTitle = Languages.of(context)!.defaultChatTitle(userName);
     });
   }
 
@@ -66,28 +64,28 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
 
   _isVerifyInputOk() {
     if (GenerateTestUserSig.sdkAppId == 0) {
-      TxUtils.showErrorToast(Languages.of(context).errorsdkAppId, context);
+      TxUtils.showErrorToast(Languages.of(context)!.errorsdkAppId, context);
       return false;
     }
     if (GenerateTestUserSig.secretKey == '') {
-      TxUtils.showErrorToast(Languages.of(context).errorSecretKey, context);
+      TxUtils.showErrorToast(Languages.of(context)!.errorSecretKey, context);
       return false;
     }
     if (meetTitle == '') {
-      TxUtils.showErrorToast(Languages.of(context).errorMeetTitle, context);
+      TxUtils.showErrorToast(Languages.of(context)!.errorMeetTitle, context);
       return false;
     } else if (meetTitle.toString().length > 250) {
       TxUtils.showErrorToast(
-          Languages.of(context).errorMeetTitleLength, context);
+          Languages.of(context)!.errorMeetTitleLength, context);
       return false;
     }
     userName = userName.replaceAll(new RegExp(r"\s+\b|\b\s"), "");
     if (userName == '') {
-      TxUtils.showErrorToast(Languages.of(context).errorUserName, context);
+      TxUtils.showErrorToast(Languages.of(context)!.errorUserName, context);
       return false;
     } else if (userName.length > 10) {
       TxUtils.showErrorToast(
-          Languages.of(context).errorUserNameLength, context);
+          Languages.of(context)!.errorUserNameLength, context);
       return false;
     }
     return true;
@@ -122,7 +120,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
       }
     } else {
       TxUtils.showErrorToast(
-          Languages.of(context).errorMicrophonePermission, context);
+          Languages.of(context)!.errorMicrophonePermission, context);
     }
   }
 
@@ -130,7 +128,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Languages.of(context).createSalonTooltip),
+        title: Text(Languages.of(context)!.createSalonTooltip),
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
@@ -191,8 +189,8 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                         ),
                         focusNode: meetIdFocusNode,
                         decoration: InputDecoration(
-                          labelText: Languages.of(context).meetTitleLabel,
-                          hintText: Languages.of(context).meetTitleHintText,
+                          labelText: Languages.of(context)!.meetTitleLabel,
+                          hintText: Languages.of(context)!.meetTitleHintText,
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
@@ -218,8 +216,8 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                         ),
                         focusNode: userFocusNode,
                         decoration: InputDecoration(
-                          labelText: Languages.of(context).userNameLabel,
-                          hintText: Languages.of(context).userNameHintText,
+                          labelText: Languages.of(context)!.userNameLabel,
+                          hintText: Languages.of(context)!.userNameHintText,
                           labelStyle: TextStyle(color: Colors.white),
                           hintStyle: TextStyle(
                               color: Color.fromRGBO(255, 255, 255, 0.5)),
@@ -239,7 +237,7 @@ class VoiceRoomCreatePageState extends State<VoiceRoomCreatePage> {
                     Expanded(
                       child: RaisedButton(
                         padding: EdgeInsets.all(15.0),
-                        child: Text(Languages.of(context).startSalon),
+                        child: Text(Languages.of(context)!.startSalon),
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         onPressed: createVoiceRoom,

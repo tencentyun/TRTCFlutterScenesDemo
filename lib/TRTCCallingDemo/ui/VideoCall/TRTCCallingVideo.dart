@@ -15,15 +15,15 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   CallStatus currentCallStatus = CallStatus.calling;
   //已经通话时长
   String hadCallingTime = "00:00";
-  DateTime startAnswerTime;
+  late DateTime startAnswerTime;
   bool isCameraOff = false;
   bool isMicrophoneOff = false;
 
   double _remoteTop = 64;
   double _remoteRight = 20;
-  UserModel _remoteUserInfo;
+  late UserModel _remoteUserInfo;
 
-  Timer timer;
+  late Timer timer;
   @override
   void initState() {
     super.initState();
@@ -37,7 +37,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   initRemoteInfo() async {
-    Map arguments = ModalRoute.of(context).settings.arguments;
+    Map arguments = ModalRoute.of(context)!.settings.arguments! as Map;
     setState(() {
       _remoteUserInfo = arguments['remoteUserInfo'] as UserModel;
     });

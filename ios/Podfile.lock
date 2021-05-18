@@ -1,24 +1,26 @@
 PODS:
-  - Bugly (2.5.71)
+  - Bugly (2.5.90)
   - Flutter (1.0.0)
   - flutter_bugly (0.0.1):
     - Bugly
     - Flutter
-  - HydraAsync (2.0.5)
-  - path_provider (0.0.1):
+  - fluttertoast (0.0.2):
     - Flutter
-  - "permission_handler (5.0.1+1)":
+    - Toast
+  - HydraAsync (2.0.6)
+  - "permission_handler (5.1.0+2)":
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
   - tencent_im_sdk_plugin (1.0.5):
     - Flutter
     - HydraAsync
-    - TXIMSDK_Smart_iOS (= 5.1.137)
+    - TXIMSDK_Smart_iOS (= 5.3.425)
   - tencent_trtc_cloud (0.0.6):
     - Flutter
     - TXLiteAVSDK_TRTC (= 8.1.9719)
-  - TXIMSDK_Smart_iOS (5.1.137)
+  - Toast (4.0.0)
+  - TXIMSDK_Smart_iOS (5.3.425)
   - TXLiteAVSDK_TRTC (8.1.9719)
   - url_launcher (0.0.1):
     - Flutter
@@ -26,7 +28,7 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_bugly (from `.symlinks/plugins/flutter_bugly/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - tencent_im_sdk_plugin (from `.symlinks/plugins/tencent_im_sdk_plugin/ios`)
@@ -37,6 +39,7 @@ SPEC REPOS:
   trunk:
     - Bugly
     - HydraAsync
+    - Toast
     - TXIMSDK_Smart_iOS
     - TXLiteAVSDK_TRTC
 
@@ -45,8 +48,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_bugly:
     :path: ".symlinks/plugins/flutter_bugly/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
   shared_preferences:
@@ -59,16 +62,17 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
-  Bugly: fd066c75c4a0eca1440f9b6a84bd37d51bfc85ac
+  Bugly: 88bc32c0acc6fef7b74d610f0319ee7560d6b9fe
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
-  HydraAsync: 6b74390f143e7edfb8bd3c706262b67bbefc09df
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
-  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
+  fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
+  HydraAsync: 8d589bd725b0224f899afafc9a396327405f8063
+  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  tencent_im_sdk_plugin: 65e2091606c7cf827d04da8dabc452edb67e64b4
+  tencent_im_sdk_plugin: 0328fdb10771f3368d87249f0a7cf08d3eda2d8f
   tencent_trtc_cloud: 569c900fe5e510a218145400538ead54b10b4e23
-  TXIMSDK_Smart_iOS: 6923d8f1d341ff12f0211afe8c62b98c6f140617
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  TXIMSDK_Smart_iOS: da35a877a187b7c291301cae0b1b1a1296dc484b
   TXLiteAVSDK_TRTC: dd581804b8badfffaf1d00856d7f2812eb8a47d4
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
