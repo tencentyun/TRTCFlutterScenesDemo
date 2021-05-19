@@ -22,41 +22,6 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
 import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 
-final int VALUE_PROTOCOL_VERSION = 1;
-// 系统错误
-final int VIDEO_CALL_ACTION_ERROR = -1;
-// 未知信令
-final int VIDEO_CALL_ACTION_UNKNOWN = 0;
-// 正在呼叫
-final int VIDEO_CALL_ACTION_DIALING = 1;
-// 发起人取消
-final int VIDEO_CALL_ACTION_SPONSOR_CANCEL = 2;
-// 拒接电话
-final int VIDEO_CALL_ACTION_REJECT = 3;
-//无人接听
-final int VIDEO_CALL_ACTION_SPONSOR_TIMEOUT = 4;
-//挂断
-final int VIDEO_CALL_ACTION_HANGUP = 5;
-//电话占线
-final int VIDEO_CALL_ACTION_LINE_BUSY = 6;
-// 接听电话
-final int VIDEO_CALL_ACTION_ACCEPT = 7;
-Map<String, dynamic> initCallModel = {
-  'action': VIDEO_CALL_ACTION_UNKNOWN,
-  'version': 0,
-  'callId': null,
-  'roomId': 0,
-  'groupId': '',
-  'callType': 0,
-  'invitedList': null,
-  'duration': 0,
-  'code': 0,
-  'timestamp': 0,
-  'sender': null,
-  'timeout': null,
-  'data': null
-};
-
 class TRTCCallingImpl extends TRTCCalling {
   String logTag = "TRTCCallingImpl";
   late VoiceListenerFunc emitEvent;
@@ -76,8 +41,6 @@ class TRTCCallingImpl extends TRTCCalling {
   String? mNickName;
   String? mFaceUrl;
 
-  //最近使用的通话信令，用于快速处理
-  Map<String, dynamic> mLastCallModel = new Map.from(initCallModel);
   /*
    * 当前邀请列表
    * C2C通话时会记录自己邀请的用户
@@ -85,6 +48,8 @@ class TRTCCallingImpl extends TRTCCalling {
    * 当用户接听、拒绝、忙线、超时会从列表中移除该用户
    */
   List<String> mCurInvitedList = [];
+
+  List<dynamic> mCurCallList = [];
 
   //当前语音通话中的远端用户
   Set mCurRoomRemoteUserSet = new Set();
@@ -175,9 +140,9 @@ class TRTCCallingImpl extends TRTCCalling {
         }
       },
       onInvitationTimeout: (inviteID, inviteeList) {
-        if (mCurCallID != inviteID) {
-          return;
-        }
+        // if (mCurCallID != inviteID) {
+        //   return;
+        // }
         //邀请者
         if (mCurSponsorForMe.isEmpty) {
           for (var i = 0; i < inviteeList.length; i++) {
@@ -205,7 +170,8 @@ class TRTCCallingImpl extends TRTCCalling {
         if (!_isCallingData(data)) {
           return;
         }
-        if (mCurCallID == inviteID) {
+        String curGroupCallId = _getGroupCallId(invitee);
+        if (mCurCallID == inviteID || curGroupCallId == inviteID) {
           try {
             Map<String, dynamic>? customMap = jsonDecode(data);
             mCurInvitedList.remove(invitee);
@@ -224,9 +190,6 @@ class TRTCCallingImpl extends TRTCCalling {
       },
       onReceiveNewInvitation:
           (inviteID, inviter, groupID, inviteeList, data) async {
-        print("==inviteeList=" + inviteeList.toString());
-        print("==custom data=" + data);
-        print("==inviter=" + inviter);
         if (!_isCallingData(data)) {
           return;
         }
@@ -251,7 +214,6 @@ class TRTCCallingImpl extends TRTCCalling {
               "=onReceiveNewInvitation JsonSyntaxException:" +
               e.toString());
         }
-        print("==isOnCalling=" + isOnCalling.toString());
         if (isOnCalling && inviteeList.contains(mCurUserId)) {
           // 正在通话时，收到了一个邀请我的通话请求,需要告诉对方忙线
           Map<String, dynamic> busyMap = _getCustomMap();
@@ -324,6 +286,16 @@ class TRTCCallingImpl extends TRTCCalling {
     }
   }
 
+  // 多人通话时，根据userId找到对应的通话id
+  _getGroupCallId(String userId) {
+    for (int i = 0; i < mCurCallList.length; i++) {
+      if (mCurCallList[i]['userId'] == userId) {
+        return mCurCallList[i]['callId'];
+      }
+    }
+    return '';
+  }
+
   /*
   * 重要：用于判断是否需要结束本次通话
   * 在用户超时、拒绝、忙线、有人退出房间时需要进行判断
@@ -375,7 +347,7 @@ class TRTCCallingImpl extends TRTCCalling {
     mIsInitIMSDK = true;
 
     // 登陆到 IM
-    String loginedUserId = (await timManager.getLoginUser()).data!;
+    String? loginedUserId = (await timManager.getLoginUser()).data;
 
     if (loginedUserId != null && loginedUserId == userId) {
       mIsLogin = true;
@@ -403,7 +375,6 @@ class TRTCCallingImpl extends TRTCCalling {
 
   @override
   Future<ActionCallback> call(String userId, int type) async {
-    print("==userId=" + userId.toString());
     if (!isOnCalling) {
       // 首次拨打电话，生成id，并进入trtc房间
       mCurRoomID = _generateRoomID();
@@ -413,20 +384,12 @@ class TRTCCallingImpl extends TRTCCalling {
     }
     mCurInvitedList.add(userId);
 
-    mLastCallModel['action'] = VIDEO_CALL_ACTION_DIALING;
-    mLastCallModel['invitedList'] = mCurInvitedList;
-    mLastCallModel['roomId'] = mCurRoomID;
-    mLastCallModel['groupId'] = mCurGroupId;
-    mLastCallModel['callType'] = mCurCallType;
-
     V2TimValueCallback res = await timManager.getSignalingManager().invite(
         invitee: userId,
         data: jsonEncode(_getCustomMap()),
         timeout: timeOutCount,
         onlineUserOnly: false);
     mCurCallID = res.data;
-    mLastCallModel['callId'] = mCurCallID;
-    print("==mCurCallID=" + mCurCallID.toString());
     return ActionCallback(code: res.code, desc: res.desc);
   }
 
@@ -488,17 +451,9 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  Future<ActionCallback> groupCall(
-      List<String> userIdList, int type, String groupId) async {
+  Future<ActionCallback> groupCall(List<String> userIdList, int type) async {
     if (_isListEmpty(userIdList)) {
       return ActionCallback(code: codeErr, desc: 'userIdList is empty');
-    }
-    // 非首次拨打，不能发起新的groupId通话
-    if (groupId == mCurGroupId) {
-      return ActionCallback(
-          code: codeErr,
-          desc:
-              'You cannot initiate a new groupid call unless you dial it for the first time');
     }
     if (!isOnCalling) {
       // 首次拨打电话，生成id，并进入trtc房间
@@ -520,29 +475,16 @@ class TRTCCallingImpl extends TRTCCalling {
           code: codeErr, desc: 'the userIdList has been invited');
     }
     mCurInvitedList = filterInvitedList;
+    for (int i = 0; i < mCurInvitedList.length; i++) {
+      V2TimValueCallback res = await timManager.getSignalingManager().invite(
+          invitee: mCurInvitedList[i],
+          data: jsonEncode(_getCustomMap()),
+          timeout: timeOutCount,
+          onlineUserOnly: false);
+      mCurCallList.add({'userId': mCurInvitedList[i], 'callId': res.data});
+    }
 
-    mLastCallModel['action'] = VIDEO_CALL_ACTION_DIALING;
-    mLastCallModel['invitedList'] = mCurInvitedList;
-    mLastCallModel['roomId'] = mCurRoomID;
-    mLastCallModel['groupId'] = mCurGroupId;
-    mLastCallModel['callType'] = mCurCallType;
-
-    Map<String, Object> customMap = {};
-    customMap['version'] = 1;
-    customMap['call_type'] = mCurCallType!;
-    customMap['room_id'] = mCurRoomID;
-
-    V2TimValueCallback res = await timManager
-        .getSignalingManager()
-        .inviteInGroup(
-            groupID: groupId,
-            data: jsonEncode(customMap),
-            inviteeList: mCurInvitedList,
-            timeout: timeOutCount,
-            onlineUserOnly: false);
-    mCurCallID = res.data;
-    mLastCallModel['callId'] = mCurCallID;
-    return ActionCallback(code: res.code, desc: res.data);
+    return ActionCallback(code: 0, desc: '');
   }
 
   _isListEmpty(List? list) {
@@ -565,8 +507,6 @@ class TRTCCallingImpl extends TRTCCalling {
     mCurInvitedList = [];
     mCurRoomRemoteUserSet.clear();
     mCurSponsorForMe = "";
-    mLastCallModel = new Map.from(initCallModel);
-    mLastCallModel['version'] = VALUE_PROTOCOL_VERSION;
     mCurGroupId = "";
     mCurCallType = TRTCCalling.typeUnknow;
   }
@@ -592,11 +532,6 @@ class TRTCCallingImpl extends TRTCCalling {
       return;
     }
 
-    // if (mCurGroupId.isEmpty) {
-    //   if (mEnterRoomTime != 0) {
-    //     mEnterRoomTime = 0;
-    //   }
-    // } else {}
     mCurInvitedList.map((userId) => timManager
         .getSignalingManager()
         .cancel(inviteID: mCurCallID, data: jsonEncode(_getCustomMap())));

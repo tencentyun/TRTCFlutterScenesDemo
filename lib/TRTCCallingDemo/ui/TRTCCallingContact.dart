@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDef.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/debug/Config.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
@@ -53,7 +54,10 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
 
   //搜索
   onSearchClick() async {
-    sInstance.call('108931', TRTCCalling.typeVideoCall);
+    // sInstance.call('108931', TRTCCalling.typeVideoCall);
+    ActionCallback res = await sInstance
+        .groupCall(['108931', '109442'], TRTCCalling.typeVideoCall);
+    print("==res=" + res.code.toString());
     List<UserModel> ls =
         await ProfileManager.getInstance().queryUserInfo(searchText);
 
