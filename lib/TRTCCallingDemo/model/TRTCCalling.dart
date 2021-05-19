@@ -1,26 +1,25 @@
 import 'TRTCCallingDef.dart';
 import 'impl/TRTCCallingImpl.dart';
-// import 'TRTCCallingDelegate.dart';
 
 abstract class TRTCCalling {
-  static int TYPE_UNKNOWN = 0;
-  static int TYPE_AUDIO_CALL = 1;
-  static int TYPE_VIDEO_CALL = 2;
+  static int typeUnknow = 0;
+  static int typeAudioCall = 1;
+  static int typeVideoCall = 2;
 
   /*
-  * 获取 TRTCChatSalon 单例对象
+  * 获取 TRTCCalling 单例对象
   *
-  * @return TRTCChatSalon 实例
-  * @note 可以调用 {@link TRTCChatSalon.destroySharedInstance()} 销毁单例对象
+  * @return TRTCCalling 实例
+  * @note 可以调用 {@link TRTCCalling.destroySharedInstance()} 销毁单例对象
   */
   static Future<TRTCCalling> sharedInstance() async {
     return TRTCCallingImpl.sharedInstance();
   }
 
   /*
-  * 销毁 TRTCChatSalon 单例对象
+  * 销毁 TRTCCalling 单例对象
   *
-  * @note 销毁实例后，外部缓存的 TRTCChatSalon 实例不能再使用，需要重新调用 {@link TRTCChatSalon.sharedInstance()} 获取新实例
+  * @note 销毁实例后，外部缓存的 TRTCCalling 实例不能再使用，需要重新调用 {@link TRTCCalling.sharedInstance()} 获取新实例
   */
   static void destroySharedInstance() async {
     TRTCCallingImpl.destroySharedInstance();
@@ -37,7 +36,7 @@ abstract class TRTCCalling {
   /*
   * 设置组件事件监听接口
   *
-  * 您可以通过 registerListener 获得 TRTCChatSalon 的各种状态通知
+  * 您可以通过 registerListener 获得 TRTCCalling 的各种状态通知
   *
   * @param VoiceListenerFunc func 回调接口
   */

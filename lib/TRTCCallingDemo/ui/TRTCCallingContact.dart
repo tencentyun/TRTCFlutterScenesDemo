@@ -45,17 +45,15 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
     print("==onRtcListener type=" + type.toString());
     if (type == TRTCCallingDelegate.onInvited) {
       // sInstance.accept();
-      sInstance.reject();
+      // sInstance.reject();
+    } else if (type == TRTCCallingDelegate.onError) {
+      print("==error param=" + param.toString());
     }
   }
 
   //搜索
   onSearchClick() async {
-    String userId = "3221";
-    await sInstance.login(GenerateTestUserSig.sdkAppId, userId,
-        await GenerateTestUserSig.genTestSig(userId));
-    sInstance.registerListener(onRtcListener);
-    // sInstance.call('3221', TRTCCalling.TYPE_AUDIO_CALL);
+    sInstance.call('108931', TRTCCalling.typeVideoCall);
     List<UserModel> ls =
         await ProfileManager.getInstance().queryUserInfo(searchText);
 
@@ -77,8 +75,11 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
 
   initUserInfo() async {
     sInstance = await TRTCCalling.sharedInstance();
+    sInstance.registerListener(onRtcListener);
     String loginId = await TxUtils.getLoginUserId();
-    if (loginId == null || loginId == '') {
+    await sInstance.login(GenerateTestUserSig.sdkAppId, loginId,
+        await GenerateTestUserSig.genTestSig(loginId));
+    if (loginId == '') {
       TxUtils.showErrorToast("请先登录。", context);
       goLoginPage();
     } else {
@@ -226,6 +227,23 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
             },
             child: Text(
               '搜索',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(right: 20),
+          child: RaisedButton(
+            color: Color.fromRGBO(0, 110, 255, 1.000),
+            shape: RoundedRectangleBorder(
+              side: BorderSide.none,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+            onPressed: () {
+              sInstance.hangup();
+            },
+            child: Text(
+              'hangup',
               style: TextStyle(color: Colors.white),
             ),
           ),
