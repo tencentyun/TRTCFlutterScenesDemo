@@ -451,7 +451,8 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  Future<ActionCallback> groupCall(List<String> userIdList, int type) async {
+  Future<ActionCallback> groupCall(
+      List<String> userIdList, int type, String? groupId) async {
     if (_isListEmpty(userIdList)) {
       return ActionCallback(code: codeErr, desc: 'userIdList is empty');
     }
@@ -475,16 +476,28 @@ class TRTCCallingImpl extends TRTCCalling {
           code: codeErr, desc: 'the userIdList has been invited');
     }
     mCurInvitedList = filterInvitedList;
-    for (int i = 0; i < mCurInvitedList.length; i++) {
-      V2TimValueCallback res = await timManager.getSignalingManager().invite(
-          invitee: mCurInvitedList[i],
-          data: jsonEncode(_getCustomMap()),
-          timeout: timeOutCount,
-          onlineUserOnly: false);
-      mCurCallList.add({'userId': mCurInvitedList[i], 'callId': res.data});
+    if (_isEmpty(groupId)) {
+      for (int i = 0; i < mCurInvitedList.length; i++) {
+        V2TimValueCallback res = await timManager.getSignalingManager().invite(
+            invitee: mCurInvitedList[i],
+            data: jsonEncode(_getCustomMap()),
+            timeout: timeOutCount,
+            onlineUserOnly: false);
+        mCurCallList.add({'userId': mCurInvitedList[i], 'callId': res.data});
+      }
+      return ActionCallback(code: 0, desc: '');
+    } else {
+      V2TimValueCallback res = await timManager
+          .getSignalingManager()
+          .inviteInGroup(
+              groupID: groupId!,
+              inviteeList: mCurInvitedList,
+              data: jsonEncode(_getCustomMap()),
+              timeout: timeOutCount,
+              onlineUserOnly: false);
+      mCurCallID = res.data;
+      return ActionCallback(code: res.code, desc: res.desc);
     }
-
-    return ActionCallback(code: 0, desc: '');
   }
 
   _isListEmpty(List? list) {
@@ -532,9 +545,19 @@ class TRTCCallingImpl extends TRTCCalling {
       return;
     }
 
-    mCurInvitedList.map((userId) => timManager
-        .getSignalingManager()
-        .cancel(inviteID: mCurCallID, data: jsonEncode(_getCustomMap())));
+    if (_isEmpty(mCurGroupId)) {
+      for (int i = 0; i < mCurInvitedList.length; i++) {
+        timManager.getSignalingManager().cancel(
+            inviteID: _getGroupCallId(mCurInvitedList[i]),
+            data: jsonEncode(_getCustomMap()));
+      }
+    } else {
+      if (mCurRoomRemoteUserSet.isEmpty) {
+        timManager.getSignalingManager().cancel(
+            inviteID: _getGroupCallId(mCurCallID),
+            data: jsonEncode(_getCustomMap()));
+      }
+    }
     _stopCall();
     _exitRoom();
   }

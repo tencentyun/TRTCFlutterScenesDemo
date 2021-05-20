@@ -56,7 +56,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   onSearchClick() async {
     // sInstance.call('108931', TRTCCalling.typeVideoCall);
     ActionCallback res = await sInstance
-        .groupCall(['108931', '109442'], TRTCCalling.typeVideoCall);
+        .groupCall(['108931', '109442'], TRTCCalling.typeVideoCall, null);
     print("==res=" + res.code.toString());
     List<UserModel> ls =
         await ProfileManager.getInstance().queryUserInfo(searchText);
