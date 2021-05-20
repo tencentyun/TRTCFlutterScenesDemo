@@ -35,6 +35,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   late TRTCCalling _tRTCCallingService;
   late int _currentUserViewId;
+  late int _currentRemoteUserViewId;
   Timer? _hadCalledCalcTimer;
   @override
   void initState() {
@@ -43,6 +44,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
       this.initRemoteInfo();
     });
     initTrtc();
+    //FOR TEST
+    // Future.delayed(Duration(seconds: 10), () {
+    //   handleOnUserAnswer();
+    // });
   }
 
   initTrtc() async {
@@ -117,12 +122,14 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   //用户接听
   handleOnUserAnswer() {
-    _startAnswerTime = DateTime.now();
-    setState(() {
-      _currentCallStatus = CallStatus.answer;
-      _hadCallingTime = "00:00";
-    });
-    this._callIngTimeUpdate();
+    if (_remoteUserInfo != null) {
+      _startAnswerTime = DateTime.now();
+      setState(() {
+        _currentCallStatus = CallStatus.answer;
+        _hadCallingTime = "00:00";
+      });
+      this._callIngTimeUpdate();
+    }
   }
 
   showMessageTips(String msg, Function callback) {
@@ -169,6 +176,9 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   @override
   dispose() {
+    if (_hadCalledCalcTimer != null) {
+      _hadCalledCalcTimer!.cancel();
+    }
     _tRTCCallingService.unRegisterListener(onRtcListener);
     super.dispose();
   }
@@ -395,15 +405,33 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         child: Container(
           height: _currentCallStatus == CallStatus.calling ? 100 : 216,
           width: 100,
-          decoration: _remoteUserInfo != null
+          child:
+              _currentCallStatus == CallStatus.answer || _remoteUserInfo != null
+                  ? TRTCCloudVideoView(
+                      key: ValueKey("_remoteUserInfo"),
+                      onViewCreated: (viewId) {
+                        _currentRemoteUserViewId = viewId;
+                        _tRTCCallingService.startRemoteView(
+                            _remoteUserInfo!.userId,
+                            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
+                            _currentRemoteUserViewId);
+                      },
+                    )
+                  : null,
+          decoration: _remoteUserInfo != null &&
+                  _currentCallStatus == CallStatus.calling
               ? BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(_remoteUserInfo!.avatar),
                     fit: BoxFit.cover,
                   ),
                 )
-              : BoxDecoration(),
-          //child: Text('_remote user'),
+              : BoxDecoration(
+                  border: Border.all(
+                    color: Color.fromRGBO(235, 244, 255, 1.0),
+                    width: 1,
+                  ),
+                ),
         ),
       ),
     );

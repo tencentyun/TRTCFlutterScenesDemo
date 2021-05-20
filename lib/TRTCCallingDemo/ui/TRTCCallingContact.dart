@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDef.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import '../../utils/TxUtils.dart';
