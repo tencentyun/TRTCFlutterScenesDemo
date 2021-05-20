@@ -54,7 +54,8 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   onRtcListener(type, params) {
     switch (type) {
       case TRTCCallingDelegate.onError:
-        showMessageTips("发生错误:" + params['errCode'], stopCameraAndFinish);
+        showMessageTips("发生错误:" + params['errCode'] + "," + params['errMsg'],
+            stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onWarning:
         // TODO: Handle this case.
@@ -75,22 +76,22 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         // TODO: Handle this case.
         break;
       case TRTCCallingDelegate.onReject:
-        // TODO: Handle this case.
+        showMessageTips("拒绝通话", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onNoResp:
-        // TODO: Handle this case.
+        showMessageTips("无响应", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onLineBusy:
-        // TODO: Handle this case.
+        showMessageTips("忙线", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onCallingCancel:
-        // TODO: Handle this case.
+        showMessageTips("取消了通话", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onCallingTimeout:
-        // TODO: Handle this case.
+        showMessageTips("呼叫超时", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onCallEnd:
-        // TODO: Handle this case.
+        showMessageTips("结束通话", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onUserVideoAvailable:
         // TODO: Handle this case.
@@ -102,7 +103,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         // TODO: Handle this case.
         break;
       case TRTCCallingDelegate.onKickedOffline:
-        // TODO: Handle this case.
+        showMessageTips("你被踢下线了", stopCameraAndFinish);
         break;
     }
   }
@@ -183,6 +184,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   //麦克风启用禁用
   onMicrophoneTap() {
+    _tRTCCallingService.setMicMute(!_isMicrophoneOff);
     setState(() {
       _isMicrophoneOff = !_isMicrophoneOff;
     });
@@ -190,6 +192,11 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   //摄像头启用禁用
   onCameraTap() {
+    if (!_isCameraOff) {
+      _tRTCCallingService.closeCamera();
+    } else {
+      _tRTCCallingService.openCamera(_isFrontCamera, _currentUserViewId);
+    }
     setState(() {
       _isCameraOff = !_isCameraOff;
     });
@@ -197,6 +204,8 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   //挂断
   onHangUpCall() {
+    _tRTCCallingService.closeCamera();
+    _tRTCCallingService.hangup();
     Navigator.pushReplacementNamed(
       context,
       "/calling/videoContact",
@@ -219,9 +228,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                     Text(
                       _remoteUserInfo != null ? _remoteUserInfo!.name : "--",
                       style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),

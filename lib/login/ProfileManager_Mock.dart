@@ -28,4 +28,12 @@ class ProfileManager {
           userId: userId)
     ]);
   }
+
+  Future<UserModel> querySingleUserInfo(String userId) {
+    return Future.value(UserModel(
+        phone: userId,
+        name: userId,
+        avatar: TxUtils.getDefaltAvatarUrl(),
+        userId: userId));
+  }
 }
