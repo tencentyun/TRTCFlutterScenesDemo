@@ -2,20 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDef.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
-import 'package:trtc_scenes_demo/debug/Config.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import '../../utils/TxUtils.dart';
 import '../../login/ProfileManager_Mock.dart';
 import '../model/TRTCCalling.dart';
+import 'base/CallTypes.dart';
 
-enum CallType {
+enum CallingScenes {
   VideoOneVOne, //一对一视频通话
   AudioOneVOne, //一对一语音通话
 }
 
 class TRTCCallingContact extends StatefulWidget {
-  TRTCCallingContact(this.callType, {Key? key}) : super(key: key);
-  final CallType callType;
+  TRTCCallingContact(this.callingScenes, {Key? key}) : super(key: key);
+  final CallingScenes callingScenes;
 
   @override
   _TRTCCallingContactState createState() => _TRTCCallingContactState();
@@ -73,6 +73,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
       "/calling/videoCall",
       arguments: {
         "remoteUserInfo": userInfo,
+        "callType": CallTypes.Type_Call_Someone
       },
     );
   }

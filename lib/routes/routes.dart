@@ -19,9 +19,9 @@ final Map<String, WidgetBuilder> routes = {
   "/chatSalon/roomAnchor": (context) => VoiceRoomPage(UserType.Anchor),
   "/chatSalon/roomAudience": (context) => VoiceRoomPage(UserType.Audience),
   "/calling/videoContact": (context) =>
-      TRTCCallingContact(CallType.VideoOneVOne),
+      TRTCCallingContact(CallingScenes.VideoOneVOne),
   "/calling/audioContact": (context) =>
-      TRTCCallingContact(CallType.AudioOneVOne),
+      TRTCCallingContact(CallingScenes.AudioOneVOne),
   "/calling/audioCall": (context) => TRTCCallingAudio(),
   "/calling/videoCall": (context) => TRTCCallingVideo(),
 };
