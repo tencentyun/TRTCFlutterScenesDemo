@@ -7,11 +7,7 @@ import '../../utils/TxUtils.dart';
 import '../../login/ProfileManager_Mock.dart';
 import '../model/TRTCCalling.dart';
 import 'base/CallTypes.dart';
-
-enum CallingScenes {
-  VideoOneVOne, //一对一视频通话
-  AudioOneVOne, //一对一语音通话
-}
+import 'base/CallingScenes.dart';
 
 class TRTCCallingContact extends StatefulWidget {
   TRTCCallingContact(this.callingScenes, {Key? key}) : super(key: key);
@@ -73,6 +69,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
       "/calling/videoCall",
       arguments: {
         "remoteUserInfo": userInfo,
+        //for test
         "callType": CallTypes.Type_Call_Someone
       },
     );

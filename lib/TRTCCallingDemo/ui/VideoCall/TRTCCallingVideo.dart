@@ -5,6 +5,7 @@ import 'package:tencent_trtc_cloud/trtc_cloud_video_view.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCalling.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/ui/base/CallTypes.dart';
+import 'package:trtc_scenes_demo/TRTCCallingDemo/ui/base/CallingScenes.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import 'package:trtc_scenes_demo/login/ProfileManager_Mock.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
@@ -20,6 +21,7 @@ class TRTCCallingVideo extends StatefulWidget {
 class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   CallStatus _currentCallStatus = CallStatus.calling;
   CallTypes _currentCallType = CallTypes.Type_Call_Someone;
+  CallingScenes _callingScenes = CallingScenes.VideoOneVOne;
   //已经通话时长
   String _hadCallingTime = "00:00";
   late DateTime _startAnswerTime;
@@ -70,9 +72,6 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         // TODO: Handle this case.
         break;
       case TRTCCallingDelegate.onGroupCallInviteeListUpdate:
-        // TODO: Handle this case.
-        break;
-      case TRTCCallingDelegate.onInvited:
         // TODO: Handle this case.
         break;
       case TRTCCallingDelegate.onReject:
@@ -205,11 +204,23 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   //挂断
   onHangUpCall() {
     _tRTCCallingService.closeCamera();
-    _tRTCCallingService.hangup();
+    if (_currentCallType == CallTypes.Type_Being_Called) {
+      _tRTCCallingService.reject();
+    } else {
+      _tRTCCallingService.hangup();
+    }
     Navigator.pushReplacementNamed(
       context,
       "/calling/videoContact",
     );
+  }
+
+  //接听
+  onAcceptCall() {
+    _tRTCCallingService.accept();
+    setState(() {
+      _currentCallStatus = CallStatus.answer;
+    });
   }
 
   getTopBarWidget() {
@@ -274,6 +285,54 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   getButtomWidget() {
+    var callSomeBtnList = [
+      _currentCallStatus == CallStatus.answer
+          ? ExtendButton(
+              imgUrl: _isMicrophoneOff
+                  ? "assets/images/callingDemo/microphone-off.png"
+                  : "assets/images/callingDemo/microphone-on.png",
+              tips: "麦克风",
+              onTap: () {
+                onMicrophoneTap();
+              },
+            )
+          : Spacer(),
+      ExtendButton(
+        imgUrl: "assets/images/callingDemo/hangup.png",
+        tips: "挂断",
+        onTap: () {
+          onHangUpCall();
+        },
+      ),
+      _currentCallStatus == CallStatus.answer
+          ? ExtendButton(
+              imgUrl: _isCameraOff
+                  ? "assets/images/callingDemo/camera-off.png"
+                  : "assets/images/callingDemo/camera-on.png",
+              tips: "摄像头",
+              onTap: () {
+                onCameraTap();
+              },
+            )
+          : Spacer(),
+    ];
+    if (_currentCallType == CallTypes.Type_Being_Called &&
+        _currentCallStatus == CallStatus.calling) {
+      callSomeBtnList.insert(
+        2,
+        Spacer(),
+      );
+      callSomeBtnList.insert(
+        3,
+        ExtendButton(
+          imgUrl: "assets/images/callingDemo/trtccalling_ic_dialing.png",
+          tips: "接听",
+          onTap: () {
+            onAcceptCall();
+          },
+        ),
+      );
+    }
     var buttomWidget = Positioned(
       left: 0,
       bottom: 50,
@@ -288,48 +347,24 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                     '$_hadCallingTime',
                     style: TextStyle(color: Colors.white),
                   )
-                : Spacer(),
-            // ExtendButton(
-            //     imgUrl: "assets/images/callingDemo/switchToAudio.png",
-            //     imgHieght: 18,
-            //     imgColor: Color.fromRGBO(125, 123, 123, 1.0),
-            //     tips: "切到语音通话",
-            //     onTap: () {},
-            //   ),
+                : _callingScenes == CallingScenes.VideoOneVOne
+                    ? ExtendButton(
+                        imgUrl: "assets/images/callingDemo/switchToAudio.png",
+                        imgHieght: 18,
+                        imgColor: Color.fromRGBO(125, 123, 123, 1.0),
+                        tips: "切到语音通话",
+                        onTap: () {
+                          _tRTCCallingService.closeCamera();
+                          setState(() {
+                            _callingScenes = CallingScenes.AudioOneVOne;
+                          });
+                        },
+                      )
+                    : Spacer(),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _currentCallStatus == CallStatus.answer
-                  ? ExtendButton(
-                      imgUrl: _isMicrophoneOff
-                          ? "assets/images/callingDemo/microphone-off.png"
-                          : "assets/images/callingDemo/microphone-on.png",
-                      tips: "麦克风",
-                      onTap: () {
-                        onMicrophoneTap();
-                      },
-                    )
-                  : Spacer(),
-              ExtendButton(
-                imgUrl: "assets/images/callingDemo/hangup.png",
-                tips: "挂断",
-                onTap: () {
-                  onHangUpCall();
-                },
-              ),
-              _currentCallStatus == CallStatus.answer
-                  ? ExtendButton(
-                      imgUrl: _isCameraOff
-                          ? "assets/images/callingDemo/camera-off.png"
-                          : "assets/images/callingDemo/camera-on.png",
-                      tips: "摄像头",
-                      onTap: () {
-                        onCameraTap();
-                      },
-                    )
-                  : Spacer(),
-            ],
+            children: callSomeBtnList,
           )
         ],
       ),

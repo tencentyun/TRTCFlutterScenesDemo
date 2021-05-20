@@ -15,7 +15,9 @@ class DemoSevice {
     String loginId = await TxUtils.getLoginUserId();
     await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
         await GenerateTestUserSig.genTestSig(loginId));
+
     _tRTCCallingService.registerListener((type, params) async {
+      print("=============+++++++++++++++:" + type.toString());
       switch (type) {
         case TRTCCallingDelegate.onInvited:
           {
