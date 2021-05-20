@@ -201,6 +201,13 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     });
   }
 
+  onSwitchAudioTap() {
+    _tRTCCallingService.closeCamera();
+    setState(() {
+      _callingScenes = CallingScenes.AudioOneVOne;
+    });
+  }
+
   //挂断
   onHangUpCall() {
     _tRTCCallingService.closeCamera();
@@ -354,10 +361,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                         imgColor: Color.fromRGBO(125, 123, 123, 1.0),
                         tips: "切到语音通话",
                         onTap: () {
-                          _tRTCCallingService.closeCamera();
-                          setState(() {
-                            _callingScenes = CallingScenes.AudioOneVOne;
-                          });
+                          onSwitchAudioTap();
                         },
                       )
                     : Spacer(),
