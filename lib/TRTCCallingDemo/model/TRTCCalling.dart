@@ -77,8 +77,10 @@ abstract class TRTCCalling {
   *
   * @param userIdList 邀请列表
   * @param type       1-语音通话，2-视频通话
+  * @param groupId    IM群组ID，选填
   */
-  Future<ActionCallback> groupCall(List<String> userIdList, int type);
+  Future<ActionCallback> groupCall(
+      List<String> userIdList, int type, String? groupId);
 
   /*
   * 当您作为被邀请方收到 {@link TRTCCallingDelegate#onInvited } 的回调时，可以调用该函数接听来电
