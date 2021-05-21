@@ -246,7 +246,8 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   //挂断
   onHangUpCall() async {
     _tRTCCallingService.closeCamera();
-    if (_currentCallType == CallTypes.Type_Being_Called) {
+    if (_currentCallType == CallTypes.Type_Being_Called &&
+        _currentCallStatus == CallStatus.calling) {
       await _tRTCCallingService.reject();
     } else {
       await _tRTCCallingService.hangup();
