@@ -287,29 +287,31 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                   ],
                 )
               ]
-            : [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                        left: 20,
-                      ),
-                      decoration: BoxDecoration(),
-                      child: InkWell(
-                        onTap: () {
-                          onSwitchCamera();
-                        },
-                        child: Image.asset(
-                          'assets/images/callingDemo/switch-camera.png',
-                          height: 32,
-                          color: Color.fromRGBO(125, 123, 123, 1.0),
-                        ),
-                      ),
+            : _callingScenes == CallingScenes.VideoOneVOne
+                ? [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(
+                            left: 20,
+                          ),
+                          decoration: BoxDecoration(),
+                          child: InkWell(
+                            onTap: () {
+                              onSwitchCamera();
+                            },
+                            child: Image.asset(
+                              'assets/images/callingDemo/switch-camera.png',
+                              height: 32,
+                              color: Color.fromRGBO(125, 123, 123, 1.0),
+                            ),
+                          ),
+                        )
+                      ],
                     )
-                  ],
-                )
-              ],
+                  ]
+                : [],
       ),
     );
     return topWidget;
