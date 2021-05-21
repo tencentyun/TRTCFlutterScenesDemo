@@ -6,7 +6,6 @@ import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCalling.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/ui/base/CallTypes.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/ui/base/CallingScenes.dart';
-import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import 'package:trtc_scenes_demo/login/ProfileManager_Mock.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 import 'dart:async';
@@ -26,6 +25,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   String _hadCallingTime = "00:00";
   late DateTime _startAnswerTime;
   bool _isCameraOff = false;
+  bool _isHandsFree = true;
   bool _isMicrophoneOff = false;
   bool _isFrontCamera = true;
 
@@ -115,6 +115,15 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
       _remoteUserInfo = arguments['remoteUserInfo'] as UserModel;
       _currentCallType = arguments["callType"] as CallTypes;
       _callingScenes = arguments['callingScenes'] as CallingScenes;
+      if (_currentCallType == CallTypes.Type_Call_Someone) {
+        Future.delayed(Duration(microseconds: 100), () {
+          _tRTCCallingService.call(
+              _remoteUserInfo!.userId,
+              _callingScenes == CallingScenes.VideoOneVOne
+                  ? TRTCCalling.typeVideoCall
+                  : TRTCCalling.typeAudioCall);
+        });
+      }
     });
   }
 
@@ -205,6 +214,14 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     }
     setState(() {
       _isCameraOff = !_isCameraOff;
+    });
+  }
+
+  //扬声器是否禁用
+  onHandsfreeTap() {
+    _tRTCCallingService.setHandsFree(!_isHandsFree);
+    setState(() {
+      _isHandsFree = !_isHandsFree;
     });
   }
 
@@ -320,12 +337,20 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
       ),
       _currentCallStatus == CallStatus.answer
           ? ExtendButton(
-              imgUrl: _isCameraOff
-                  ? "assets/images/callingDemo/camera-off.png"
-                  : "assets/images/callingDemo/camera-on.png",
-              tips: "摄像头",
+              imgUrl: _callingScenes == CallingScenes.VideoOneVOne
+                  ? _isCameraOff
+                      ? "assets/images/callingDemo/camera-off.png"
+                      : "assets/images/callingDemo/camera-on.png"
+                  : _isHandsFree
+                      ? "assets/images/callingDemo/trtccalling_ic_handsfree_enable.png"
+                      : "assets/images/callingDemo/trtccalling_ic_handsfree_disable.png",
+              tips:
+                  _callingScenes == CallingScenes.VideoOneVOne ? "摄像头" : "扬声器",
               onTap: () {
-                onCameraTap();
+                if (_callingScenes == CallingScenes.VideoOneVOne)
+                  onCameraTap();
+                else
+                  onHandsfreeTap();
               },
             )
           : Spacer(),
@@ -442,21 +467,21 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
           fit: StackFit.expand,
           children: [
             Container(
-              color: Color.fromRGBO(93, 91, 90, 1),
-              child: TRTCCloudVideoView(
-                key: ValueKey("_currentUserViewId"),
-                viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
-                onViewCreated: (viewId) {
-                  _currentUserViewId = viewId;
-                  _tRTCCallingService.openCamera(
-                      _isFrontCamera, _currentUserViewId);
-                  if (_currentCallType == CallTypes.Type_Call_Someone) {
-                    Future.delayed(Duration(microseconds: 200), () {
-                      _tRTCCallingService.call(_remoteUserInfo!.userId, 2);
-                    });
-                  }
-                },
-              ),
+              color: _callingScenes == CallingScenes.VideoOneVOne
+                  ? Color.fromRGBO(93, 91, 90, 1)
+                  : Color.fromRGBO(
+                      93, 91, 90, 1), //Color.fromRGBO(242, 243, 248, 1),
+              child: _callingScenes == CallingScenes.VideoOneVOne
+                  ? TRTCCloudVideoView(
+                      key: ValueKey("_currentUserViewId"),
+                      viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                      onViewCreated: (viewId) {
+                        _currentUserViewId = viewId;
+                        _tRTCCallingService.openCamera(
+                            _isFrontCamera, _currentUserViewId);
+                      },
+                    )
+                  : Container(),
             ),
             remotePanel,
             getTopBarWidget(),
