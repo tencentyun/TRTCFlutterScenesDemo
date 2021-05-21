@@ -214,6 +214,7 @@ class TRTCCallingImpl extends TRTCCalling {
               "=onReceiveNewInvitation JsonSyntaxException:" +
               e.toString());
         }
+        print("==isOnCalling=" + isOnCalling.toString());
         if (isOnCalling && inviteeList.contains(mCurUserId)) {
           // 正在通话时，收到了一个邀请我的通话请求,需要告诉对方忙线
           Map<String, dynamic> busyMap = _getCustomMap();
@@ -233,7 +234,6 @@ class TRTCCallingImpl extends TRTCCalling {
         if (!inviteeList.contains(mCurUserId)) {
           return;
         }
-        isOnCalling = true;
 
         mCurSponsorForMe = inviter;
         mCurCallID = inviteID;
@@ -380,7 +380,6 @@ class TRTCCallingImpl extends TRTCCalling {
       mCurRoomID = _generateRoomID();
       mCurCallType = type;
       _enterTRTCRoom();
-      isOnCalling = true;
     }
     mCurInvitedList.add(userId);
 
@@ -418,6 +417,7 @@ class TRTCCallingImpl extends TRTCCalling {
   * trtc 进房
   */
   _enterTRTCRoom() {
+    isOnCalling = true;
     if (mCurCallType == TRTCCalling.typeVideoCall) {
       // 开启基础美颜
       TXBeautyManager txBeautyManager = mTRTCCloud.getBeautyManager();
@@ -461,7 +461,6 @@ class TRTCCallingImpl extends TRTCCalling {
       mCurRoomID = _generateRoomID();
       mCurCallType = type;
       _enterTRTCRoom();
-      isOnCalling = true;
     }
 
     // 过滤已经邀请的用户id

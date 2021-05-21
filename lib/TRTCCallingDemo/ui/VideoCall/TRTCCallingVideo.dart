@@ -56,6 +56,8 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   onRtcListener(type, params) {
+    print("==onRtcListener11 type=" + type.toString());
+    print("==onRtcListener11 params=" + params.toString());
     switch (type) {
       case TRTCCallingDelegate.onError:
         showMessageTips("发生错误:" + params['errCode'] + "," + params['errMsg'],
