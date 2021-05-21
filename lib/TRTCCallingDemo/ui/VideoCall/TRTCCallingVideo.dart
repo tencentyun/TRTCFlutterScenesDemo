@@ -49,12 +49,12 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   initTrtc() async {
-    if ((await Permission.camera.request().isGranted &&
-        await Permission.microphone.request().isGranted)) {
-    } else {
-      TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
-      return;
-    }
+    // if ((await Permission.camera.request().isGranted &&
+    //     await Permission.microphone.request().isGranted)) {
+    // } else {
+    //   TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
+    //   return;
+    // }
     _tRTCCallingService = await TRTCCalling.sharedInstance();
     // String loginId = await TxUtils.getLoginUserId();
     // await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
@@ -160,10 +160,12 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     _tRTCCallingService.setMicMute(true);
     _tRTCCallingService.closeCamera();
     // _tRTCCallingService.unRegisterListener(onRtcListener);
-    Navigator.pushReplacementNamed(
-      context,
-      "/index",
-    );
+    Future.delayed(Duration(seconds: 1), () {
+      Navigator.pushReplacementNamed(
+        context,
+        "/index",
+      );
+    });
   }
 
   String _twoDigits(int n) {
@@ -251,10 +253,12 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     } else {
       await _tRTCCallingService.hangup();
     }
-    Navigator.pushReplacementNamed(
-      context,
-      "/calling/videoContact",
-    );
+    Future.delayed(Duration(seconds: 1), () {
+      Navigator.pushReplacementNamed(
+        context,
+        "/calling/videoContact",
+      );
+    });
   }
 
   //接听
