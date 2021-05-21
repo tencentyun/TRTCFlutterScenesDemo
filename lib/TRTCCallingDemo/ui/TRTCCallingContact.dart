@@ -74,12 +74,6 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   }
 
   initUserInfo() async {
-    if ((await Permission.camera.request().isGranted &&
-        await Permission.microphone.request().isGranted)) {
-    } else {
-      showToast('需要获取音视频权限才能进入');
-    }
-
     sInstance = await TRTCCalling.sharedInstance();
     String loginId = await TxUtils.getLoginUserId();
     await sInstance.login(GenerateTestUserSig.sdkAppId, loginId,
