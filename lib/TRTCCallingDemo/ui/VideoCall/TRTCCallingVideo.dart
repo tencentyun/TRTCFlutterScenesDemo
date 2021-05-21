@@ -149,6 +149,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   stopCameraAndFinish() {
+    _tRTCCallingService.setMicMute(true);
     _tRTCCallingService.closeCamera();
     // _tRTCCallingService.unRegisterListener(onRtcListener);
     Navigator.pushReplacementNamed(
@@ -249,8 +250,8 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   //接听
-  onAcceptCall() {
-    _tRTCCallingService.accept();
+  onAcceptCall() async {
+    await _tRTCCallingService.accept();
     setState(() {
       _currentCallStatus = CallStatus.answer;
     });
@@ -432,7 +433,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
           height: _currentCallStatus == CallStatus.calling ? 100 : 216,
           width: 100,
           child:
-              _currentCallStatus == CallStatus.answer || _remoteUserInfo != null
+              _currentCallStatus == CallStatus.answer && _remoteUserInfo != null
                   ? TRTCCloudVideoView(
                       key: ValueKey("_remoteUserInfo"),
                       onViewCreated: (viewId) {
