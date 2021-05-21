@@ -242,12 +242,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     } else {
       await _tRTCCallingService.hangup();
     }
-    Future.delayed(Duration(seconds: 1), () {
-      Navigator.pushReplacementNamed(
-        context,
-        "/calling/videoContact",
-      );
-    });
+    Navigator.pushReplacementNamed(
+      context,
+      "/index",
+    );
   }
 
   //接听
