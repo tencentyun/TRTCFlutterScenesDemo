@@ -140,7 +140,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   showMessageTips(String msg, Function callback) {
     TxUtils.showErrorToast(msg, context);
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 1), () {
       callback();
     });
   }
