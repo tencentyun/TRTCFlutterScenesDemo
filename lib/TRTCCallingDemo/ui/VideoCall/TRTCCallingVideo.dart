@@ -113,6 +113,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     setState(() {
       _remoteUserInfo = arguments['remoteUserInfo'] as UserModel;
       _currentCallType = arguments["callType"] as CallTypes;
+      _callingScenes = arguments['callingScenes'] as CallingScenes;
     });
   }
 

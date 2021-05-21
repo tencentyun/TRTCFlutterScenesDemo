@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCalling.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/ui/base/CallTypes.dart';
+import 'package:trtc_scenes_demo/TRTCCallingDemo/ui/base/CallingScenes.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import 'package:trtc_scenes_demo/login/ProfileManager_Mock.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
@@ -27,10 +28,13 @@ class DemoSevice {
             //userInfo.avatar
             Navigator.pushReplacementNamed(
               context,
-              "/calling/videoCall",
+              "/calling/callingView",
               arguments: {
                 "remoteUserInfo": userInfo,
-                "callType": CallTypes.Type_Being_Called
+                "callType": CallTypes.Type_Being_Called,
+                "callingScenes": params['type'] == TRTCCalling.typeVideoCall
+                    ? CallingScenes.VideoOneVOne
+                    : CallingScenes.AudioOneVOne
               },
             );
           }

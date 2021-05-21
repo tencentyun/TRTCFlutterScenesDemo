@@ -81,10 +81,10 @@ class IndexPageState extends State<IndexPage> {
     );
   }
 
-  goVideoCallDemo() {
+  goCallingDemo(isVideo) {
     Navigator.pushReplacementNamed(
       context,
-      "/calling/videoContact",
+      isVideo ? "/calling/videoContact" : "/calling/audioContact",
     );
   }
 
@@ -180,7 +180,14 @@ class IndexPageState extends State<IndexPage> {
               "视频通话",
               "assets/images/callingDemo/videoCall.png",
               () {
-                goVideoCallDemo();
+                goCallingDemo(true);
+              },
+            ),
+            this.getTitleItem(
+              "语音通话",
+              "assets/images/callingDemo/videoCall.png",
+              () {
+                goCallingDemo(false);
               },
             ),
           ],

@@ -65,11 +65,11 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   onCallClick(userInfo) {
     Navigator.pushReplacementNamed(
       context,
-      "/calling/videoCall",
+      "/calling/callingView",
       arguments: {
         "remoteUserInfo": userInfo,
-        //for test
-        "callType": CallTypes.Type_Call_Someone
+        "callType": CallTypes.Type_Call_Someone,
+        "callingScenes": widget.callingScenes
       },
     );
   }
@@ -266,7 +266,9 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text('视频通话'),
+        title: widget.callingScenes == CallingScenes.VideoOneVOne
+            ? Text('视频通话')
+            : Text('语音通话'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios), //color: Colors.black
           onPressed: () async {
