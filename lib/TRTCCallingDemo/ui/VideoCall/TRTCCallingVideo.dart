@@ -44,10 +44,6 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
       this.initRemoteInfo();
     });
     initTrtc();
-    //FOR TEST
-    // Future.delayed(Duration(seconds: 10), () {
-    //   handleOnUserAnswer();
-    // });
   }
 
   initTrtc() async {
@@ -92,7 +88,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         showMessageTips("取消了通话", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onCallingTimeout:
-        showMessageTips("呼叫超时", stopCameraAndFinish);
+        showMessageTips("本次通话超时未应答", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onCallEnd:
         showMessageTips("结束通话", stopCameraAndFinish);
