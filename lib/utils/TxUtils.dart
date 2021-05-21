@@ -90,7 +90,8 @@ class TxUtils {
 
   static Future<String> getStorageByKey(key) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString(key)!;
+    String? rStr = sharedPreferences.getString(key);
+    return rStr == null ? Future.value('') : Future.value(rStr);
   }
 
   static Future<String> getLoginUserId() {
