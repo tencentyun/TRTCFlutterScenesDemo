@@ -95,7 +95,7 @@ abstract class TRTCCalling {
   /*
   * 当您处于通话中，可以调用该函数结束通话
   */
-  void hangup();
+  Future<void> hangup();
 
   /*
   * 当您收到 onUserVideoAvailable 回调时，可以调用该函数将远端用户的摄像头数据渲染到指定的TXCloudVideoView中

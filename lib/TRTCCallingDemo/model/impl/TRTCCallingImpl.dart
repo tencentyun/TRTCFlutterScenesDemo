@@ -538,9 +538,9 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  void hangup() async {
+  Future<void> hangup() async {
     if (!isOnCalling) {
-      reject();
+      await reject();
       return;
     }
 
