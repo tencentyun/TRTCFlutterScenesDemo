@@ -543,22 +543,21 @@ class TRTCCallingImpl extends TRTCCalling {
       await reject();
       return;
     }
-
+    _exitRoom();
+    _stopCall();
     if (_isEmpty(mCurGroupId)) {
       for (int i = 0; i < mCurInvitedList.length; i++) {
-        timManager.getSignalingManager().cancel(
+        await timManager.getSignalingManager().cancel(
             inviteID: _getGroupCallId(mCurInvitedList[i]),
             data: jsonEncode(_getCustomMap()));
       }
     } else {
       if (mCurRoomRemoteUserSet.isEmpty) {
-        timManager.getSignalingManager().cancel(
+        await timManager.getSignalingManager().cancel(
             inviteID: _getGroupCallId(mCurCallID),
             data: jsonEncode(_getCustomMap()));
       }
     }
-    _stopCall();
-    _exitRoom();
   }
 
   /*

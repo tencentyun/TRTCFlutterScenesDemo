@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import '../../utils/TxUtils.dart';
@@ -37,17 +39,6 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
     return true;
   }
 
-  onRtcListener(type, param) {
-    print("==onRtcListener type=" + type.toString());
-    print("==onRtcListener param=" + param.toString());
-    if (type == TRTCCallingDelegate.onInvited) {
-      // sInstance.accept();
-      // sInstance.reject();
-    } else if (type == TRTCCallingDelegate.onError) {
-      print("==error param=" + param.toString());
-    }
-  }
-
   //搜索
   onSearchClick() async {
     // ActionCallback res = await sInstance
@@ -74,9 +65,23 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
     );
   }
 
+  // 提示浮层
+  showToast(text) {
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+    );
+  }
+
   initUserInfo() async {
+    if ((await Permission.camera.request().isGranted &&
+        await Permission.microphone.request().isGranted)) {
+    } else {
+      showToast('需要获取音视频权限才能进入');
+    }
+
     sInstance = await TRTCCalling.sharedInstance();
-    sInstance.registerListener(onRtcListener);
     String loginId = await TxUtils.getLoginUserId();
     await sInstance.login(GenerateTestUserSig.sdkAppId, loginId,
         await GenerateTestUserSig.genTestSig(loginId));
@@ -98,7 +103,6 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
 
   @override
   void dispose() {
-    sInstance.unRegisterListener(onRtcListener);
     super.dispose();
   }
 

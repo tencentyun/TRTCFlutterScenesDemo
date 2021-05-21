@@ -150,7 +150,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   stopCameraAndFinish() {
     _tRTCCallingService.closeCamera();
-    _tRTCCallingService.unRegisterListener(onRtcListener);
+    // _tRTCCallingService.unRegisterListener(onRtcListener);
     Navigator.pushReplacementNamed(
       context,
       "/index",
