@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_video_view.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCalling.dart';
@@ -49,17 +48,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   initTrtc() async {
-    // if ((await Permission.camera.request().isGranted &&
-    //     await Permission.microphone.request().isGranted)) {
-    // } else {
-    //   TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
-    //   return;
-    // }
     _tRTCCallingService = await TRTCCalling.sharedInstance();
-    // String loginId = await TxUtils.getLoginUserId();
-    // await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
-    //     await GenerateTestUserSig.genTestSig(loginId));
-    print("==register=");
     _tRTCCallingService.registerListener(onRtcListener);
   }
 
@@ -159,7 +148,6 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   stopCameraAndFinish() {
     _tRTCCallingService.setMicMute(true);
     _tRTCCallingService.closeCamera();
-    // _tRTCCallingService.unRegisterListener(onRtcListener);
     Future.delayed(Duration(seconds: 1), () {
       Navigator.pushReplacementNamed(
         context,

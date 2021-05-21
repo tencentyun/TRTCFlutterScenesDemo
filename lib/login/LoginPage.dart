@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../utils/TxUtils.dart';
 import '../utils/constants.dart' as constants;
 import '../debug/GenerateTestUserSig.dart';
@@ -26,6 +27,12 @@ class LoginPageState extends State<LoginPage> {
   String userId = '';
 
   login(context) async {
+    if ((await Permission.camera.request().isGranted &&
+        await Permission.microphone.request().isGranted)) {
+    } else {
+      TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
+      return;
+    }
     if (userId == '') {
       TxUtils.showErrorToast(Languages.of(context)!.errorUserIDInput, context);
       return;

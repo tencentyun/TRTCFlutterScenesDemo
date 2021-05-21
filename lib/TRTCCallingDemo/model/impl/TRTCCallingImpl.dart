@@ -556,13 +556,11 @@ class TRTCCallingImpl extends TRTCCalling {
 
   @override
   Future<void> hangup() async {
-    print("==hangup1");
     if (!isOnCalling) {
       await reject();
       return;
     }
     _exitRoom();
-    print("==mCurCallList=" + mCurCallList.toString());
     if (_isEmpty(mCurGroupId)) {
       for (int i = 0; i < mCurInvitedList.length; i++) {
         await timManager.getSignalingManager().cancel(
@@ -577,7 +575,6 @@ class TRTCCallingImpl extends TRTCCalling {
       }
     }
     _stopCall();
-    print("==hangup2");
   }
 
   /*
