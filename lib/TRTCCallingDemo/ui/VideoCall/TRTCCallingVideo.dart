@@ -481,7 +481,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                   ? TRTCCloudVideoView(
                       key: ValueKey("_currentUserViewId"),
                       viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
-                      onViewCreated: (viewId) {
+                      onViewCreated: (viewId) async {
                         _currentUserViewId = viewId;
                         _tRTCCallingService.openCamera(
                             _isFrontCamera, _currentUserViewId);

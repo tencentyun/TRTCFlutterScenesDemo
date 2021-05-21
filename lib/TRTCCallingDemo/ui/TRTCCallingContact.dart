@@ -51,7 +51,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   }
 
   //发起通话
-  onCallClick(userInfo) {
+  onCallClick(userInfo) async {
     Navigator.pushReplacementNamed(
       context,
       "/calling/callingView",
