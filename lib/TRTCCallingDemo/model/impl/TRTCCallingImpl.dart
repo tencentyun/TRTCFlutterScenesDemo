@@ -404,6 +404,7 @@ class TRTCCallingImpl extends TRTCCalling {
         timeout: timeOutCount,
         onlineUserOnly: false);
     mCurCallID = res.data;
+    mCurCallList.add({'userId': userId, 'callId': mCurCallID});
     return ActionCallback(code: res.code, desc: res.desc);
   }
 
@@ -559,7 +560,6 @@ class TRTCCallingImpl extends TRTCCalling {
       return;
     }
     _exitRoom();
-    _stopCall();
     if (_isEmpty(mCurGroupId)) {
       for (int i = 0; i < mCurInvitedList.length; i++) {
         await timManager.getSignalingManager().cancel(
@@ -573,6 +573,7 @@ class TRTCCallingImpl extends TRTCCalling {
             data: jsonEncode(_getCustomMap()));
       }
     }
+    _stopCall();
   }
 
   /*
