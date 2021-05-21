@@ -10,7 +10,12 @@ import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 class DemoSevice {
   static late TRTCCalling _tRTCCallingService;
   static late ProfileManager _profileManager;
-  static start(GlobalKey<NavigatorState> navigatorKey) async {
+  static late GlobalKey<NavigatorState> _navigatorKey;
+  static setNavigatorKey(GlobalKey<NavigatorState> navigatorKey) {
+    _navigatorKey = navigatorKey;
+  }
+
+  static start() async {
     _tRTCCallingService = await TRTCCalling.sharedInstance();
     _profileManager = await ProfileManager.getInstance();
     String loginId = await TxUtils.getLoginUserId();
@@ -22,7 +27,7 @@ class DemoSevice {
       switch (type) {
         case TRTCCallingDelegate.onInvited:
           {
-            BuildContext context = navigatorKey.currentState!.overlay!.context;
+            BuildContext context = _navigatorKey.currentState!.overlay!.context;
             UserModel userInfo = await _profileManager
                 .querySingleUserInfo(params["sponsor"].toString());
             //userInfo.avatar

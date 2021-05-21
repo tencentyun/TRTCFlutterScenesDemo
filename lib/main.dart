@@ -18,7 +18,7 @@ void main() {
     //   // runApp(MyApp());
     // });
     runApp(MyApp());
-    DemoSevice.start(navigatorKey);
+    DemoSevice.setNavigatorKey(navigatorKey);
     FlutterBugly.init(androidAppId: "d43b0e0efa", iOSAppId: "cf07d686e1");
   });
 }

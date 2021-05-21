@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './utils/TxUtils.dart';
+import 'base/DemoSevice.dart';
 import 'utils/constants.dart' as constants;
 import './debug/GenerateTestUserSig.dart';
 import './TRTCChatSalonDemo/model/TRTCChatSalon.dart';
@@ -37,6 +38,7 @@ class IndexPageState extends State<IndexPage> {
         userId,
         GenerateTestUserSig.genTestSig(userId),
       );
+      DemoSevice.start();
     }
   }
 
