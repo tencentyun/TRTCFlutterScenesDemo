@@ -49,12 +49,12 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   initTrtc() async {
-    // if ((await Permission.camera.request().isGranted &&
-    //     await Permission.microphone.request().isGranted)) {
-    // } else {
-    //   TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
-    //   return;
-    // }
+    if ((await Permission.camera.request().isGranted &&
+        await Permission.microphone.request().isGranted)) {
+    } else {
+      TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
+      return;
+    }
     _tRTCCallingService = await TRTCCalling.sharedInstance();
     // String loginId = await TxUtils.getLoginUserId();
     // await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
@@ -493,8 +493,14 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                   ? TRTCCloudVideoView(
                       key: ValueKey("_currentUserViewId"),
                       viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
-                      onViewCreated: (viewId) {
+                      onViewCreated: (viewId) async {
                         _currentUserViewId = viewId;
+                        if ((await Permission.camera.request().isGranted &&
+                            await Permission.microphone.request().isGranted)) {
+                        } else {
+                          TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
+                          return;
+                        }
                         _tRTCCallingService.openCamera(
                             _isFrontCamera, _currentUserViewId);
                       },

@@ -52,7 +52,13 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   }
 
   //发起通话
-  onCallClick(userInfo) {
+  onCallClick(userInfo) async {
+    if ((await Permission.camera.request().isGranted &&
+        await Permission.microphone.request().isGranted)) {
+    } else {
+      TxUtils.showErrorToast('需要获取音视频权限才能进入', context);
+      return;
+    }
     Navigator.pushReplacementNamed(
       context,
       "/calling/callingView",
