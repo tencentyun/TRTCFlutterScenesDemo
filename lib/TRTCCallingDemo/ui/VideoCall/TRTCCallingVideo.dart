@@ -40,6 +40,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   @override
   void initState() {
     super.initState();
+
     Future.delayed(Duration.zero, () {
       this.initRemoteInfo();
     });
@@ -48,9 +49,9 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   initTrtc() async {
     _tRTCCallingService = await TRTCCalling.sharedInstance();
-    String loginId = await TxUtils.getLoginUserId();
-    await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
-        await GenerateTestUserSig.genTestSig(loginId));
+    // String loginId = await TxUtils.getLoginUserId();
+    // await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
+    //     await GenerateTestUserSig.genTestSig(loginId));
     _tRTCCallingService.registerListener(onRtcListener);
   }
 
@@ -450,9 +451,11 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                   _currentUserViewId = viewId;
                   _tRTCCallingService.openCamera(
                       _isFrontCamera, _currentUserViewId);
-                  Future.delayed(Duration(microseconds: 200), () {
-                    _tRTCCallingService.call(_remoteUserInfo!.userId, 2);
-                  });
+                  if (_currentCallType == CallTypes.Type_Call_Someone) {
+                    Future.delayed(Duration(microseconds: 200), () {
+                      _tRTCCallingService.call(_remoteUserInfo!.userId, 2);
+                    });
+                  }
                 },
               ),
             ),
