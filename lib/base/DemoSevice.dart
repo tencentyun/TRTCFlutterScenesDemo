@@ -24,7 +24,7 @@ class DemoSevice {
           {
             BuildContext context = navigatorKey.currentState!.overlay!.context;
             UserModel userInfo = await _profileManager
-                .querySingleUserInfo(params["inviter"].toString());
+                .querySingleUserInfo(params["sponsor"].toString());
             //userInfo.avatar
             Navigator.pushReplacementNamed(
               context,

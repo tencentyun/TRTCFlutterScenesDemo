@@ -162,8 +162,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   _callIngTimeUpdate() {
-    _hadCalledCalcTimer =
-        Timer.periodic(Duration(seconds: 1000), (Timer timer) {
+    _hadCalledCalcTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       DateTime now = DateTime.now();
       Duration duration = now.difference(_startAnswerTime);
       setState(() {
