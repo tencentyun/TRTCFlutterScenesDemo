@@ -81,7 +81,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         handleOnUserAnswer();
         break;
       case TRTCCallingDelegate.onUserLeave:
-        // TODO: Handle this case.
+        showMessageTips("用户离开了", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onGroupCallInviteeListUpdate:
         // TODO: Handle this case.
