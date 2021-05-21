@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import '../../utils/TxUtils.dart';
 import '../../login/ProfileManager_Mock.dart';

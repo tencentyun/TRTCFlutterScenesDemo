@@ -24,7 +24,7 @@ import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 
 class TRTCCallingImpl extends TRTCCalling {
   String logTag = "TRTCCallingImpl";
-  late VoiceListenerFunc emitEvent;
+  // VoiceListenerFunc? emitEvent;
   static TRTCCallingImpl? sInstance;
 
   int timeOutCount = 30; //超时时间，默认30s
@@ -73,6 +73,7 @@ class TRTCCallingImpl extends TRTCCalling {
   late TRTCCloud mTRTCCloud;
   late TXAudioEffectManager txAudioManager;
   late TXDeviceManager txDeviceManager;
+  Set<VoiceListenerFunc> listeners = Set();
 
   TRTCCallingImpl() {
     //获取腾讯即时通信IM manager
@@ -109,22 +110,34 @@ class TRTCCallingImpl extends TRTCCalling {
 
   @override
   void registerListener(VoiceListenerFunc func) {
-    emitEvent = func;
-    //监听im事件
-    timManager
-        .getSignalingManager()
-        .addSignalingListener(listener: signalingListener());
-    //监听trtc事件
-    mTRTCCloud.registerListener(rtcListener);
+    print("==listeners=" + listeners.length.toString());
+    print("==listeners isEmpty=" + listeners.isEmpty.toString());
+    if (listeners.isEmpty) {
+      //监听im事件
+      timManager
+          .getSignalingManager()
+          .addSignalingListener(listener: signalingListener());
+      //监听trtc事件
+      mTRTCCloud.registerListener(rtcListener);
+    }
+    listeners.add(func);
   }
 
   @override
   void unRegisterListener(VoiceListenerFunc func) {
-    // emitEvent = null;
-    timManager
-        .getSignalingManager()
-        .removeSignalingListener(listener: signalingListener);
-    mTRTCCloud.unRegisterListener(rtcListener);
+    listeners.remove(func);
+    // timManager
+    //     .getSignalingManager()
+    //     .removeSignalingListener(listener: signalingListener);
+    if (listeners.isEmpty) {
+      mTRTCCloud.unRegisterListener(rtcListener);
+    }
+  }
+
+  emitEvent(type, params) {
+    for (var item in listeners) {
+      item(type, params);
+    }
   }
 
   signalingListener() {
@@ -144,6 +157,8 @@ class TRTCCallingImpl extends TRTCCalling {
         //   return;
         // }
         //邀请者
+        print("==mCurSponsorForMe=" + mCurSponsorForMe.toString());
+        print("==inviteeList=" + inviteeList.toString());
         if (mCurSponsorForMe.isEmpty) {
           for (var i = 0; i < inviteeList.length; i++) {
             emitEvent(TRTCCallingDelegate.onNoResp, inviteeList[i]);

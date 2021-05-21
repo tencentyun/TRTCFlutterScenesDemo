@@ -52,6 +52,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     // String loginId = await TxUtils.getLoginUserId();
     // await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
     //     await GenerateTestUserSig.genTestSig(loginId));
+    print("==register=");
     _tRTCCallingService.registerListener(onRtcListener);
   }
 
