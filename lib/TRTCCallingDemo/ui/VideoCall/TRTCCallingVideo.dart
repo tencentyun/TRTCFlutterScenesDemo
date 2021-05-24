@@ -435,6 +435,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
               _currentCallStatus == CallStatus.answer && _remoteUserInfo != null
                   ? TRTCCloudVideoView(
                       key: ValueKey("_remoteUserInfo"),
+                      viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
                       onViewCreated: (viewId) {
                         _currentRemoteUserViewId = viewId;
                         _tRTCCallingService.startRemoteView(
