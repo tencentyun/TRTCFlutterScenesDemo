@@ -38,7 +38,7 @@ class IndexPageState extends State<IndexPage> {
         userId,
         GenerateTestUserSig.genTestSig(userId),
       );
-      DemoSevice.start();
+      DemoSevice.sharedInstance().start();
     }
   }
 

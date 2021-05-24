@@ -8,43 +8,64 @@ import 'package:trtc_scenes_demo/login/ProfileManager_Mock.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 
 class DemoSevice {
-  static late TRTCCalling _tRTCCallingService;
-  static late ProfileManager _profileManager;
-  static late GlobalKey<NavigatorState> _navigatorKey;
-  static setNavigatorKey(GlobalKey<NavigatorState> navigatorKey) {
+  static DemoSevice? _instance;
+
+  late TRTCCalling _tRTCCallingService;
+  late ProfileManager _profileManager;
+  late GlobalKey<NavigatorState> _navigatorKey;
+  bool _isRegisterListener = false;
+  DemoSevice() {
+    initTrtc();
+  }
+  initTrtc() async {
+    _tRTCCallingService = await TRTCCalling.sharedInstance();
+    _profileManager = await ProfileManager.getInstance();
+  }
+
+  static sharedInstance() {
+    if (_instance == null) {
+      _instance = new DemoSevice();
+    }
+    return _instance;
+  }
+
+  setNavigatorKey(GlobalKey<NavigatorState> navigatorKey) {
     _navigatorKey = navigatorKey;
   }
 
-  static start() async {
-    _tRTCCallingService = await TRTCCalling.sharedInstance();
-    _profileManager = await ProfileManager.getInstance();
+  start() async {
+    if (_isRegisterListener) {
+      _tRTCCallingService.unRegisterListener(onTrtcListener);
+    }
     String loginId = await TxUtils.getLoginUserId();
     await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
         await GenerateTestUserSig.genTestSig(loginId));
+    _isRegisterListener = true;
+    _tRTCCallingService.registerListener(onTrtcListener);
+  }
 
-    _tRTCCallingService.registerListener((type, params) async {
-      print("=============+++++++++++++++:" + type.toString());
-      switch (type) {
-        case TRTCCallingDelegate.onInvited:
-          {
-            BuildContext context = _navigatorKey.currentState!.overlay!.context;
-            UserModel userInfo = await _profileManager
-                .querySingleUserInfo(params["sponsor"].toString());
-            //userInfo.avatar
-            Navigator.pushReplacementNamed(
-              context,
-              "/calling/callingView",
-              arguments: {
-                "remoteUserInfo": userInfo,
-                "callType": CallTypes.Type_Being_Called,
-                "callingScenes": params['type'] == TRTCCalling.typeVideoCall
-                    ? CallingScenes.VideoOneVOne
-                    : CallingScenes.AudioOneVOne
-              },
-            );
-          }
-          break;
-      }
-    });
+  onTrtcListener(type, params) async {
+    print("=============+++++++++++++++:" + type.toString());
+    switch (type) {
+      case TRTCCallingDelegate.onInvited:
+        {
+          BuildContext context = _navigatorKey.currentState!.overlay!.context;
+          UserModel userInfo = await _profileManager
+              .querySingleUserInfo(params["sponsor"].toString());
+          //userInfo.avatar
+          Navigator.pushReplacementNamed(
+            context,
+            "/calling/callingView",
+            arguments: {
+              "remoteUserInfo": userInfo,
+              "callType": CallTypes.Type_Being_Called,
+              "callingScenes": params['type'] == TRTCCalling.typeVideoCall
+                  ? CallingScenes.VideoOneVOne
+                  : CallingScenes.AudioOneVOne
+            },
+          );
+        }
+        break;
+    }
   }
 }
