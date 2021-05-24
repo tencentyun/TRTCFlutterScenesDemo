@@ -9,7 +9,7 @@ import '../TRTCChatSalonDemo/ui/base/UserEnum.dart';
 import '../TRTCCallingDemo/ui/TRTCCallingContact.dart';
 import '../TRTCCallingDemo/ui/VideoCall/TRTCCallingVideo.dart';
 
-final String initialRoute = "/forTest";
+final String initialRoute = "/";
 final Map<String, WidgetBuilder> routes = {
   "/": (context) => IndexPage(),
   "/index": (context) => IndexPage(),

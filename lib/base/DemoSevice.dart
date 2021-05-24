@@ -41,11 +41,11 @@ class DemoSevice {
     await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
         await GenerateTestUserSig.genTestSig(loginId));
     _isRegisterListener = true;
+    print("=============+++++++++++++++start");
     _tRTCCallingService.registerListener(onTrtcListener);
   }
 
   onTrtcListener(type, params) async {
-    print("=============+++++++++++++++:" + type.toString());
     switch (type) {
       case TRTCCallingDelegate.onInvited:
         {

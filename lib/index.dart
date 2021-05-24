@@ -25,15 +25,15 @@ class IndexPageState extends State<IndexPage> {
   initSDK() async {
     trtcVoiceRoom = await TRTCChatSalon.sharedInstance();
     String userId = await TxUtils.getStorageByKey(constants.USERID_KEY);
-    if (userId == null || userId == '') {
-      Navigator.popAndPushNamed(
+    if (userId == '') {
+      await Navigator.popAndPushNamed(
         context,
         "/login",
       );
     } else {
       TxUtils.setStorageByKey(constants.USERID_KEY, userId);
 
-      trtcVoiceRoom.login(
+      await trtcVoiceRoom.login(
         GenerateTestUserSig.sdkAppId,
         userId,
         GenerateTestUserSig.genTestSig(userId),

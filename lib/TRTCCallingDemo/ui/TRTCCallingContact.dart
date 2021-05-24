@@ -208,7 +208,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
                     borderSide: BorderSide(color: Colors.white),
                   ),
                 ),
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.number,
                 onChanged: (value) => this.searchText = value),
           ),
         ),
