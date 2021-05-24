@@ -37,6 +37,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   late int _currentUserViewId;
   late int _currentRemoteUserViewId;
   Timer? _hadCalledCalcTimer;
+
   @override
   void initState() {
     super.initState();
@@ -61,7 +62,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onWarning:
-        // TODO: Handle this case.
+        print('onWarning:warning code = ' +
+            params['warningCode'] +
+            " ,warning msg = " +
+            params['warningMsg']);
         break;
       case TRTCCallingDelegate.onEnterRoom:
         // TODO: Handle this case.
