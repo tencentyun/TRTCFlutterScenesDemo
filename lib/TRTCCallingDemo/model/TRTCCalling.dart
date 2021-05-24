@@ -77,7 +77,7 @@ abstract class TRTCCalling {
   *
   * @param userIdList 邀请列表
   * @param type       1-语音通话，2-视频通话
-  * @param groupId    IM群组ID，选填
+  * @param groupId    IM群组ID，选填。如果填写该参数，那么通话请求消息是通过群消息系统广播出去的，这种消息广播方式比较简单可靠。如果不填写，那么 TRTCCalling 组件会采用单发消息逐一通知。
   */
   Future<ActionCallback> groupCall(
       List<String> userIdList, int type, String? groupId);

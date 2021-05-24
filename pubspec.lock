@@ -279,7 +279,7 @@ packages:
       name: tencent_im_sdk_plugin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.5"
+    version: "3.1.8"
   tencent_trtc_cloud:
     dependency: "direct main"
     description:

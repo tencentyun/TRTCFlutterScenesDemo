@@ -22,7 +22,7 @@ environment:
 
 dependencies:
   tencent_trtc_cloud: ^1.0.1
-  tencent_im_sdk_plugin: ^3.1.5
+  tencent_im_sdk_plugin: ^3.1.8
   shared_preferences: ^2.0.5
   provider: ^5.0.0
   crypto: ^3.0.1

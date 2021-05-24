@@ -24,7 +24,6 @@ import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 
 class TRTCCallingImpl extends TRTCCalling {
   String logTag = "TRTCCallingImpl";
-  // VoiceListenerFunc? emitEvent;
   static TRTCCallingImpl? sInstance;
 
   int timeOutCount = 30; //超时时间，默认30s
@@ -126,11 +125,11 @@ class TRTCCallingImpl extends TRTCCalling {
   @override
   void unRegisterListener(VoiceListenerFunc func) {
     listeners.remove(func);
-    // timManager
-    //     .getSignalingManager()
-    //     .removeSignalingListener(listener: signalingListener);
     if (listeners.isEmpty) {
       mTRTCCloud.unRegisterListener(rtcListener);
+      timManager
+          .getSignalingManager()
+          .removeSignalingListener(listener: signalingListener);
     }
   }
 
@@ -153,9 +152,6 @@ class TRTCCallingImpl extends TRTCCalling {
         }
       },
       onInvitationTimeout: (inviteID, inviteeList) {
-        // if (mCurCallID != inviteID) {
-        //   return;
-        // }
         //邀请者
         print("==mCurSponsorForMe=" + mCurSponsorForMe.toString());
         print("==inviteeList=" + inviteeList.toString());
