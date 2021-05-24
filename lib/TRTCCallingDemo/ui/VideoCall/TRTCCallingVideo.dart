@@ -37,6 +37,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   late int _currentUserViewId;
   late int _currentRemoteUserViewId;
   Timer? _hadCalledCalcTimer;
+
   @override
   void initState() {
     super.initState();
@@ -61,7 +62,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onWarning:
-        // TODO: Handle this case.
+        print('onWarning:warning code = ' +
+            params['warningCode'] +
+            " ,warning msg = " +
+            params['warningMsg']);
         break;
       case TRTCCallingDelegate.onEnterRoom:
         // TODO: Handle this case.
@@ -110,7 +114,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   initRemoteInfo() async {
     Map arguments = ModalRoute.of(context)!.settings.arguments! as Map;
-    setState(() {
+    safeSetState(() {
       _remoteUserInfo = arguments['remoteUserInfo'] as UserModel;
       _currentCallType = arguments["callType"] as CallTypes;
       _callingScenes = arguments['callingScenes'] as CallingScenes;
@@ -130,7 +134,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   handleOnUserAnswer() {
     if (_remoteUserInfo != null) {
       _startAnswerTime = DateTime.now();
-      setState(() {
+      safeSetState(() {
         _currentCallStatus = CallStatus.answer;
         _hadCallingTime = "00:00";
       });
@@ -149,10 +153,12 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     _tRTCCallingService.setMicMute(true);
     _tRTCCallingService.closeCamera();
     Future.delayed(Duration(seconds: 1), () {
-      Navigator.pushReplacementNamed(
-        context,
-        "/index",
-      );
+      if (mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          "/index",
+        );
+      }
     });
   }
 
@@ -175,9 +181,17 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     _hadCalledCalcTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       DateTime now = DateTime.now();
       Duration duration = now.difference(_startAnswerTime);
-      setState(() {
+      safeSetState(() {
         _hadCallingTime = _getDurationTimeString(duration);
       });
+    });
+  }
+
+  safeSetState(callBack) {
+    setState(() {
+      if (mounted) {
+        callBack();
+      }
     });
   }
 
@@ -193,7 +207,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   //前后摄像头切换
   onSwitchCamera() {
     _tRTCCallingService.switchCamera(!_isFrontCamera);
-    setState(() {
+    safeSetState(() {
       _isFrontCamera = !_isFrontCamera;
     });
   }
@@ -213,7 +227,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     } else {
       _tRTCCallingService.openCamera(_isFrontCamera, _currentUserViewId);
     }
-    setState(() {
+    safeSetState(() {
       _isCameraOff = !_isCameraOff;
     });
   }
@@ -228,7 +242,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   onSwitchAudioTap() {
     _tRTCCallingService.closeCamera();
-    setState(() {
+    safeSetState(() {
       _callingScenes = CallingScenes.AudioOneVOne;
     });
   }
@@ -251,7 +265,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   //接听
   onAcceptCall() async {
     await _tRTCCallingService.accept();
-    setState(() {
+    safeSetState(() {
       _currentCallStatus = CallStatus.answer;
     });
   }
@@ -423,7 +437,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         },
         onPanUpdate: (DragUpdateDetails e) {
           //用户手指滑动时，更新偏移，重新构建
-          setState(() {
+          safeSetState(() {
             _remoteRight -= e.delta.dx;
             _remoteTop += e.delta.dy;
           });
