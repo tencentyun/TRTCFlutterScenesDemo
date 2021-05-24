@@ -155,6 +155,10 @@ class TRTCCallingImpl extends TRTCCalling {
         //邀请者
         print("==mCurSponsorForMe=" + mCurSponsorForMe.toString());
         print("==inviteeList=" + inviteeList.toString());
+        String curGroupCallId = _getGroupCallId(mCurUserId);
+        if (inviteID != mCurCallID || curGroupCallId != inviteID) {
+          return;
+        }
         if (mCurSponsorForMe.isEmpty) {
           for (var i = 0; i < inviteeList.length; i++) {
             emitEvent(TRTCCallingDelegate.onNoResp, inviteeList[i]);
