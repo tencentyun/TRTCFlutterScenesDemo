@@ -201,7 +201,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
                 style: TextStyle(color: Colors.black),
                 autofocus: true,
                 decoration: InputDecoration(
-                  hintText: "搜索手机号",
+                  hintText: "搜索用户ID",
                   hintStyle:
                       TextStyle(color: Color.fromRGBO(187, 187, 187, 1.000)),
                   enabledBorder: UnderlineInputBorder(
@@ -239,7 +239,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
           margin: EdgeInsets.only(left: 20, right: 10),
           color: Color.fromRGBO(153, 153, 153, 1.000),
         ),
-        Text('您的手机号 $myLoginInfoId'),
+        Text('您的用户ID是 $myLoginInfoId'),
       ],
     );
     return Scaffold(

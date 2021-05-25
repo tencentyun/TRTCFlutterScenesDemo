@@ -488,9 +488,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                     onViewCreated: (viewId) {
                       _remoteUserViewId = viewId;
                       _tRTCCallingService.startRemoteView(
-                          _remoteUserInfo!.userId,
-                          TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
-                          _remoteUserViewId);
+                        _remoteUserInfo!.userId,
+                        TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
+                        _remoteUserViewId,
+                      );
                     },
                   )
                 : null,
