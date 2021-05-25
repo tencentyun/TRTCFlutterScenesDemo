@@ -20,7 +20,7 @@ class TRTCCallingVideo extends StatefulWidget {
 class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   CallStatus _currentCallStatus = CallStatus.calling;
   CallTypes _currentCallType = CallTypes.Type_Call_Someone;
-  CallingScenes _callingScenes = CallingScenes.VideoOneVOne;
+  CallingScenes _callingScenes = CallingScenes.AudioOneVOne;
   //已经通话时长
   String _hadCallingTime = "00:00";
   late DateTime _startAnswerTime;
@@ -28,15 +28,16 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   bool _isHandsFree = true;
   bool _isMicrophoneOff = false;
   bool _isFrontCamera = true;
+  late int _localUserViewId;
+  Timer? _hadCalledCalcTimer;
 
+  late int _remoteUserViewId;
   double _remoteTop = 64;
   double _remoteRight = 20;
+  bool _remoteUserAvailable = false;
   UserModel? _remoteUserInfo;
 
   late TRTCCalling _tRTCCallingService;
-  late int _currentUserViewId;
-  late int _currentRemoteUserViewId;
-  Timer? _hadCalledCalcTimer;
 
   @override
   void initState() {
@@ -119,7 +120,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
       _currentCallType = arguments["callType"] as CallTypes;
       _callingScenes = arguments['callingScenes'] as CallingScenes;
       if (_currentCallType == CallTypes.Type_Call_Someone) {
-        Future.delayed(Duration(microseconds: 100), () {
+        Future.delayed(Duration(microseconds: 10), () {
           _tRTCCallingService.call(
               _remoteUserInfo!.userId,
               _callingScenes == CallingScenes.VideoOneVOne
@@ -143,9 +144,11 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   handleOnUserVideoAvailable(params) {
-    // ["userId": userId, "available": available]
-    print(params);
-    for (var item in params) {}
+    if (_remoteUserInfo != null &&
+        params["userId"].toString() == _remoteUserInfo!.userId)
+      safeSetState(() {
+        _remoteUserAvailable = params["available"] as bool;
+      });
   }
 
   showMessageTips(String msg, Function callback) {
@@ -231,7 +234,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     if (!_isCameraOff) {
       _tRTCCallingService.closeCamera();
     } else {
-      _tRTCCallingService.openCamera(_isFrontCamera, _currentUserViewId);
+      _tRTCCallingService.openCamera(_isFrontCamera, _localUserViewId);
     }
     safeSetState(() {
       _isCameraOff = !_isCameraOff;
@@ -333,7 +336,24 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                       ],
                     )
                   ]
-                : [],
+                : [
+                    //1V1语音通话显示名字
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _remoteUserInfo != null
+                              ? _remoteUserInfo!.name
+                              : "--",
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
       ),
     );
     return topWidget;
@@ -435,57 +455,63 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   @override
   Widget build(BuildContext context) {
     var remotePanel = Positioned(
-      top: _remoteTop,
-      right: _callingScenes == CallingScenes.VideoOneVOne
-          ? _remoteRight
-          : MediaQuery.of(context).size.width / 2 - 100 / 2,
-      child: GestureDetector(
-        onDoubleTap: () {
-          //放大
-        },
-        onPanUpdate: (DragUpdateDetails e) {
-          //用户手指滑动时，更新偏移，重新构建
-          if (_callingScenes == CallingScenes.VideoOneVOne) {
-            safeSetState(() {
-              _remoteRight -= e.delta.dx;
-              _remoteTop += e.delta.dy;
-            });
-          }
-        },
-        child: Container(
-          height: _currentCallStatus == CallStatus.calling ? 100 : 216,
-          width: 100,
-          child:
-              _currentCallStatus == CallStatus.answer && _remoteUserInfo != null
-                  ? TRTCCloudVideoView(
-                      key: ValueKey("_remoteUserInfo"),
-                      viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
-                      onViewCreated: (viewId) {
-                        _currentRemoteUserViewId = viewId;
-                        _tRTCCallingService.startRemoteView(
-                            _remoteUserInfo!.userId,
-                            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
-                            _currentRemoteUserViewId);
-                      },
-                    )
-                  : null,
-          decoration: _remoteUserInfo != null &&
-                  _currentCallStatus == CallStatus.calling
-              ? BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(_remoteUserInfo!.avatar),
-                    fit: BoxFit.cover,
-                  ),
-                )
-              : BoxDecoration(
-                  border: Border.all(
-                    //color: Color.fromRGBO(235, 244, 255, 1.0),
-                    width: 1,
-                  ),
-                ),
-        ),
-      ),
-    );
+        top: _remoteTop,
+        right: _callingScenes == CallingScenes.VideoOneVOne
+            ? _remoteRight
+            : MediaQuery.of(context).size.width / 2 - 100 / 2,
+        child: GestureDetector(
+          onDoubleTap: () {
+            //放大
+          },
+          onPanUpdate: (DragUpdateDetails e) {
+            //用户手指滑动时，更新偏移，重新构建
+            if (_callingScenes == CallingScenes.VideoOneVOne) {
+              safeSetState(() {
+                _remoteRight -= e.delta.dx;
+                _remoteTop += e.delta.dy;
+              });
+            }
+          },
+          child: Container(
+            height: _currentCallStatus == CallStatus.calling
+                ? 100
+                : _callingScenes == CallingScenes.VideoOneVOne
+                    ? 216
+                    : 100,
+            width: 100,
+            child: _currentCallStatus == CallStatus.answer &&
+                    _remoteUserInfo != null &&
+                    _remoteUserAvailable
+                ? TRTCCloudVideoView(
+                    key: ValueKey("_remoteUserInfo"),
+                    viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                    onViewCreated: (viewId) {
+                      _remoteUserViewId = viewId;
+                      _tRTCCallingService.startRemoteView(
+                          _remoteUserInfo!.userId,
+                          TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
+                          _remoteUserViewId);
+                    },
+                  )
+                : null,
+            decoration: _remoteUserInfo != null &&
+                    _currentCallStatus == CallStatus.calling
+                ? BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(_remoteUserInfo!.avatar),
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : _callingScenes == CallingScenes.VideoOneVOne
+                    ? BoxDecoration()
+                    : BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(_remoteUserInfo!.avatar),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+          ),
+        ));
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
@@ -505,9 +531,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                       key: ValueKey("_currentUserViewId"),
                       viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
                       onViewCreated: (viewId) async {
-                        _currentUserViewId = viewId;
-                        _tRTCCallingService.openCamera(
-                            _isFrontCamera, _currentUserViewId);
+                        _localUserViewId = viewId;
+                        if (_callingScenes == CallingScenes.VideoOneVOne)
+                          _tRTCCallingService.openCamera(
+                              _isFrontCamera, _localUserViewId);
                       },
                     )
                   : Container(),
