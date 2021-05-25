@@ -98,7 +98,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         showMessageTips("结束通话", stopCameraAndFinish);
         break;
       case TRTCCallingDelegate.onUserVideoAvailable:
-        // TODO: Handle this case.
+        handleOnUserVideoAvailable(params);
         break;
       case TRTCCallingDelegate.onUserAudioAvailable:
         // TODO: Handle this case.
@@ -140,6 +140,12 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
       });
       this._callIngTimeUpdate();
     }
+  }
+
+  handleOnUserVideoAvailable(params) {
+    // ["userId": userId, "available": available]
+    print(params);
+    for (var item in params) {}
   }
 
   showMessageTips(String msg, Function callback) {
@@ -274,7 +280,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     bool isCalling = _currentCallStatus == CallStatus.calling ? true : false;
     var topWidget = Positioned(
       left: 0,
-      top: 64,
+      top: _callingScenes == CallingScenes.VideoOneVOne ? 64 : 185,
       width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -430,17 +436,21 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   Widget build(BuildContext context) {
     var remotePanel = Positioned(
       top: _remoteTop,
-      right: _remoteRight,
+      right: _callingScenes == CallingScenes.VideoOneVOne
+          ? _remoteRight
+          : MediaQuery.of(context).size.width / 2 - 100 / 2,
       child: GestureDetector(
         onDoubleTap: () {
           //放大
         },
         onPanUpdate: (DragUpdateDetails e) {
           //用户手指滑动时，更新偏移，重新构建
-          safeSetState(() {
-            _remoteRight -= e.delta.dx;
-            _remoteTop += e.delta.dy;
-          });
+          if (_callingScenes == CallingScenes.VideoOneVOne) {
+            safeSetState(() {
+              _remoteRight -= e.delta.dx;
+              _remoteTop += e.delta.dy;
+            });
+          }
         },
         child: Container(
           height: _currentCallStatus == CallStatus.calling ? 100 : 216,
@@ -469,7 +479,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                 )
               : BoxDecoration(
                   border: Border.all(
-                    color: Color.fromRGBO(235, 244, 255, 1.0),
+                    //color: Color.fromRGBO(235, 244, 255, 1.0),
                     width: 1,
                   ),
                 ),
