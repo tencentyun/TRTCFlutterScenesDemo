@@ -103,14 +103,14 @@ abstract class TRTCCalling {
   * @param userId           远端用户id
   * @param viewId 远端用户数据将渲染到该view中
   */
-  void startRemoteView(String userId, int streamType, int viewId);
+  Future<void> startRemoteView(String userId, int streamType, int viewId);
 
   /*
   * 当您收到 onUserVideoAvailable 回调为false时，可以停止渲染数据
   *
   * @param userId 远端用户id
   */
-  void stopRemoteView(String userId, int streamType);
+  Future<void> stopRemoteView(String userId, int streamType);
 
   /*
   * 您可以调用该函数开启摄像头，并渲染在指定的TXCloudVideoView中
@@ -119,13 +119,13 @@ abstract class TRTCCalling {
   * @param isFrontCamera    是否开启前置摄像头
   * @param viewId TRTCCloudVideoView生成的viewId
   */
-  void openCamera(bool isFrontCamera, int viewId);
+  Future<void> openCamera(bool isFrontCamera, int viewId);
 
   /*
   * 您可以调用该函数关闭摄像头
   * 处于通话中的用户会收到 {@link TRTCCallingDelegate#onUserVideoAvailable(java.lang.String, boolean)} 回调
   */
-  void closeCamera();
+  Future<void> closeCamera();
 
   /*
   * 您可以调用该函数切换前后摄像头
