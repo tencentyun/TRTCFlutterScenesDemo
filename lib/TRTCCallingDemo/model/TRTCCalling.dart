@@ -98,7 +98,7 @@ abstract class TRTCCalling {
   Future<void> hangup();
 
   /*
-  * 当您收到 onUserVideoAvailable 回调时，可以调用该函数将远端用户的摄像头数据渲染到指定的TXCloudVideoView中
+  * 当您收到 onUserVideoAvailable 回调时，可以调用该函数将远端用户的摄像头数据渲染到指定的TRTCCloudVideoView中
   *
   * @param userId           远端用户id
   * @param viewId 远端用户数据将渲染到该view中
@@ -113,7 +113,7 @@ abstract class TRTCCalling {
   void stopRemoteView(String userId, int streamType);
 
   /*
-  * 您可以调用该函数开启摄像头，并渲染在指定的TXCloudVideoView中
+  * 您可以调用该函数开启摄像头，并渲染在指定的TRTCCloudVideoView中
   * 处于通话中的用户会收到 {@link TRTCCallingDelegate#onUserVideoAvailable(java.lang.String, boolean)} 回调
   *
   * @param isFrontCamera    是否开启前置摄像头

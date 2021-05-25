@@ -275,7 +275,7 @@ class TRTCCallingImpl extends TRTCCalling {
       type = TRTCCallingDelegate.onError;
       emitEvent(type, param);
     } else if (typeStr == "onUserVoiceVolume") {
-      type = TRTCCallingDelegate.onUserVolumeUpdate;
+      type = TRTCCallingDelegate.onUserVoiceVolume;
       emitEvent(type, param);
     } else if (typeStr == "onUserVideoAvailable") {
       type = TRTCCallingDelegate.onUserVideoAvailable;

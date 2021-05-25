@@ -144,7 +144,7 @@ enum TRTCCallingDelegate {
   /// userVolumes	所有正在说话的房间成员的音量，取值范围0 - 100。
   ///
   /// totalVolume	所有远端成员的总音量, 取值范围0 - 100。
-  onUserVolumeUpdate,
+  onUserVoiceVolume,
 
   //其他用户登录了同一账号，被踢下线
   onKickedOffline
