@@ -52,7 +52,6 @@ class DemoSevice {
           BuildContext context = _navigatorKey.currentState!.overlay!.context;
           UserModel userInfo = await _profileManager
               .querySingleUserInfo(params["sponsor"].toString());
-          //userInfo.avatar
           Navigator.pushReplacementNamed(
             context,
             "/calling/callingView",
