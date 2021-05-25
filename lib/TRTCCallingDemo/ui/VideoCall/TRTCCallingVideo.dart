@@ -250,6 +250,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   }
 
   onSwitchAudioTap() {
+    //先不支持切到语音通话
     _tRTCCallingService.closeCamera();
     safeSetState(() {
       _callingScenes = CallingScenes.AudioOneVOne;
@@ -430,17 +431,18 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                     '$_hadCallingTime',
                     style: TextStyle(color: Colors.white),
                   )
-                : _callingScenes == CallingScenes.VideoOneVOne
-                    ? ExtendButton(
-                        imgUrl: "assets/images/callingDemo/switchToAudio.png",
-                        imgHieght: 18,
-                        imgColor: Color.fromRGBO(125, 123, 123, 1.0),
-                        tips: "切到语音通话",
-                        onTap: () {
-                          onSwitchAudioTap();
-                        },
-                      )
-                    : Spacer(),
+                :
+                // _callingScenes == CallingScenes.VideoOneVOne
+                //     ? ExtendButton(
+                //         imgUrl: "assets/images/callingDemo/switchToAudio.png",
+                //         imgHieght: 18,
+                //         imgColor: Color.fromRGBO(125, 123, 123, 1.0),
+                //         tips: "切到语音通话",
+                //         onTap: () {
+                //           onSwitchAudioTap();
+                //         },
+                //       ):
+                Spacer(),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
