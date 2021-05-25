@@ -68,17 +68,11 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             " ,warning msg = " +
             params['warningMsg']);
         break;
-      case TRTCCallingDelegate.onEnterRoom:
-        // TODO: Handle this case.
-        break;
       case TRTCCallingDelegate.onUserEnter:
         handleOnUserAnswer();
         break;
       case TRTCCallingDelegate.onUserLeave:
         showMessageTips("用户离开了", stopCameraAndFinish);
-        break;
-      case TRTCCallingDelegate.onGroupCallInviteeListUpdate:
-        // TODO: Handle this case.
         break;
       case TRTCCallingDelegate.onReject:
         showMessageTips("拒绝通话", stopCameraAndFinish);
@@ -100,12 +94,6 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         break;
       case TRTCCallingDelegate.onUserVideoAvailable:
         handleOnUserVideoAvailable(params);
-        break;
-      case TRTCCallingDelegate.onUserAudioAvailable:
-        // TODO: Handle this case.
-        break;
-      case TRTCCallingDelegate.onUserVolumeUpdate:
-        // TODO: Handle this case.
         break;
       case TRTCCallingDelegate.onKickedOffline:
         showMessageTips("你被踢下线了", stopCameraAndFinish);
