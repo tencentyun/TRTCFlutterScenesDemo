@@ -51,7 +51,11 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   }
 
   //发起通话
-  onCallClick(userInfo) async {
+  onCallClick(UserModel userInfo) async {
+    if (userInfo.userId == myLoginInfoId) {
+      TxUtils.showErrorToast('不能呼叫自己', context);
+      return;
+    }
     Navigator.pushReplacementNamed(
       context,
       "/calling/callingView",
