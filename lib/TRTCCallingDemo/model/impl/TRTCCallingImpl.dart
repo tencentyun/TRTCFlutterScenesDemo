@@ -110,7 +110,6 @@ class TRTCCallingImpl extends TRTCCalling {
   @override
   void registerListener(VoiceListenerFunc func) {
     print("==listeners=" + listeners.length.toString());
-    print("==listeners isEmpty=" + listeners.isEmpty.toString());
     if (listeners.isEmpty) {
       //监听im事件
       timManager
@@ -156,7 +155,9 @@ class TRTCCallingImpl extends TRTCCalling {
         print("==mCurSponsorForMe=" + mCurSponsorForMe.toString());
         print("==inviteeList=" + inviteeList.toString());
         String curGroupCallId = _getGroupCallId(mCurUserId);
-        if (inviteID != mCurCallID || curGroupCallId != inviteID) {
+        if (!_isEmpty(mCurCallID) && inviteID != mCurCallID) {
+          return;
+        } else if (_isEmpty(mCurCallID) && inviteID != curGroupCallId) {
           return;
         }
         if (mCurSponsorForMe.isEmpty) {
