@@ -109,7 +109,6 @@ class TRTCCallingImpl extends TRTCCalling {
 
   @override
   void registerListener(VoiceListenerFunc func) {
-    print("==listeners=" + listeners.length.toString());
     if (listeners.isEmpty) {
       //监听im事件
       timManager
@@ -152,8 +151,6 @@ class TRTCCallingImpl extends TRTCCalling {
       },
       onInvitationTimeout: (inviteID, inviteeList) {
         //邀请者
-        print("==mCurSponsorForMe=" + mCurSponsorForMe.toString());
-        print("==inviteeList=" + inviteeList.toString());
         String curGroupCallId = _getGroupCallId(mCurUserId);
         if (!_isEmpty(mCurCallID) && inviteID != mCurCallID) {
           return;
@@ -230,7 +227,6 @@ class TRTCCallingImpl extends TRTCCalling {
               "=onReceiveNewInvitation JsonSyntaxException:" +
               e.toString());
         }
-        print("==isOnCalling=" + isOnCalling.toString());
         if (isOnCalling && inviteeList.contains(mCurUserId)) {
           // 正在通话时，收到了一个邀请我的通话请求,需要告诉对方忙线
           Map<String, dynamic> busyMap = _getCustomMap();
@@ -280,7 +276,7 @@ class TRTCCallingImpl extends TRTCCalling {
       emitEvent(type, param);
     } else if (typeStr == "onUserVoiceVolume") {
       type = TRTCCallingDelegate.onUserVolumeUpdate;
-      // emitEvent(type, param);
+      emitEvent(type, param);
     } else if (typeStr == "onUserVideoAvailable") {
       type = TRTCCallingDelegate.onUserVideoAvailable;
       emitEvent(type, param);
@@ -452,7 +448,7 @@ class TRTCCallingImpl extends TRTCCalling {
       mTRTCCloud.setVideoEncoderParam(encParam);
     }
 
-    mTRTCCloud.enableAudioVolumeEvaluation(300);
+    mTRTCCloud.enableAudioVolumeEvaluation(500);
     txDeviceManager.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
     mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
     mTRTCCloud.enterRoom(

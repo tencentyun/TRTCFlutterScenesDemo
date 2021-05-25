@@ -3,8 +3,8 @@ import 'impl/TRTCCallingImpl.dart';
 
 abstract class TRTCCalling {
   static int typeUnknow = 0;
-  static int typeAudioCall = 1;
-  static int typeVideoCall = 2;
+  static int typeAudioCall = 1; //纯音频通话
+  static int typeVideoCall = 2; //视频通话
 
   /*
   * 获取 TRTCCalling 单例对象
