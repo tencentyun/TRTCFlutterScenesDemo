@@ -34,8 +34,11 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   late int _smallVideoViewId;
   double _smallViewTop = 64;
   double _smallViewRight = 20;
+  //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
   bool isChangeBigSmallVideo = false;
   UserModel? _remoteUserInfo;
+  //远端画面可见不可见
+  bool _remoteUserAvailable = true;
 
   late TRTCCalling _tRTCCallingService;
 
@@ -138,22 +141,9 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   handleOnUserVideoAvailable(params) async {
     if (_remoteUserInfo != null &&
         params["userId"].toString() == _remoteUserInfo!.userId) {
-      bool _remoteUserAvailable = params["available"] as bool;
-      // if (!_remoteUserAvailable) {
-      //   _tRTCCallingService.stopRemoteView(
-      //       _remoteUserInfo!.userId, TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL);
-      // } else {
-      //   if (isChangeBigSmallVideo) {
-      //     await _tRTCCallingService.startRemoteView(_remoteUserInfo!.userId,
-      //         TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _smallVideoViewId);
-      //   } else {
-      //     await _tRTCCallingService.startRemoteView(
-      //       _remoteUserInfo!.userId,
-      //       TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
-      //       _bigVideoViewId,
-      //     );
-      //   }
-      // }
+      safeSetState(() {
+        _remoteUserAvailable = params["available"] as bool;
+      });
     }
   }
 
@@ -202,6 +192,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     });
   }
 
+  double _getOpacityByVis(bool vis) {
+    return vis ? 1.0 : 0;
+  }
+
   safeSetState(callBack) {
     setState(() {
       if (mounted) {
@@ -240,6 +234,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     if (!_isCameraOff) {
       await _tRTCCallingService.closeCamera();
     } else {
+      //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
       if (isChangeBigSmallVideo) {
         await _tRTCCallingService.openCamera(_isFrontCamera, _bigVideoViewId);
       } else {
@@ -467,17 +462,34 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   getBigVideo() {
     if (_callingScenes == CallingScenes.AudioOneVOne) return Container();
+    bool nowIsLocalView = true; //判断当前大窗口是否显示本地摄像头
+    if (_currentCallStatus == CallStatus.calling)
+      nowIsLocalView = true;
+    else {
+      //已经接听
+      if (isChangeBigSmallVideo) {
+        nowIsLocalView = true;
+      } else {
+        nowIsLocalView = false; //远端画面
+      }
+    }
     return _callingScenes == CallingScenes.VideoOneVOne
-        ? TRTCCloudVideoView(
-            key: ValueKey("_bigVideoViewId"),
-            viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
-            onViewCreated: (viewId) async {
-              _bigVideoViewId = viewId;
-              if (_callingScenes == CallingScenes.VideoOneVOne) {
-                await _tRTCCallingService.openCamera(
-                    _isFrontCamera, _bigVideoViewId);
-              }
-            },
+        ? AnimatedOpacity(
+            duration: Duration(milliseconds: 100),
+            opacity: nowIsLocalView
+                ? _getOpacityByVis(!_isCameraOff)
+                : _getOpacityByVis(_remoteUserAvailable),
+            child: TRTCCloudVideoView(
+              key: ValueKey("_bigVideoViewId"),
+              viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+              onViewCreated: (viewId) async {
+                _bigVideoViewId = viewId;
+                if (_callingScenes == CallingScenes.VideoOneVOne) {
+                  await _tRTCCallingService.openCamera(
+                      _isFrontCamera, _bigVideoViewId);
+                }
+              },
+            ),
           )
         : Container();
   }
@@ -498,19 +510,36 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             : BoxDecoration(),
       );
     }
+    bool nowIsRemoteView = false; //判断当前小窗口是否显示远端画面
+    if (_currentCallStatus == CallStatus.calling)
+      nowIsRemoteView = true;
+    else {
+      //已经接听
+      if (isChangeBigSmallVideo) {
+        nowIsRemoteView = true;
+      } else {
+        nowIsRemoteView = false; //本地摄像头
+      }
+    }
     return Container(
       height: _currentCallStatus == CallStatus.calling ? 100 : 216,
       width: 100,
       child: _currentCallStatus == CallStatus.answer
-          ? TRTCCloudVideoView(
-              key: ValueKey("_smallVideoViewId"),
-              viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
-              onViewCreated: (viewId) async {
-                _smallVideoViewId = viewId;
-                await _tRTCCallingService.closeCamera();
-                await _tRTCCallingService.openCamera(
-                    _isFrontCamera, _smallVideoViewId);
-              },
+          ? AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: nowIsRemoteView
+                  ? _getOpacityByVis(_remoteUserAvailable)
+                  : _getOpacityByVis(!_isCameraOff),
+              child: TRTCCloudVideoView(
+                key: ValueKey("_smallVideoViewId"),
+                viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                onViewCreated: (viewId) async {
+                  _smallVideoViewId = viewId;
+                  await _tRTCCallingService.closeCamera();
+                  await _tRTCCallingService.openCamera(
+                      _isFrontCamera, _smallVideoViewId);
+                },
+              ),
             )
           : Container(),
       decoration:
@@ -525,6 +554,27 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     );
   }
 
+  changeVideoView() {
+    if (_callingScenes == CallingScenes.AudioOneVOne ||
+        _currentCallStatus == CallStatus.calling) return;
+
+    setState(() async {
+      isChangeBigSmallVideo = !isChangeBigSmallVideo;
+      //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
+      if (isChangeBigSmallVideo) {
+        await _tRTCCallingService.closeCamera();
+        await _tRTCCallingService.openCamera(_isFrontCamera, _bigVideoViewId);
+        await _tRTCCallingService.startRemoteView(_remoteUserInfo!.userId,
+            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _smallVideoViewId);
+      } else {
+        await _tRTCCallingService.closeCamera();
+        await _tRTCCallingService.openCamera(_isFrontCamera, _smallVideoViewId);
+        await _tRTCCallingService.startRemoteView(_remoteUserInfo!.userId,
+            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _bigVideoViewId);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var remotePanel = Positioned(
@@ -534,30 +584,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             : MediaQuery.of(context).size.width / 2 - 100 / 2,
         child: GestureDetector(
           onDoubleTap: () {
-            //放大
-            if (_callingScenes == CallingScenes.AudioOneVOne ||
-                _currentCallStatus == CallStatus.calling) return;
-
-            setState(() async {
-              isChangeBigSmallVideo = !isChangeBigSmallVideo;
-              if (isChangeBigSmallVideo) {
-                await _tRTCCallingService.closeCamera();
-                await _tRTCCallingService.openCamera(
-                    _isFrontCamera, _bigVideoViewId);
-                await _tRTCCallingService.startRemoteView(
-                    _remoteUserInfo!.userId,
-                    TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
-                    _smallVideoViewId);
-              } else {
-                await _tRTCCallingService.closeCamera();
-                await _tRTCCallingService.openCamera(
-                    _isFrontCamera, _smallVideoViewId);
-                await _tRTCCallingService.startRemoteView(
-                    _remoteUserInfo!.userId,
-                    TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
-                    _bigVideoViewId);
-              }
-            });
+            changeVideoView();
           },
           onPanUpdate: (DragUpdateDetails e) {
             //用户手指滑动时，更新偏移，重新构建
