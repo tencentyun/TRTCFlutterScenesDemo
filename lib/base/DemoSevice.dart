@@ -41,7 +41,6 @@ class DemoSevice {
     await _tRTCCallingService.login(GenerateTestUserSig.sdkAppId, loginId,
         await GenerateTestUserSig.genTestSig(loginId));
     _isRegisterListener = true;
-    print("=============+++++++++++++++start");
     _tRTCCallingService.registerListener(onTrtcListener);
   }
 
