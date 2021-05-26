@@ -547,8 +547,8 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  void closeCamera() {
-    mTRTCCloud.stopLocalPreview();
+  Future<void> closeCamera() async {
+    return mTRTCCloud.stopLocalPreview();
   }
 
   @override
@@ -584,8 +584,8 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  void openCamera(bool isFrontCamera, int viewId) {
-    mTRTCCloud.startLocalPreview(isFrontCamera, viewId);
+  Future<void> openCamera(bool isFrontCamera, int viewId) {
+    return mTRTCCloud.startLocalPreview(isFrontCamera, viewId);
   }
 
   @override
@@ -612,13 +612,13 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  void startRemoteView(String userId, int streamType, int viewId) {
-    mTRTCCloud.startRemoteView(userId, streamType, viewId);
+  Future<void> startRemoteView(String userId, int streamType, int viewId) {
+    return mTRTCCloud.startRemoteView(userId, streamType, viewId);
   }
 
   @override
-  void stopRemoteView(String userId, int streamType) {
-    mTRTCCloud.stopRemoteView(userId, streamType);
+  Future<void> stopRemoteView(String userId, int streamType) {
+    return mTRTCCloud.stopRemoteView(userId, streamType);
   }
 
   @override
