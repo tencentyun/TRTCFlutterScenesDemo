@@ -106,8 +106,6 @@ void destroy();
 void registerListener(VoiceListenerFunc func);
 ```
 
->?TRTCCallingDelegate 是 TRTCCalling 的代理回调。
-
 ### unRegisterListener
 
 移除回调接口。
