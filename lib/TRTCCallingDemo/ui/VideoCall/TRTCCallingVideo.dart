@@ -234,12 +234,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     if (!_isCameraOff) {
       await _tRTCCallingService.closeCamera();
     } else {
-      //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
-      if (isChangeBigSmallVideo) {
-        await _tRTCCallingService.openCamera(_isFrontCamera, _bigVideoViewId);
-      } else {
-        await _tRTCCallingService.openCamera(_isFrontCamera, _smallVideoViewId);
-      }
+      await _tRTCCallingService.openCamera(_isFrontCamera, _smallVideoViewId);
     }
     safeSetState(() {
       _isCameraOff = !_isCameraOff;
@@ -466,12 +461,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     if (_currentCallStatus == CallStatus.calling)
       nowIsLocalView = true;
     else {
-      //已经接听
-      if (isChangeBigSmallVideo) {
-        nowIsLocalView = true;
-      } else {
-        nowIsLocalView = false; //远端画面
-      }
+      nowIsLocalView = false; //远端画面
     }
     return _callingScenes == CallingScenes.VideoOneVOne
         ? AnimatedOpacity(
@@ -554,27 +544,6 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     );
   }
 
-  changeVideoView() {
-    if (_callingScenes == CallingScenes.AudioOneVOne ||
-        _currentCallStatus == CallStatus.calling) return;
-
-    setState(() async {
-      isChangeBigSmallVideo = !isChangeBigSmallVideo;
-      //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
-      if (isChangeBigSmallVideo) {
-        await _tRTCCallingService.closeCamera();
-        await _tRTCCallingService.openCamera(_isFrontCamera, _bigVideoViewId);
-        await _tRTCCallingService.startRemoteView(_remoteUserInfo!.userId,
-            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _smallVideoViewId);
-      } else {
-        await _tRTCCallingService.closeCamera();
-        await _tRTCCallingService.openCamera(_isFrontCamera, _smallVideoViewId);
-        await _tRTCCallingService.startRemoteView(_remoteUserInfo!.userId,
-            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _bigVideoViewId);
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var remotePanel = Positioned(
@@ -583,9 +552,6 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             ? _smallViewRight
             : MediaQuery.of(context).size.width / 2 - 100 / 2,
         child: GestureDetector(
-          onDoubleTap: () {
-            changeVideoView();
-          },
           onPanUpdate: (DragUpdateDetails e) {
             //用户手指滑动时，更新偏移，重新构建
             if (_callingScenes == CallingScenes.VideoOneVOne) {
