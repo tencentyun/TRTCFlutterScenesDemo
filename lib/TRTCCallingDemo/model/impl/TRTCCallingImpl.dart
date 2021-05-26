@@ -598,17 +598,19 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  void setHandsFree(bool isHandsFree) {
+  Future<void> setHandsFree(bool isHandsFree) {
     if (isHandsFree) {
-      txDeviceManager.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
+      return txDeviceManager
+          .setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
     } else {
-      txDeviceManager.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_EARPIECE);
+      return txDeviceManager
+          .setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_EARPIECE);
     }
   }
 
   @override
-  void setMicMute(bool isMute) {
-    mTRTCCloud.muteLocalAudio(isMute);
+  Future<void> setMicMute(bool isMute) {
+    return mTRTCCloud.muteLocalAudio(isMute);
   }
 
   @override
@@ -622,8 +624,8 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
-  void switchCamera(bool isFrontCamera) {
-    txDeviceManager.switchCamera(isFrontCamera);
+  Future<void> switchCamera(bool isFrontCamera) {
+    return txDeviceManager.switchCamera(isFrontCamera);
   }
 
   _generateRoomID() {

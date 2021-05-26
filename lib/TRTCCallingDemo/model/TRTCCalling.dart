@@ -132,19 +132,19 @@ abstract class TRTCCalling {
   *
   * @param isFrontCamera true:切换前置摄像头 false:切换后置摄像头
   */
-  void switchCamera(bool isFrontCamera);
+  Future<void> switchCamera(bool isFrontCamera);
 
   /*
   * 是否静音mic
   *
   * @param isMute true:麦克风关闭 false:麦克风打开
   */
-  void setMicMute(bool isMute);
+  Future<void> setMicMute(bool isMute);
 
   /*
   * 是否开启免提
   *
   * @param isHandsFree true:开启免提 false:关闭免提
   */
-  void setHandsFree(bool isHandsFree);
+  Future<void> setHandsFree(bool isHandsFree);
 }
