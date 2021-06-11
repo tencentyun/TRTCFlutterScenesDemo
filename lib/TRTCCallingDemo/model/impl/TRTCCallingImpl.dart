@@ -450,6 +450,7 @@ class TRTCCallingImpl extends TRTCCalling {
 
     mTRTCCloud.enableAudioVolumeEvaluation(500);
     txDeviceManager.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
+    mTRTCCloud.muteLocalAudio(false);
     mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
     mTRTCCloud.enterRoom(
         TRTCParams(
