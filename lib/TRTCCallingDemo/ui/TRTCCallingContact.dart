@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:trtc_scenes_demo/TRTCCallingDemo/model/TRTCCallingDelegate.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import '../../utils/TxUtils.dart';
 import '../../login/ProfileManager_Mock.dart';
@@ -20,6 +21,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   String searchText = '';
   String myLoginInfoId = '';
   List<UserModel> userList = [];
+  late ProfileManager _profileManager;
   late TRTCCalling sInstance;
   goIndex() {
     Navigator.pushReplacementNamed(
@@ -74,10 +76,13 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   }
 
   initUserInfo() async {
+    _profileManager = await ProfileManager.getInstance();
     sInstance = await TRTCCalling.sharedInstance();
     String loginId = await TxUtils.getLoginUserId();
     await sInstance.login(GenerateTestUserSig.sdkAppId, loginId,
         await GenerateTestUserSig.genTestSig(loginId));
+    sInstance.unRegisterListener(onTrtcListener);
+    sInstance.registerListener(onTrtcListener);
     if (loginId == '') {
       TxUtils.showErrorToast("请先登录。", context);
       goLoginPage();
@@ -85,6 +90,28 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
       setState(() {
         myLoginInfoId = loginId;
       });
+    }
+  }
+
+  onTrtcListener(type, params) async {
+    switch (type) {
+      case TRTCCallingDelegate.onInvited:
+        {
+          UserModel userInfo = await _profileManager
+              .querySingleUserInfo(params["sponsor"].toString());
+          Navigator.pushReplacementNamed(
+            context,
+            "/calling/callingView",
+            arguments: {
+              "remoteUserInfo": userInfo,
+              "callType": CallTypes.Type_Being_Called,
+              "callingScenes": params['type'] == TRTCCalling.typeVideoCall
+                  ? CallingScenes.VideoOneVOne
+                  : CallingScenes.AudioOneVOne
+            },
+          );
+        }
+        break;
     }
   }
 
@@ -97,6 +124,7 @@ class _TRTCCallingContactState extends State<TRTCCallingContact> {
   @override
   void dispose() {
     super.dispose();
+    sInstance.unRegisterListener(onTrtcListener);
   }
 
   getGuideSearchWidget() {

@@ -3,11 +3,11 @@
 ## 目录结构
 
 ```
-├─ base                  // 接电话全局事件监听
 ├─ debug                 // 调试相关
 ├─ login                 // 登录相关
 ├─ TRTCCallingDemo       // 音视频通话，展示双人音视频通话
 ├─ TRTCChatSalonDemo     // 类clubHouse语音沙龙
+├─ TRTCLiveRoomDemo      // 视频互动直播
 ```
 
 ## 功能简介
@@ -16,6 +16,7 @@
 
 - 双人音视频通话
 - 类clubHouse语音沙龙
+- 视频互动直播
 
 ## 快速接入
 
@@ -28,3 +29,8 @@
 [快速跑通Demo](https://cloud.tencent.com/document/product/647/56293)
 
 [TRTCCalling API](https://cloud.tencent.com/document/product/647/56292)
+
+#### 视频互动直播
+[快速跑通Demo](https://cloud.tencent.com/document/product/647/57388)
+
+[TRTCLive API](https://cloud.tencent.com/document/product/647/57389)

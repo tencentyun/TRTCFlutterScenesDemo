@@ -113,6 +113,13 @@ abstract class TRTCCalling {
   Future<void> stopRemoteView(String userId, int streamType);
 
   /*
+  * 更新远端视频画面的窗口,仅仅ios有效
+  *
+  * @param userId           远端用户id
+  * @param viewId 远端用户数据将渲染到该view中
+  */
+  Future<void> updateRemoteView(String userId, int streamType, int viewId);
+  /*
   * 您可以调用该函数开启摄像头，并渲染在指定的TRTCCloudVideoView中
   * 处于通话中的用户会收到 {@link TRTCCallingDelegate#onUserVideoAvailable(java.lang.String, boolean)} 回调
   *
@@ -120,6 +127,13 @@ abstract class TRTCCalling {
   * @param viewId TRTCCloudVideoView生成的viewId
   */
   Future<void> openCamera(bool isFrontCamera, int viewId);
+
+  /// 更新本地视频预览画面的窗口,仅仅ios有效
+  ///
+  /// 参数：
+  ///
+  /// viewId	承载视频画面的控件
+  Future<void> updateLocalView(int viewId);
 
   /*
   * 您可以调用该函数关闭摄像头

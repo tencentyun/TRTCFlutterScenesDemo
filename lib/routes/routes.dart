@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trtc_scenes_demo/TRTCCallingDemo/ui/base/CallingScenes.dart';
+import 'package:trtc_scenes_demo/TRTCLiveRoomDemo/ui/list/LiveRoomCreate.dart';
+import 'package:trtc_scenes_demo/TRTCLiveRoomDemo/ui/list/LiveRoomList.dart';
+import 'package:trtc_scenes_demo/TRTCLiveRoomDemo/ui/room/LiveRoomPage.dart';
 import '../TRTCChatSalonDemo/ui/list/VoiceRoomList.dart';
 import '../TRTCChatSalonDemo/ui/list/VoiceRoomCreate.dart';
 import '../TRTCChatSalonDemo/ui/room/VoiceRoomPage.dart';
@@ -23,4 +26,8 @@ final Map<String, WidgetBuilder> routes = {
   "/calling/audioContact": (context) =>
       TRTCCallingContact(CallingScenes.AudioOneVOne),
   "/calling/callingView": (context) => TRTCCallingVideo(),
+  "/liveRoom/roomAudience": (context) => LiveRoomPage(isAdmin: false),
+  "/liveRoom/roomAnchor": (context) => LiveRoomPage(isAdmin: true),
+  "/liveRoom/roomCreate": (context) => LiveRoomCreatePage(),
+  "/liveRoom/list": (context) => LiveRoomListPage(),
 };

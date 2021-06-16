@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './utils/TxUtils.dart';
-import 'base/DemoSevice.dart';
+// import 'base/DemoSevice.dart';
 import 'utils/constants.dart' as constants;
 import './debug/GenerateTestUserSig.dart';
 import './TRTCChatSalonDemo/model/TRTCChatSalon.dart';
@@ -39,7 +39,7 @@ class IndexPageState extends State<IndexPage> {
         GenerateTestUserSig.genTestSig(userId),
       );
     }
-    DemoSevice.sharedInstance().start();
+    // DemoSevice.sharedInstance().start();
   }
 
   Future<bool?>? logout() {
@@ -87,6 +87,13 @@ class IndexPageState extends State<IndexPage> {
     Navigator.pushReplacementNamed(
       context,
       isVideo ? "/calling/videoContact" : "/calling/audioContact",
+    );
+  }
+
+  goLiveRoomDemo() {
+    Navigator.pushReplacementNamed(
+      context,
+      "/liveRoom/list",
     );
   }
 
@@ -190,6 +197,13 @@ class IndexPageState extends State<IndexPage> {
               "assets/images/callingDemo/videoCall.png",
               () {
                 goCallingDemo(false);
+              },
+            ),
+            this.getTitleItem(
+              "视频互动",
+              "assets/images/callingDemo/videoCall.png",
+              () {
+                goLiveRoomDemo();
               },
             ),
           ],
