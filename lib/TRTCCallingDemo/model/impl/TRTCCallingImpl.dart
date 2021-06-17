@@ -590,6 +590,11 @@ class TRTCCallingImpl extends TRTCCalling {
   }
 
   @override
+  Future<void> updateLocalView(int viewId) {
+    return mTRTCCloud.updateLocalView(viewId);
+  }
+
+  @override
   Future<ActionCallback> reject() async {
     V2TimCallback res = await timManager
         .getSignalingManager()
@@ -622,6 +627,11 @@ class TRTCCallingImpl extends TRTCCalling {
   @override
   Future<void> stopRemoteView(String userId, int streamType) {
     return mTRTCCloud.stopRemoteView(userId, streamType);
+  }
+
+  @override
+  Future<void> updateRemoteView(String userId, int streamType, int viewId) {
+    return mTRTCCloud.updateRemoteView(viewId, streamType, userId);
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
@@ -28,7 +30,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
   bool _isHandsFree = true;
   bool _isMicrophoneOff = false;
   bool _isFrontCamera = true;
-  late int _bigVideoViewId;
+  int _bigVideoViewId = -1;
   Timer? _hadCalledCalcTimer;
 
   late int _smallVideoViewId;
@@ -122,17 +124,18 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   //用户接听
   handleOnUserAnswer() async {
-    //await _tRTCCallingService.closeCamera();
     if (_remoteUserInfo != null) {
       _startAnswerTime = DateTime.now();
       safeSetState(() async {
         _currentCallStatus = CallStatus.answer;
         _hadCallingTime = "00:00";
-        await _tRTCCallingService.startRemoteView(
-          _remoteUserInfo!.userId,
-          TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
-          _bigVideoViewId,
-        );
+        if (_bigVideoViewId != -1) {
+          await _tRTCCallingService.startRemoteView(
+            _remoteUserInfo!.userId,
+            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
+            _bigVideoViewId,
+          );
+        }
       });
       this._callIngTimeUpdate();
     }
@@ -234,7 +237,12 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     if (!_isCameraOff) {
       await _tRTCCallingService.closeCamera();
     } else {
-      await _tRTCCallingService.openCamera(_isFrontCamera, _smallVideoViewId);
+      //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
+      if (isChangeBigSmallVideo) {
+        await _tRTCCallingService.openCamera(_isFrontCamera, _bigVideoViewId);
+      } else {
+        await _tRTCCallingService.openCamera(_isFrontCamera, _smallVideoViewId);
+      }
     }
     safeSetState(() {
       _isCameraOff = !_isCameraOff;
@@ -251,10 +259,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   onSwitchAudioTap() {
     //先不支持切到语音通话
-    _tRTCCallingService.closeCamera();
-    safeSetState(() {
-      _callingScenes = CallingScenes.AudioOneVOne;
-    });
+    // _tRTCCallingService.closeCamera();
+    // safeSetState(() {
+    //   _callingScenes = CallingScenes.AudioOneVOne;
+    // });
   }
 
   //挂断
@@ -274,7 +282,6 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
 
   //接听
   onAcceptCall() async {
-    await _tRTCCallingService.closeCamera();
     await _tRTCCallingService.accept();
     safeSetState(() {
       _currentCallStatus = CallStatus.answer;
@@ -461,14 +468,20 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     if (_currentCallStatus == CallStatus.calling)
       nowIsLocalView = true;
     else {
-      nowIsLocalView = false; //远端画面
+      //已经接听
+      if (isChangeBigSmallVideo) {
+        nowIsLocalView = true;
+      } else {
+        nowIsLocalView = false; //远端画面
+      }
     }
+    var opacityVal = nowIsLocalView
+        ? _getOpacityByVis(!_isCameraOff)
+        : _getOpacityByVis(_remoteUserAvailable);
     return _callingScenes == CallingScenes.VideoOneVOne
         ? AnimatedOpacity(
             duration: Duration(milliseconds: 100),
-            opacity: nowIsLocalView
-                ? _getOpacityByVis(!_isCameraOff)
-                : _getOpacityByVis(_remoteUserAvailable),
+            opacity: opacityVal,
             child: TRTCCloudVideoView(
               key: ValueKey("_bigVideoViewId"),
               viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
@@ -525,9 +538,13 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                 viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
                 onViewCreated: (viewId) async {
                   _smallVideoViewId = viewId;
-                  await _tRTCCallingService.closeCamera();
-                  await _tRTCCallingService.openCamera(
-                      _isFrontCamera, _smallVideoViewId);
+                  if (Platform.isIOS) {
+                    await _tRTCCallingService
+                        .updateLocalView(_smallVideoViewId);
+                  } else {
+                    await _tRTCCallingService.openCamera(
+                        _isFrontCamera, _smallVideoViewId);
+                  }
                 },
               ),
             )
@@ -544,6 +561,25 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     );
   }
 
+  changeVideoView() {
+    if (_callingScenes == CallingScenes.AudioOneVOne ||
+        _currentCallStatus == CallStatus.calling) return;
+
+    setState(() async {
+      isChangeBigSmallVideo = !isChangeBigSmallVideo;
+      //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
+      if (isChangeBigSmallVideo) {
+        await _tRTCCallingService.updateLocalView(_bigVideoViewId);
+        await _tRTCCallingService.updateRemoteView(_remoteUserInfo!.userId,
+            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _smallVideoViewId);
+      } else {
+        await _tRTCCallingService.updateLocalView(_smallVideoViewId);
+        await _tRTCCallingService.updateRemoteView(_remoteUserInfo!.userId,
+            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _bigVideoViewId);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var remotePanel = Positioned(
@@ -552,6 +588,9 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             ? _smallViewRight
             : MediaQuery.of(context).size.width / 2 - 100 / 2,
         child: GestureDetector(
+          onDoubleTap: () {
+            if (Platform.isIOS) changeVideoView();
+          },
           onPanUpdate: (DragUpdateDetails e) {
             //用户手指滑动时，更新偏移，重新构建
             if (_callingScenes == CallingScenes.VideoOneVOne) {

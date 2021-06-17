@@ -6,13 +6,14 @@ class YunApiHelper {
       'https://service-c2zjvuxa-1252463788.gz.apigw.tencentcs.com/release/forTest';
   static Dio _dio = new Dio();
 
-  static Future<bool> createRoom(String roomId) async {
+  static Future<bool> createRoom(String roomId,
+      {String roomType = "voiceRoom"}) async {
     Response<dynamic> resp = await _dio.get(
       _url,
       queryParameters: {
         "method": "createRoom",
         "appId": GenerateTestUserSig.sdkAppId,
-        "type": 'voiceRoom',
+        "type": roomType,
         "roomId": roomId
       },
     );
@@ -20,13 +21,14 @@ class YunApiHelper {
     return Future.value(data["errorCode"] == 0 ? true : false);
   }
 
-  static Future<bool> destroyRoom(String roomId) async {
+  static Future<bool> destroyRoom(String roomId,
+      {String roomType = "voiceRoom"}) async {
     Response<dynamic> resp = await _dio.get(
       _url,
       queryParameters: {
         "method": "destroyRoom",
         "appId": GenerateTestUserSig.sdkAppId,
-        "type": 'voiceRoom',
+        "type": roomType,
         "roomId": roomId
       },
     );
@@ -34,13 +36,14 @@ class YunApiHelper {
     return Future.value(data["errorCode"] == 0 ? true : false);
   }
 
-  static Future<List<String>> getRoomList() async {
+  static Future<List<String>> getRoomList(
+      {String roomType = "voiceRoom"}) async {
     Response<dynamic> resp = await _dio.get(
       _url,
       queryParameters: {
         "method": "getRoomList",
         "appId": GenerateTestUserSig.sdkAppId,
-        "type": 'voiceRoom'
+        "type": roomType
       },
     );
     var data = resp.data;
