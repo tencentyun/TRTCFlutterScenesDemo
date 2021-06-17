@@ -30,6 +30,11 @@
 
 [TRTCCalling API](https://cloud.tencent.com/document/product/647/56292)
 
+#### 类clubHouse语音沙龙
+[快速跑通Demo](https://cloud.tencent.com/document/product/647/53582)
+
+[TRTCCalling API](https://cloud.tencent.com/document/product/647/53583)
+
 #### 视频互动直播
 [快速跑通Demo](https://cloud.tencent.com/document/product/647/57388)
 
