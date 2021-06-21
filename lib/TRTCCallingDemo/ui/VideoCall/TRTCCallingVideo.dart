@@ -380,7 +380,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                 onMicrophoneTap();
               },
             )
-          : Spacer(),
+          : SizedBox(
+              height: 0,
+              width: 0,
+            ),
       ExtendButton(
         imgUrl: "assets/images/callingDemo/hangup.png",
         tips: "挂断",
@@ -406,13 +409,19 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                   onHandsfreeTap();
               },
             )
-          : Spacer(),
+          : SizedBox(
+              height: 0,
+              width: 0,
+            ),
     ];
     if (_currentCallType == CallTypes.Type_Being_Called &&
         _currentCallStatus == CallStatus.calling) {
       callSomeBtnList.insert(
         2,
-        Spacer(),
+        SizedBox(
+          height: 0,
+          width: 0,
+        ),
       );
       callSomeBtnList.insert(
         3,
@@ -450,7 +459,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                 //           onSwitchAudioTap();
                 //         },
                 //       ):
-                Spacer(),
+                SizedBox(
+                    height: 0,
+                    width: 0,
+                  ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
