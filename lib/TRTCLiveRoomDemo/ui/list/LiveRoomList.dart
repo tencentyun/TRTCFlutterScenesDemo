@@ -219,7 +219,7 @@ class LiveRoomListPageState extends State<LiveRoomListPage> {
               tooltip: Languages.of(context)!.helpTooltip,
               onPressed: () {
                 this.openUrl(
-                    'https://cloud.tencent.com/document/product/647/53582');
+                    'https://cloud.tencent.com/document/product/647/57388');
               },
             ),
           ]),
