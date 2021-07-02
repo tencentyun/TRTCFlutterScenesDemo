@@ -117,7 +117,7 @@ class _LiveRoomCreatePageState extends State<LiveRoomCreatePage> {
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
             subtitle: TextField(
-              autofocus: false,
+              autofocus: true,
               controller: TextEditingController.fromValue(
                 TextEditingValue(
                   text: this.roomTitle, //判断keyword是否为空

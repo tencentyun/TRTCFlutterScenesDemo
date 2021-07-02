@@ -55,6 +55,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   List<String> _popupMessageList = [];
   bool isFavoriteVisiable = false;
   TextEditingController inputController = new TextEditingController();
+  final inputFocusNode = FocusNode();
   @override
   void initState() {
     initTrtc();
@@ -168,6 +169,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   @override
   void dispose() async {
     try {
+      if (inputFocusNode.hasFocus) inputFocusNode.unfocus();
       super.dispose();
       await trtcLiveCloud.stopPublish();
       await trtcLiveCloud.stopCameraPreview();
@@ -796,6 +798,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
           child: TextField(
             cursorHeight: 25,
             controller: inputController,
+            focusNode: inputFocusNode,
             onSubmitted: (s) {
               onSubmitted(s, context);
             },
@@ -997,92 +1000,103 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          isPKing
-              ? getPKingView()
-              : Container(
-                  color: Color.fromRGBO(0, 0, 0, 0.3),
-                  child: Container(
-                    child: !widget.isAdmin && !isOwerAvailable
-                        ? Center(
-                            child: Text(
-                              '直播暂不在线~~',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          if (inputFocusNode.hasFocus) {
+            safeSetState(() {
+              isShowComment = false;
+            });
+            inputFocusNode.unfocus();
+          }
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            isPKing
+                ? getPKingView()
+                : Container(
+                    color: Color.fromRGBO(0, 0, 0, 0.3),
+                    child: Container(
+                      child: !widget.isAdmin && !isOwerAvailable
+                          ? Center(
+                              child: Text(
+                                '直播暂不在线~~',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          : TRTCCloudVideoView(
+                              key: ValueKey("LiveRoomPage_bigVideoViewId"),
+                              viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                              onViewCreated: (viewId) async {
+                                if (widget.isAdmin) {
+                                  await trtcLiveCloud.stopCameraPreview();
+                                  //为啥需要延迟，不延迟视频渲染会有问题。
+                                  Future.delayed(Duration(milliseconds: 500),
+                                      () async {
+                                    await trtcLiveCloud.startCameraPreview(
+                                        isFrontCamera, viewId);
+                                  });
+                                } else {
+                                  await trtcLiveCloud.startPlay(
+                                      _currentOwnerId, viewId);
+                                }
+                              },
                             ),
-                          )
-                        : TRTCCloudVideoView(
-                            key: ValueKey("LiveRoomPage_bigVideoViewId"),
-                            viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
-                            onViewCreated: (viewId) async {
-                              if (widget.isAdmin) {
-                                await trtcLiveCloud.stopCameraPreview();
-                                //为啥需要延迟，不延迟视频渲染会有问题。
-                                Future.delayed(Duration(milliseconds: 500),
-                                    () async {
-                                  await trtcLiveCloud.startCameraPreview(
-                                      isFrontCamera, viewId);
-                                });
-                              } else {
-                                await trtcLiveCloud.startPlay(
-                                    _currentOwnerId, viewId);
-                              }
-                            },
-                          ),
+                    ),
                   ),
-                ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: getTopBtnList(),
-          ),
-          PopUpMessageList(
-            popupMessageList: isBarrageON ? _popupMessageList : [],
-          ),
-          LiveMessageList(
-            messageList: _messageLogList,
-          ),
-          SubVideoList(
-            isShowClose: widget.isAdmin ? true : false,
-            userList: (pkUserId != "" && isPKing)
-                ? []
-                : _smallVideoUserId.keys.toList(),
-            onClose: (String userId) async {
-              if (userId == _currentLoginUser) {
-                //主动下麦
-                await trtcLiveCloud.stopPublish();
-                setState(() {
-                  isJoinAnchor = false;
-                });
-              } else {
-                await trtcLiveCloud.kickoutJoinAnchor(userId);
-              }
+            Align(
+              alignment: Alignment.topLeft,
+              child: getTopBtnList(),
+            ),
+            PopUpMessageList(
+              popupMessageList: isBarrageON ? _popupMessageList : [],
+            ),
+            LiveMessageList(
+              messageList: _messageLogList,
+            ),
+            SubVideoList(
+              isShowClose: widget.isAdmin ? true : false,
+              userList: (pkUserId != "" && isPKing)
+                  ? []
+                  : _smallVideoUserId.keys.toList(),
+              onClose: (String userId) async {
+                if (userId == _currentLoginUser) {
+                  //主动下麦
+                  await trtcLiveCloud.stopPublish();
+                  setState(() {
+                    isJoinAnchor = false;
+                  });
+                } else {
+                  await trtcLiveCloud.kickoutJoinAnchor(userId);
+                }
 
-              if (_smallVideoUserId.containsKey(userId))
-                safeSetState(() {
-                  _smallVideoUserId.remove(userId);
-                });
-            },
-            onViewCreate: (userId, viewId) async {
-              String currLoginUserId = await TxUtils.getLoginUserId();
-              if (userId == currLoginUserId) {
-                trtcLiveCloud.startCameraPreview(isFrontCamera, viewId);
-                return;
-              }
-              trtcLiveCloud.startPlay(userId, viewId);
-            },
-          ),
-          FavoriteAnimation(isVisible: isFavoriteVisiable),
-          Positioned(
-            bottom: 10,
-            left: 10,
-            right: 10,
-            child: isShowComment ? getInputMessage() : getBottomBtnList(),
-          ),
-        ],
+                if (_smallVideoUserId.containsKey(userId))
+                  safeSetState(() {
+                    _smallVideoUserId.remove(userId);
+                  });
+              },
+              onViewCreate: (userId, viewId) async {
+                String currLoginUserId = await TxUtils.getLoginUserId();
+                if (userId == currLoginUserId) {
+                  trtcLiveCloud.startCameraPreview(isFrontCamera, viewId);
+                  return;
+                }
+                trtcLiveCloud.startPlay(userId, viewId);
+              },
+            ),
+            FavoriteAnimation(isVisible: isFavoriteVisiable),
+            Positioned(
+              bottom: 10,
+              left: 10,
+              right: 10,
+              child: isShowComment ? getInputMessage() : getBottomBtnList(),
+            ),
+          ],
+        ),
       ),
     );
   }
