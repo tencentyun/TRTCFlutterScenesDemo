@@ -317,7 +317,8 @@ class TRTCCallingImpl extends TRTCCalling {
       // 当没有其他用户在房间里了，则结束通话。
       if (!_isEmpty(leaveUser)) {
         Map<String, dynamic> customMap = _getCustomMap();
-        customMap['call_end'] = 'call_end';
+        //customMap['call_end'] = 'call_end';
+        customMap['call_end'] = 10;
         if (_isEmpty(mCurGroupId)) {
           timManager
               .getSignalingManager()
