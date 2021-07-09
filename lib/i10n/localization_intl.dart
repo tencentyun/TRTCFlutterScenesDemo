@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'messages_all.dart'; //1
+import 'messages_all.dart';
 
 class Languages {
   static Future<Languages> load(Locale locale) {
@@ -12,7 +12,6 @@ class Languages {
       name = locale.toString();
     }
     final String localeName = Intl.canonicalizedLocale(name);
-    //2
     return initializeMessages(localeName).then((b) {
       Intl.defaultLocale = localeName;
       return new Languages();
@@ -34,6 +33,7 @@ class Languages {
   String get okText => Intl.message('确定', name: 'okText');
   String get cancelText => Intl.message('取消', name: 'cancelText');
   String get tipsText => Intl.message('提示', name: 'tipsText');
+  String get settingText => Intl.message('设置', name: 'settingText');
   String get logoutContent => Intl.message('确定退出登录吗?', name: 'logoutContent');
 
   /*
@@ -121,6 +121,85 @@ class Languages {
   String get kickMic => Intl.message('要求下麦', name: 'kickMic');
   String get raiseUpList => Intl.message('举手列表', name: 'raiseUpList');
   String get leaveTips => Intl.message('安静离开~', name: 'leaveTips');
+
+  /*
+   * TRTCMeetingIndex.dart
+   */
+  String get errorMeetingIdInput =>
+      Intl.message('请输入合法的会议ID', name: 'errorMeetingIdInput');
+  String get errorMeetingIdNumber =>
+      Intl.message('会议ID只能为数字，请输入合法的会议ID', name: 'errorMeetingIdNumber');
+  String get errorMeetingIdLength =>
+      Intl.message('会议ID过长，请输入合法的会议ID', name: 'errorMeetingIdLength');
+  String get meetingCallTitle =>
+      Intl.message('多人视频会议', name: 'meetingCallTitle');
+  String get meetingInputLabel =>
+      Intl.message('会议号', name: 'meetingInputLabel');
+  String get meetingInputHintText =>
+      Intl.message('请输入会议号', name: 'meetingInputHintText');
+  String get meetingTurnOnCamera =>
+      Intl.message('开启摄像头', name: 'meetingTurnOnCamera');
+  String get meetingTurnOnMic =>
+      Intl.message('开启麦克风', name: 'meetingTurnOnMic');
+  String get meetingEnterLabel =>
+      Intl.message('进入会议', name: 'meetingEnterLabel');
+  String get meetingLeaveLabel =>
+      Intl.message('退出会议', name: 'meetingLeaveLabel');
+  String get meetingLeaveTips =>
+      Intl.message('确定退出会议?', name: 'meetingLeaveTips');
+  String get meetingVideoSetting =>
+      Intl.message('视频设置', name: 'meetingVideoSetting');
+  String get meetingAudioSetting =>
+      Intl.message('音频设置', name: 'meetingAudioSetting');
+  String get meetingShareScreen =>
+      Intl.message('共享屏幕', name: 'meetingShareScreen');
+  String get meetingStopShareScreen =>
+      Intl.message('停止共享', name: 'meetingStopShareScreen');
+  String get meetingResolution =>
+      Intl.message('分辨率', name: 'meetingResolution');
+  String get meetingFrameRate => Intl.message('帧率', name: 'meetingFrameRate');
+  String get meetingBitRate => Intl.message('码率', name: 'meetingBitRate');
+  String get meetingLocalMirror =>
+      Intl.message('本地镜像', name: 'meetingLocalMirror');
+  String get meetingCaptureVolume =>
+      Intl.message('采集音量', name: 'meetingCaptureVolume');
+  String get meetingPlayVolume =>
+      Intl.message('播放音量', name: 'meetingPlayVolume');
+  String get meetingShareScreenStarted =>
+      Intl.message('屏幕分享开始', name: 'meetingShareScreenStarted');
+  String get meetingShareScreenPaused =>
+      Intl.message('屏幕分享暂停', name: 'meetingShareScreenPaused');
+  String get meetingShareScreenResumed =>
+      Intl.message('屏幕分享恢复', name: 'meetingShareScreenResumed');
+  String get meetingShareScreenStoped =>
+      Intl.message('屏幕分享停止', name: 'meetingShareScreenStoped');
+  String get meetingEnterRoomSuccess =>
+      Intl.message('进房成功', name: 'meetingEnterRoomSuccess');
+  String get meetingExitRoomSuccess =>
+      Intl.message('退房成功', name: 'meetingExitRoomSuccess');
+  String get meetingBeautyLevel =>
+      Intl.message('强度', name: 'meetingBeautyLevel');
+  String get meetingBeautySmooth =>
+      Intl.message('光滑', name: 'meetingBeautySmooth');
+  String get meetingBeautyNature =>
+      Intl.message('自然', name: 'meetingBeautyNature');
+  String get meetingBeautyPitu =>
+      Intl.message('天天P图', name: 'meetingBeautyPitu');
+  String get meetingBeautyWhitening =>
+      Intl.message('美白', name: 'meetingBeautyWhitening');
+  String get meetingBeautyRuddy =>
+      Intl.message('红润', name: 'meetingBeautyRuddy');
+  String get meetingMemberList =>
+      Intl.message('成员列表', name: 'meetingMemberList');
+  String get meetingMuteAllAudio =>
+      Intl.message('全体静音', name: 'meetingMuteAllAudio');
+  String get meetingUnmuteAllAudio =>
+      Intl.message('解除全体静音', name: 'meetingUnmuteAllAudio');
+  String get meetingMuteAllVideo =>
+      Intl.message('全体禁画', name: 'meetingMuteAllVideo');
+  String get meetingUnmuteAllVideo =>
+      Intl.message('解除全体禁画', name: 'meetingUnmuteAllVideo');
+  String get failShareScreen => Intl.message('播放音量', name: 'failShareScreen');
 }
 
 //Locale代理类

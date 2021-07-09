@@ -10,6 +10,8 @@ PODS:
   - HydraAsync (2.0.6)
   - "permission_handler (5.1.0+2)":
     - Flutter
+  - replay_kit_launcher (0.3.0):
+    - Flutter
   - shared_preferences (0.0.1):
     - Flutter
   - tencent_im_sdk_plugin (1.0.5):
@@ -18,10 +20,10 @@ PODS:
     - TXIMSDK_Plus_iOS (= 5.4.666)
   - tencent_trtc_cloud (0.0.7):
     - Flutter
-    - TXLiteAVSDK_TRTC (= 8.1.9719)
+    - TXLiteAVSDK_TRTC (= 8.8.10260)
   - Toast (4.0.0)
   - TXIMSDK_Plus_iOS (5.4.666)
-  - TXLiteAVSDK_TRTC (8.1.9719)
+  - TXLiteAVSDK_TRTC (8.8.10260)
   - url_launcher (0.0.1):
     - Flutter
 
@@ -30,6 +32,7 @@ DEPENDENCIES:
   - flutter_bugly (from `.symlinks/plugins/flutter_bugly/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - replay_kit_launcher (from `.symlinks/plugins/replay_kit_launcher/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - tencent_im_sdk_plugin (from `.symlinks/plugins/tencent_im_sdk_plugin/ios`)
   - tencent_trtc_cloud (from `.symlinks/plugins/tencent_trtc_cloud/ios`)
@@ -52,6 +55,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
+  replay_kit_launcher:
+    :path: ".symlinks/plugins/replay_kit_launcher/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   tencent_im_sdk_plugin:
@@ -68,14 +73,15 @@ SPEC CHECKSUMS:
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   HydraAsync: 8d589bd725b0224f899afafc9a396327405f8063
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  replay_kit_launcher: 9c6874fe17ce278a6f0e99e3698acf194480e9a2
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   tencent_im_sdk_plugin: 417c4ea31b380f6d6811ff260c2cbcea2ec1c6fc
-  tencent_trtc_cloud: 0dd18caa6f48cd5fbcf67109999b51aaa91b7f6e
+  tencent_trtc_cloud: 4f74665a844dea0b89f7dba16d41c9fb6c7dbb94
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   TXIMSDK_Plus_iOS: 4db13c8646d4f58d8ae558488f9523a2efd4ef6a
-  TXLiteAVSDK_TRTC: dd581804b8badfffaf1d00856d7f2812eb8a47d4
+  TXLiteAVSDK_TRTC: a3d3f21288b27dc3ef654e34c58fb4536fcfdad3
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: a75497545d4391e2d394c3668e20cfb1c2bbd4aa
 
 COCOAPODS: 1.10.1

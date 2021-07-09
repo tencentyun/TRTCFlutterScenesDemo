@@ -11,6 +11,8 @@ import '../login/LoginPage.dart';
 import '../TRTCChatSalonDemo/ui/base/UserEnum.dart';
 import '../TRTCCallingDemo/ui/TRTCCallingContact.dart';
 import '../TRTCCallingDemo/ui/VideoCall/TRTCCallingVideo.dart';
+import '../TRTCMeetingDemo/ui/TRTCMeetingIndex.dart';
+import '../TRTCMeetingDemo/ui/TRTCMeetingRoom.dart';
 
 final String initialRoute = "/";
 final Map<String, WidgetBuilder> routes = {
@@ -30,4 +32,6 @@ final Map<String, WidgetBuilder> routes = {
   "/liveRoom/roomAnchor": (context) => LiveRoomPage(isAdmin: true),
   "/liveRoom/roomCreate": (context) => LiveRoomCreatePage(),
   "/liveRoom/list": (context) => LiveRoomListPage(),
+  "/meeting/meetingIndex": (context) => TRTCMeetingIndex(),
+  "/meeting/meetingRoom": (context) => TRTCMeetingRoom(),
 };

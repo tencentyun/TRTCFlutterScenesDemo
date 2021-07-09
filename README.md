@@ -1,4 +1,4 @@
-本文档主要介绍如何快速集成实时音视频（TRTC）SDK，运行TRTC场景化Demo，实现双人音视频通话、语音沙龙等。
+本文档主要介绍如何快速集成实时音视频（TRTC）SDK，运行TRTC场景化Demo，实现双人音视频通话、语音沙龙、多人视频会议等。
 
 ## 目录结构
 
@@ -8,6 +8,7 @@
 ├─ TRTCCallingDemo       // 音视频通话，展示双人音视频通话
 ├─ TRTCChatSalonDemo     // 类clubHouse语音沙龙
 ├─ TRTCLiveRoomDemo      // 视频互动直播
+├─ TRTCMeetingDemo       // 多人视频会议
 ```
 
 ## 功能简介
@@ -17,6 +18,7 @@
 - 双人音视频通话
 - 类clubHouse语音沙龙
 - 视频互动直播
+- 多人视频会议
 
 ## 快速接入
 
@@ -39,3 +41,8 @@
 [快速跑通Demo](https://cloud.tencent.com/document/product/647/57388)
 
 [TRTCLive API](https://cloud.tencent.com/document/product/647/57389)
+
+#### 多人视频会议
+[快速跑通Demo](https://tcloud-doc.isd.com/document/product/647/58405)
+
+[TRTCMeeting API](https://tcloud-doc.isd.com/document/product/647/58406)

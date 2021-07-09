@@ -21,7 +21,7 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  tencent_trtc_cloud: ^1.0.4
+  tencent_trtc_cloud: ^1.0.9
   tencent_im_sdk_plugin: ^3.2.4
   shared_preferences: ^2.0.5
   provider: ^5.0.0
@@ -33,6 +33,8 @@ dependencies:
   fluttertoast: ^8.0.6
   url_launcher: ^6.0.3
   flutter_easyrefresh: ^2.1.8
+  replay_kit_launcher: ^0.3.0
+  flutter_styled_toast: ^2.0.0
   # intl: ^0.16.1
   flutter:
     sdk: flutter

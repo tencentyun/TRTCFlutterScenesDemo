@@ -97,6 +97,13 @@ class IndexPageState extends State<IndexPage> {
     );
   }
 
+  goMeetingDemo() {
+    Navigator.pushReplacementNamed(
+      context,
+      "/meeting/meetingIndex",
+    );
+  }
+
   Widget getTitleItem(String title, String imgUrl, Function onTap) {
     var titleItem = Container(
       height: 80.0,
@@ -173,8 +180,9 @@ class IndexPageState extends State<IndexPage> {
             ],
           ),
         ),
-        padding: EdgeInsets.only(top: 150, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 180, left: 20, right: 20),
         child: GridView(
+          padding: EdgeInsets.only(bottom: 20),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 30),
           children: <Widget>[
@@ -194,7 +202,7 @@ class IndexPageState extends State<IndexPage> {
             ),
             this.getTitleItem(
               "语音通话",
-              "assets/images/callingDemo/videoCall.png",
+              "assets/images/callingDemo/audioCall.png",
               () {
                 goCallingDemo(false);
               },
@@ -204,6 +212,13 @@ class IndexPageState extends State<IndexPage> {
               "assets/images/callingDemo/videoCall.png",
               () {
                 goLiveRoomDemo();
+              },
+            ),
+            this.getTitleItem(
+              Languages.of(context)!.meetingCallTitle,
+              "assets/images/callingDemo/meetingCall.png",
+              () {
+                goMeetingDemo();
               },
             ),
           ],

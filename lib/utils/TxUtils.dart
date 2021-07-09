@@ -1,6 +1,7 @@
 import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart' as StyledToast;
 import 'package:shared_preferences/shared_preferences.dart';
 import './constants.dart' as constants;
 import 'dart:math';
@@ -16,23 +17,15 @@ class TxUtils {
   }
 
   static showErrorToast(text, context) {
-    // Toast.show(
-    //   text,
-    //   context,
-    //   backgroundColor: Colors.red[400],
-    //   duration: Toast.LENGTH_LONG,
-    //   gravity: Toast.CENTER,
-    // );
     Fluttertoast.showToast(
       msg: text,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
+      gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 3,
       backgroundColor: Colors.red,
       textColor: Colors.white,
       fontSize: 16.0,
     );
-    print(text);
   }
 
   static getRandomNumber() {
@@ -63,20 +56,24 @@ class TxUtils {
     return _defaltUrlList[0];
   }
 
-  static showToast(text, context) {
-    // Toast.show(
-    //   text,
-    //   context,
-    //   backgroundColor: Colors.green[400],
-    //   duration: Toast.LENGTH_LONG,
-    //   gravity: Toast.BOTTOM,
-    // );
+  static showToast(String text, context) {
+    Fluttertoast.cancel();
     Fluttertoast.showToast(
       msg: text,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 3,
+      backgroundColor: Color.fromRGBO(192, 192, 192, 0.3),
+      textColor: Colors.black,
       fontSize: 16.0,
+    );
+  }
+
+  static showStyledToast(String text, BuildContext context) {
+    StyledToast.showToast(
+      text,
+      context: context,
+      position: StyledToast.StyledToastPosition.center,
     );
   }
 
