@@ -28,6 +28,10 @@
 	<string>授权麦克风权限才能正常语音通话</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App需要您的同意,才能访问相册</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<string>YES</string>
 	<key>UILaunchStoryboardName</key>
