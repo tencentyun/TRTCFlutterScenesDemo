@@ -132,7 +132,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
         if (_bigVideoViewId != -1) {
           await _tRTCCallingService.startRemoteView(
             _remoteUserInfo!.userId,
-            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL,
+            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG,
             _bigVideoViewId,
           );
         }
@@ -496,7 +496,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             opacity: opacityVal,
             child: TRTCCloudVideoView(
               key: ValueKey("_bigVideoViewId"),
-              viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+              viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
               onViewCreated: (viewId) async {
                 _bigVideoViewId = viewId;
                 if (_callingScenes == CallingScenes.VideoOneVOne) {
@@ -547,16 +547,10 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
                   : _getOpacityByVis(!_isCameraOff),
               child: TRTCCloudVideoView(
                 key: ValueKey("_smallVideoViewId"),
-                viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
                 onViewCreated: (viewId) async {
                   _smallVideoViewId = viewId;
-                  if (Platform.isIOS) {
-                    await _tRTCCallingService
-                        .updateLocalView(_smallVideoViewId);
-                  } else {
-                    await _tRTCCallingService.openCamera(
-                        _isFrontCamera, _smallVideoViewId);
-                  }
+                  await _tRTCCallingService.updateLocalView(_smallVideoViewId);
                 },
               ),
             )
@@ -577,19 +571,17 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
     if (_callingScenes == CallingScenes.AudioOneVOne ||
         _currentCallStatus == CallStatus.calling) return;
 
-    setState(() async {
-      isChangeBigSmallVideo = !isChangeBigSmallVideo;
-      //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
-      if (isChangeBigSmallVideo) {
-        await _tRTCCallingService.updateLocalView(_bigVideoViewId);
-        await _tRTCCallingService.updateRemoteView(_remoteUserInfo!.userId,
-            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _smallVideoViewId);
-      } else {
-        await _tRTCCallingService.updateLocalView(_smallVideoViewId);
-        await _tRTCCallingService.updateRemoteView(_remoteUserInfo!.userId,
-            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SMALL, _bigVideoViewId);
-      }
-    });
+    isChangeBigSmallVideo = !isChangeBigSmallVideo;
+    //为false的时候，在已接听状态的时候。小画面显示本地视频，大画面显示远端视频。
+    if (isChangeBigSmallVideo) {
+      _tRTCCallingService.updateLocalView(_bigVideoViewId);
+      _tRTCCallingService.updateRemoteView(_remoteUserInfo!.userId,
+          TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG, _smallVideoViewId);
+    } else {
+      _tRTCCallingService.updateLocalView(_smallVideoViewId);
+      _tRTCCallingService.updateRemoteView(_remoteUserInfo!.userId,
+          TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG, _bigVideoViewId);
+    }
   }
 
   @override
@@ -601,7 +593,7 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
             : MediaQuery.of(context).size.width / 2 - 100 / 2,
         child: GestureDetector(
           onDoubleTap: () {
-            if (Platform.isIOS) changeVideoView();
+            changeVideoView();
           },
           onPanUpdate: (DragUpdateDetails e) {
             //用户手指滑动时，更新偏移，重新构建
