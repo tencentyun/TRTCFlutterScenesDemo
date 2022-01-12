@@ -478,14 +478,13 @@ class TRTCMeetingImpl extends TRTCMeeting {
       int videoResolutionMode = 1,
       String appGroup = ''}) {
     return mTRTCCloud.startScreenCapture(
-      TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG,
-      TRTCVideoEncParam(
-          videoFps: videoFps,
-          videoBitrate: videoBitrate,
-          videoResolution: videoResolution,
-          videoResolutionMode: videoResolutionMode),
-      appGroup,
-    );
+        TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG,
+        TRTCVideoEncParam(
+            videoFps: videoFps,
+            videoBitrate: videoBitrate,
+            videoResolution: videoResolution,
+            videoResolutionMode: videoResolutionMode),
+        appGroup: appGroup);
   }
 
   @override

@@ -172,7 +172,6 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
       if (inputFocusNode.hasFocus) inputFocusNode.unfocus();
       super.dispose();
       await trtcLiveCloud.stopPublish();
-      await trtcLiveCloud.stopCameraPreview();
       trtcLiveCloud.unRegisterListener(onListenerFunc);
     } catch (ex) {} finally {}
   }
@@ -427,7 +426,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
               child: Text("取消"),
               onPressed: () async {
                 await trtcLiveCloud.responseJoinAnchor(
-                    params["userId"].toString(), false);
+                    params["userId"].toString(), false, params["callId"]);
                 Navigator.pop(context);
               }, // 关闭对话框
             ),
@@ -437,7 +436,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
               onPressed: () async {
                 //关闭对话框并返回true
                 await trtcLiveCloud.responseJoinAnchor(
-                    params["userId"].toString(), true);
+                    params["userId"].toString(), true, params["callId"]);
                 Navigator.pop(context);
               },
             ),
@@ -971,7 +970,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                 //color: Color.fromRGBO(0, 00, 0, 0.2),
                 child: TRTCCloudVideoView(
                   key: ValueKey("PKPreview_VideoViewId"),
-                  viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                  viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
                   onViewCreated: (viewId) async {
                     trtcLiveCloud.stopCameraPreview();
                     trtcLiveCloud.startCameraPreview(isFrontCamera, viewId);
@@ -985,7 +984,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                 child: pkUserId != ''
                     ? TRTCCloudVideoView(
                         key: ValueKey("PKPlay_VideoViewId"),
-                        viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                        viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
                         onViewCreated: (viewId) async {
                           trtcLiveCloud.startPlay(pkUserId, viewId);
                         },
@@ -1030,7 +1029,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                             )
                           : TRTCCloudVideoView(
                               key: ValueKey("LiveRoomPage_bigVideoViewId"),
-                              viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                              viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
                               onViewCreated: (viewId) async {
                                 if (widget.isAdmin) {
                                   await trtcLiveCloud.stopCameraPreview();

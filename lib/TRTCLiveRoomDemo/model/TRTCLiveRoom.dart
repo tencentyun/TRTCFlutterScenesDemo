@@ -145,7 +145,8 @@ abstract class TRTCLiveRoom {
   Future<ActionCallback> requestJoinAnchor();
 
   // 主播处理连麦请求。
-  Future<ActionCallback> responseJoinAnchor(String userId, bool agreee);
+  Future<ActionCallback> responseJoinAnchor(
+      String userId, bool agreee, String callId);
 
   // 主播踢除连麦观众。
   Future<ActionCallback> kickoutJoinAnchor(String userId);

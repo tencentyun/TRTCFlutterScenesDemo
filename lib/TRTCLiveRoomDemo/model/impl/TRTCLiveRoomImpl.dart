@@ -672,6 +672,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
                 "userId": inviter,
                 "userName": customMap['data']['cmdInfo']['userName'],
                 "userAvatar": customMap['data']['cmdInfo']['userAvatar'],
+                "callId": inviteID
               });
             }
           } else if (customMap.containsKey('data') &&
@@ -764,16 +765,15 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
   }
 
   @override
-  Future<ActionCallback> responseJoinAnchor(String userId, bool agree) async {
+  Future<ActionCallback> responseJoinAnchor(
+      String userId, bool agree, String callId) async {
     V2TimCallback res;
     if (agree) {
       res = await timManager.getSignalingManager().accept(
-          inviteID: mCurCallID,
-          data: jsonEncode(_getCustomMap(requestAnchorCMD)));
+          inviteID: callId, data: jsonEncode(_getCustomMap(requestAnchorCMD)));
     } else {
       res = await timManager.getSignalingManager().reject(
-          inviteID: mCurCallID,
-          data: jsonEncode(_getCustomMap(requestAnchorCMD)));
+          inviteID: callId, data: jsonEncode(_getCustomMap(requestAnchorCMD)));
     }
 
     return ActionCallback(code: res.code, desc: res.desc);
@@ -938,8 +938,8 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
 
   @override
   Future<void> stopPublish() async {
-    print("==stopPublish1=");
     mTRTCCloud.stopLocalAudio();
+    mTRTCCloud.stopLocalPreview();
     if (mOriginRole == TRTCCloudDef.TRTCRoleAudience) {
       mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAudience);
     } else if (mOriginRole == TRTCCloudDef.TRTCRoleAnchor) {
