@@ -251,9 +251,10 @@ class TRTCCallingImpl extends TRTCCalling {
         mCurCallID = inviteID;
         mCurGroupId = groupID;
         type = TRTCCallingDelegate.onInvited;
+        inviteeList.remove(mCurUserId);
         emitEvent(type, {
           'sponsor': inviter,
-          'userIds': inviteeList.remove(mCurUserId),
+          'userIds': inviteeList,
           'isFromGroup': !_isEmpty(groupID),
           'type': mCurCallType
         });
