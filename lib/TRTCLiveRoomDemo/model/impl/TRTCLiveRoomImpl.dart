@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:tencent_im_sdk_plugin/enum/V2TimGroupListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimSimpleMsgListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/group_add_opt_type.dart';
-import 'package:tencent_im_sdk_plugin/enum/group_member_filter_type.dart';
+import 'package:tencent_im_sdk_plugin/enum/group_member_filter_enum.dart';
+import 'package:tencent_im_sdk_plugin/enum/log_level_enum.dart';
 import 'package:tencent_im_sdk_plugin/enum/message_priority.dart';
+import 'package:tencent_im_sdk_plugin/enum/message_priority_enum.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_full_info.dart';
@@ -25,7 +27,6 @@ import 'package:tencent_trtc_cloud/tx_device_manager.dart';
 //im sdk
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
-import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimSignalingListener.dart';
@@ -276,8 +277,8 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
         .getGroupManager()
         .getGroupMemberList(
             groupID: mRoomId!,
-            filter: GroupMemberFilterType.V2TIM_GROUP_MEMBER_FILTER_ALL,
-            nextSeq: nextSeq);
+            filter: GroupMemberFilterTypeEnum.V2TIM_GROUP_MEMBER_FILTER_ALL,
+            nextSeq: nextSeq.toString());
     if (memberRes.code != 0) {
       return UserListCallback(code: memberRes.code, desc: memberRes.desc);
     }
@@ -293,7 +294,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
     return UserListCallback(
         code: 0,
         desc: 'get member list success',
-        nextSeq: memberRes.data!.nextSeq!,
+        nextSeq: int.parse(memberRes.data!.nextSeq!),
         list: newInfo);
   }
 
@@ -362,7 +363,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
       //初始化SDK
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
           sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
-          loglevel: LogLevel.V2TIM_LOG_ERROR,
+          loglevel: LogLevelEnum.V2TIM_LOG_ERROR,
           listener: new V2TimSDKListener(onKickedOffline: () {
             TRTCLiveRoomDelegate type = TRTCLiveRoomDelegate.onKickedOffline;
             emitEvent(type, {});
@@ -462,7 +463,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
       timManager.removeSimpleMsgListener();
       timManager
           .getSignalingManager()
-          .removeSignalingListener(listener: signalingListener);
+          .removeSignalingListener(listener: signalingListener());
     }
   }
 
@@ -826,7 +827,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
               "action": liveCustomCmd
             }),
             groupID: mRoomId.toString(),
-            priority: MessagePriority.V2TIM_PRIORITY_LOW);
+            priority: MessagePriorityEnum.V2TIM_PRIORITY_NORMAL);
     if (res.code == 0) {
       return ActionCallback(code: 0, desc: "send group message success.");
     } else {

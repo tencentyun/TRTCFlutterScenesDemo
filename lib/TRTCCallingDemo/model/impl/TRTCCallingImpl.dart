@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimSignalingListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/log_level_enum.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 import 'package:tencent_trtc_cloud/tx_beauty_manager.dart';
 
@@ -19,7 +20,6 @@ import 'package:tencent_trtc_cloud/tx_device_manager.dart';
 //im sdk
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
-import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 
 class TRTCCallingImpl extends TRTCCalling {
@@ -127,7 +127,7 @@ class TRTCCallingImpl extends TRTCCalling {
       mTRTCCloud.unRegisterListener(rtcListener);
       timManager
           .getSignalingManager()
-          .removeSignalingListener(listener: signalingListener);
+          .removeSignalingListener(listener: signalingListener());
     }
   }
 
@@ -137,7 +137,7 @@ class TRTCCallingImpl extends TRTCCalling {
     }
   }
 
-  signalingListener() {
+  V2TimSignalingListener signalingListener() {
     TRTCCallingDelegate type;
     return new V2TimSignalingListener(
       onInvitationCancelled: (inviteID, inviter, data) {
@@ -251,10 +251,9 @@ class TRTCCallingImpl extends TRTCCalling {
         mCurCallID = inviteID;
         mCurGroupId = groupID;
         type = TRTCCallingDelegate.onInvited;
-        inviteeList.remove(mCurUserId);
         emitEvent(type, {
           'sponsor': inviter,
-          'userIds': inviteeList,
+          'userIds': inviteeList.remove(mCurUserId),
           'isFromGroup': !_isEmpty(groupID),
           'type': mCurCallType
         });
@@ -318,7 +317,7 @@ class TRTCCallingImpl extends TRTCCalling {
       // 当没有其他用户在房间里了，则结束通话。
       if (!_isEmpty(leaveUser)) {
         Map<String, dynamic> customMap = _getCustomMap();
-        //customMap['call_end'] = 'call_end';
+        // customMap['call_end'] = 'call_end';
         customMap['call_end'] = 10;
         if (_isEmpty(mCurGroupId)) {
           timManager
@@ -348,7 +347,7 @@ class TRTCCallingImpl extends TRTCCalling {
       //初始化SDK
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
           sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
-          loglevel: LogLevel.V2TIM_LOG_ERROR,
+          loglevel: LogLevelEnum.V2TIM_LOG_ERROR,
           listener: new V2TimSDKListener(onKickedOffline: () {
             TRTCCallingDelegate type = TRTCCallingDelegate.onKickedOffline;
             emitEvent(type, {});

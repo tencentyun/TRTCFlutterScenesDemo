@@ -23,7 +23,7 @@ class SampleHandler: RPBroadcastSampleHandler, TXReplayKitExtDelegate {
     
     override func broadcastFinished() {
         // User has requested to finish the broadcast.
-        TXReplayKitExt.sharedInstance() .finishBroadcast()
+        TXReplayKitExt.sharedInstance().broadcastFinished();
     }
     
     func broadcastFinished(_ broadcast: TXReplayKitExt, reason: TXReplayKitExtReason) {

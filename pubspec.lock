@@ -14,7 +14,7 @@ packages:
       name: characters
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.1.0"
   charcode:
     dependency: transitive
     description:
@@ -75,7 +75,7 @@ packages:
       name: flutter_bugly
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2+1"
+    version: "0.4.3"
   flutter_easyrefresh:
     dependency: "direct main"
     description:
@@ -141,7 +141,14 @@ packages:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.0"
+    version: "1.4.0"
+  mime_type:
+    dependency: transitive
+    description:
+      name: mime_type
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   nested:
     dependency: transitive
     description:
@@ -204,7 +211,7 @@ packages:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.2"
   process:
     dependency: transitive
     description:
@@ -293,14 +300,28 @@ packages:
       name: tencent_im_sdk_plugin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.4"
+    version: "3.7.1"
+  tencent_im_sdk_plugin_platform_interface:
+    dependency: transitive
+    description:
+      name: tencent_im_sdk_plugin_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
+  tencent_im_sdk_plugin_web:
+    dependency: transitive
+    description:
+      name: tencent_im_sdk_plugin_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   tencent_trtc_cloud:
     dependency: "direct main"
     description:
       name: tencent_trtc_cloud
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.8"
+    version: "2.0.9"
   term_glyph:
     dependency: transitive
     description:
@@ -357,13 +378,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  uuid:
+    dependency: transitive
+    description:
+      name: uuid
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.5"
   vector_math:
     dependency: transitive
     description:
       name: vector_math
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.0"
   win32:
     dependency: transitive
     description:
@@ -379,5 +407,5 @@ packages:
     source: hosted
     version: "0.2.0"
 sdks:
-  dart: ">=2.14.0 <3.0.0"
+  dart: ">=2.13.0 <3.0.0"
   flutter: ">=2.0.0"

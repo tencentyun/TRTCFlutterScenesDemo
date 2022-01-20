@@ -1,5 +1,5 @@
 PODS:
-  - Bugly (2.5.90)
+  - Bugly (2.5.91)
   - Flutter (1.0.0)
   - flutter_bugly (0.0.1):
     - Bugly
@@ -17,13 +17,13 @@ PODS:
   - tencent_im_sdk_plugin (1.0.5):
     - Flutter
     - HydraAsync
-    - TXIMSDK_Plus_iOS (= 5.4.666)
+    - TXIMSDK_Plus_iOS (= 5.8.1668)
   - tencent_trtc_cloud (0.0.7):
     - Flutter
-    - TXLiteAVSDK_TRTC (= 8.8.10260)
+    - TXLiteAVSDK_TRTC (= 9.5.11004)
   - Toast (4.0.0)
-  - TXIMSDK_Plus_iOS (5.4.666)
-  - TXLiteAVSDK_TRTC (8.8.10260)
+  - TXIMSDK_Plus_iOS (5.8.1668)
+  - TXLiteAVSDK_TRTC (9.5.11004)
   - url_launcher (0.0.1):
     - Flutter
 
@@ -67,7 +67,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
-  Bugly: 88bc32c0acc6fef7b74d610f0319ee7560d6b9fe
+  Bugly: afe841bba2ea6de6d432a3c125240a5e75949c55
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
@@ -75,11 +75,11 @@ SPEC CHECKSUMS:
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   replay_kit_launcher: 9c6874fe17ce278a6f0e99e3698acf194480e9a2
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  tencent_im_sdk_plugin: 417c4ea31b380f6d6811ff260c2cbcea2ec1c6fc
-  tencent_trtc_cloud: 4f74665a844dea0b89f7dba16d41c9fb6c7dbb94
+  tencent_im_sdk_plugin: b42d69c70d2b8dd8013e660bc6024c96de82cb05
+  tencent_trtc_cloud: f522eb10ddd74baecc7a5e644478ff08dd018a07
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  TXIMSDK_Plus_iOS: 4db13c8646d4f58d8ae558488f9523a2efd4ef6a
-  TXLiteAVSDK_TRTC: a3d3f21288b27dc3ef654e34c58fb4536fcfdad3
+  TXIMSDK_Plus_iOS: e61e34c3dc6606549bff41b2abd7e2575af3813e
+  TXLiteAVSDK_TRTC: 49d2f320fbb99c040a3d7287fe983cbbcc94f28b
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
 PODFILE CHECKSUM: a75497545d4391e2d394c3668e20cfb1c2bbd4aa

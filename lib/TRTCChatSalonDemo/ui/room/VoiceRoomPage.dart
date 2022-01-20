@@ -25,7 +25,7 @@ class VoiceRoomPage extends StatefulWidget {
 
 class VoiceRoomPageState extends State<VoiceRoomPage>
     with TickerProviderStateMixin {
-  late int currentRoomId;
+  int currentRoomId = -1;
   late int currentRoomOwnerId;
   late int currentLoginUserId;
 

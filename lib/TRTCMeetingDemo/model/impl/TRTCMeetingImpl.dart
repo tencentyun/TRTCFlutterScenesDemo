@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:tencent_im_sdk_plugin/enum/log_level_enum.dart';
+import 'package:tencent_im_sdk_plugin/enum/message_priority_enum.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_listener.dart';
@@ -6,7 +8,6 @@ import 'package:tencent_trtc_cloud/tx_device_manager.dart';
 import 'package:tencent_trtc_cloud/tx_beauty_manager.dart';
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin/enum/group_add_opt_type.dart';
-import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/enum/message_priority.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimGroupListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
@@ -102,7 +103,7 @@ class TRTCMeetingImpl extends TRTCMeeting {
     if (!mIsInitIMSDK) {
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
           sdkAppID: sdkAppId,
-          loglevel: LogLevel.V2TIM_LOG_ERROR,
+          loglevel: LogLevelEnum.V2TIM_LOG_ERROR,
           listener: new V2TimSDKListener(onKickedOffline: () {
             TRTCMeetingDelegate type = TRTCMeetingDelegate.onKickedOffline;
             emitEvent(type, {});
@@ -538,7 +539,7 @@ class TRTCMeetingImpl extends TRTCMeeting {
         'action': customCmd,
       }),
       groupID: mRoomId.toString(),
-      priority: MessagePriority.V2TIM_PRIORITY_LOW,
+      priority: MessagePriorityEnum.V2TIM_PRIORITY_LOW,
     );
     if (res.code == 0) {
       return ActionCallback(code: 0, desc: 'Send room message success.');

@@ -14,6 +14,10 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		E17CBCBB279947CD00CB5C78 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E17CBCBA279947CD00CB5C78 /* libc++.tbd */; };
+		E17CBCBD279947D600CB5C78 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E17CBCBC279947D600CB5C78 /* Accelerate.framework */; };
+		E17CBCBF279947E000CB5C78 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E17CBCBE279947E000CB5C78 /* libresolv.tbd */; };
+		E17CBCC1279947EA00CB5C78 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E17CBCC0279947EA00CB5C78 /* AVFoundation.framework */; };
 		F5FB4EA12697FBF000046C4C /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5FB4EA02697FBF000046C4C /* ReplayKit.framework */; };
 		F5FB4EA42697FBF000046C4C /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FB4EA32697FBF000046C4C /* SampleHandler.swift */; };
 		F5FB4EA82697FBF000046C4C /* upload.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F5FB4E9F2697FBF000046C4C /* upload.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -72,6 +76,10 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E00B31A1461C1CC8FC5CD67E /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		E17CBCBA279947CD00CB5C78 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		E17CBCBC279947D600CB5C78 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		E17CBCBE279947E000CB5C78 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		E17CBCC0279947EA00CB5C78 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F5FB4E9F2697FBF000046C4C /* upload.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = upload.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5FB4EA02697FBF000046C4C /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		F5FB4EA32697FBF000046C4C /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
@@ -94,6 +102,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E17CBCC1279947EA00CB5C78 /* AVFoundation.framework in Frameworks */,
+				E17CBCBF279947E000CB5C78 /* libresolv.tbd in Frameworks */,
+				E17CBCBD279947D600CB5C78 /* Accelerate.framework in Frameworks */,
+				E17CBCBB279947CD00CB5C78 /* libc++.tbd in Frameworks */,
 				F5FB4EB12697FC9300046C4C /* TXLiteAVSDK_ReplayKitExt.framework in Frameworks */,
 				F5FB4EA12697FBF000046C4C /* ReplayKit.framework in Frameworks */,
 			);
@@ -105,6 +117,10 @@
 		37687071770417023BC6A403 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E17CBCC0279947EA00CB5C78 /* AVFoundation.framework */,
+				E17CBCBE279947E000CB5C78 /* libresolv.tbd */,
+				E17CBCBC279947D600CB5C78 /* Accelerate.framework */,
+				E17CBCBA279947CD00CB5C78 /* libc++.tbd */,
 				2FBCF885EAA0A2687AC80B8D /* Pods_Runner.framework */,
 				F5FB4EA02697FBF000046C4C /* ReplayKit.framework */,
 				F5FB4EB02697FC9300046C4C /* TXLiteAVSDK_ReplayKitExt.framework */,

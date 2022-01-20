@@ -3,12 +3,17 @@
 *
 * Function: 腾讯云 ReplayKit 录屏功能在Extension中的主要接口类
 *
-* Version: 8.7.10102
+* Version: 9.2.10637
 */
+
+/// @defgroup TXReplayKitExt_ios TXReplayKitExt
+/// 腾讯云 ReplayKit 录屏功能在Extension中的主要接口类
+/// @{
 
 #import <Foundation/Foundation.h>
 #import <CoreMedia/CoreMedia.h>
 #import <ReplayKit/ReplayKit.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSUInteger, TXReplayKitExtReason) {
@@ -23,7 +28,7 @@ typedef NS_ENUM(NSUInteger, TXReplayKitExtReason) {
 @protocol TXReplayKitExtDelegate;
 
 /// 屏幕分享主入口类
-API_AVAILABLE(ios(10.0), tvos(10.0), macos(11.0))
+API_AVAILABLE(ios(11.0))
 @interface TXReplayKitExt : NSObject
 
 /// 获取单例
@@ -36,11 +41,20 @@ API_AVAILABLE(ios(10.0), tvos(10.0), macos(11.0))
 /// @param delegate 回调对象
 - (void)setupWithAppGroup:(NSString *)appGroup delegate:(id<TXReplayKitExtDelegate>)delegate;
 
+/// 录屏暂停方法
+///
+/// 通过系统控制中心停止录屏时，会回调 RPBroadcastSampleHandler.broadcastPaused，在 broadcastPaused 方法中调用
+- (void)broadcastPaused;
+
+/// 录屏恢复方法
+///
+/// 通过系统控制中心停止录屏时，会回调 RPBroadcastSampleHandler.broadcastResumed，在 broadcastResumed 方法中调用
+- (void)broadcastResumed;
 
 /// 录屏完成方法
 ///
 /// 通过系统控制中心停止录屏时，会回调 RPBroadcastSampleHandler.broadcastFinished，在 broadcastFinished 方法中调用
-- (void)finishBroadcast;
+- (void)broadcastFinished;
 
 /// 媒体数据（音视频）发送方法
 ///
@@ -73,3 +87,4 @@ API_AVAILABLE(ios(10.0), tvos(10.0), macos(11.0))
 @end
 
 NS_ASSUME_NONNULL_END
+/// @}

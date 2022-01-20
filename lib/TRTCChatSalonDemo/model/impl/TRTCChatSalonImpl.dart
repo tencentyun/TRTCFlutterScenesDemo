@@ -1,5 +1,6 @@
 import 'package:tencent_im_sdk_plugin/enum/group_add_opt_type.dart';
-import 'package:tencent_im_sdk_plugin/enum/group_member_filter_type.dart';
+import 'package:tencent_im_sdk_plugin/enum/group_member_filter_enum.dart';
+import 'package:tencent_im_sdk_plugin/enum/log_level_enum.dart';
 import 'package:tencent_im_sdk_plugin/enum/message_priority.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
@@ -21,7 +22,6 @@ import 'package:tencent_trtc_cloud/tx_device_manager.dart';
 //im sdk
 import 'package:tencent_im_sdk_plugin/tencent_im_sdk_plugin.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_value_callback.dart';
-import 'package:tencent_im_sdk_plugin/enum/log_level.dart';
 import 'package:tencent_im_sdk_plugin/manager/v2_tim_manager.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 
@@ -332,8 +332,8 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
         .getGroupManager()
         .getGroupMemberList(
             groupID: mRoomId!,
-            filter: GroupMemberFilterType.V2TIM_GROUP_MEMBER_FILTER_ALL,
-            nextSeq: nextSeq);
+            filter: GroupMemberFilterTypeEnum.V2TIM_GROUP_MEMBER_FILTER_ALL,
+            nextSeq: nextSeq.toString());
     if (memberRes.code != 0) {
       return MemberListCallback(code: memberRes.code, desc: memberRes.desc);
     }
@@ -349,7 +349,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     return MemberListCallback(
         code: 0,
         desc: 'get member list success',
-        nextSeq: memberRes.data!.nextSeq!,
+        nextSeq: int.parse(memberRes.data!.nextSeq!),
         list: newInfo);
   }
 
@@ -457,7 +457,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
       //初始化SDK
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
         sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
-        loglevel: LogLevel.V2TIM_LOG_ERROR,
+        loglevel: LogLevelEnum.V2TIM_LOG_ERROR,
         listener: listener!.initImLisener(),
       );
       if (initRes.code != 0) {

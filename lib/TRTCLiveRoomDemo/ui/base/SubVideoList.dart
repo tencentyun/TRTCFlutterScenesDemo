@@ -94,7 +94,7 @@ class _SubVideoListState extends State<SubVideoList> {
                         // ),
                         child: TRTCCloudVideoView(
                           key: ValueKey("Sub_VideoViewId_" + e),
-                          viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+                          viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
                           onViewCreated: (viewId) async {
                             widget.onViewCreate(e, viewId);
                           },
