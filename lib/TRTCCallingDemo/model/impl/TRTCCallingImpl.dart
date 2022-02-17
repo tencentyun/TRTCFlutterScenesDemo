@@ -127,7 +127,7 @@ class TRTCCallingImpl extends TRTCCalling {
       mTRTCCloud.unRegisterListener(rtcListener);
       timManager
           .getSignalingManager()
-          .removeSignalingListener(listener: signalingListener());
+          .removeSignalingListener();
     }
   }
 
