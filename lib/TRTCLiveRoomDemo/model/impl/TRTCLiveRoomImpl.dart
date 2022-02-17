@@ -463,7 +463,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
       timManager.removeSimpleMsgListener();
       timManager
           .getSignalingManager()
-          .removeSignalingListener(listener: signalingListener());
+          .removeSignalingListener();
     }
   }
 
