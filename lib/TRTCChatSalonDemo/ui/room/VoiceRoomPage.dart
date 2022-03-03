@@ -78,10 +78,6 @@ class VoiceRoomPageState extends State<VoiceRoomPage>
       case TRTCChatSalonDelegate.onError:
         {
           TxUtils.showErrorToast(type.toString(), context);
-          TxUtils.uploadException(
-            "onVoiceListener-error",
-            param.toString(),
-          );
         }
         break;
       case TRTCChatSalonDelegate.onEnterRoom:

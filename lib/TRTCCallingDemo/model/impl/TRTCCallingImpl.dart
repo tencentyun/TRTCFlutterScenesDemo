@@ -125,9 +125,7 @@ class TRTCCallingImpl extends TRTCCalling {
     listeners.remove(func);
     if (listeners.isEmpty) {
       mTRTCCloud.unRegisterListener(rtcListener);
-      timManager
-          .getSignalingManager()
-          .removeSignalingListener();
+      timManager.getSignalingManager().removeSignalingListener();
     }
   }
 
@@ -430,7 +428,7 @@ class TRTCCallingImpl extends TRTCCalling {
   /*
   * trtc 进房
   */
-  _enterTRTCRoom() {
+  _enterTRTCRoom() async {
     isOnCalling = true;
     if (mCurCallType == TRTCCalling.typeVideoCall) {
       // 开启基础美颜
@@ -453,7 +451,7 @@ class TRTCCallingImpl extends TRTCCalling {
     txDeviceManager.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
     mTRTCCloud.muteLocalAudio(false);
     mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
-    mTRTCCloud.enterRoom(
+    await mTRTCCloud.enterRoom(
         TRTCParams(
             sdkAppId: mSdkAppId,
             userId: mCurUserId,
@@ -463,6 +461,8 @@ class TRTCCallingImpl extends TRTCCalling {
         mCurCallType == TRTCCalling.typeVideoCall
             ? TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL
             : TRTCCloudDef.TRTC_APP_SCENE_AUDIOCALL);
+    mTRTCCloud.callExperimentalAPI(
+        "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 3}}");
   }
 
   @override

@@ -339,21 +339,6 @@ class TRTCMeetingSettingState extends State<TRTCMeetingSetting> {
   }
 
   PreferredSizeWidget getTabBar() {
-    if (Platform.isIOS) {
-      return TabBar(
-        labelStyle: TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-        ),
-        labelColor: Colors.black,
-        indicatorWeight: 5.0,
-        tabs: <Widget>[
-          Tab(text: Languages.of(context)!.meetingVideoSetting),
-          Tab(text: Languages.of(context)!.meetingAudioSetting),
-        ],
-      );
-    }
-
     return TabBar(
       labelStyle: TextStyle(
         fontSize: 20.0,
@@ -370,15 +355,6 @@ class TRTCMeetingSettingState extends State<TRTCMeetingSetting> {
   }
 
   Widget getTabBarBody(void Function(void Function()) _setState) {
-    if (Platform.isIOS) {
-      return TabBarView(
-        children: <Widget>[
-          buildVideoSetting(_setState),
-          buildAudioSetting(_setState),
-        ],
-      );
-    }
-
     return TabBarView(
       children: <Widget>[
         buildVideoSetting(_setState),
@@ -396,7 +372,7 @@ class TRTCMeetingSettingState extends State<TRTCMeetingSetting> {
           return Container(
             child: MaterialApp(
               home: DefaultTabController(
-                length: Platform.isIOS ? 2 : 3,
+                length: 3,
                 child: Scaffold(
                   backgroundColor: Colors.white,
                   appBar: AppBar(

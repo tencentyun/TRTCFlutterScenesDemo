@@ -1,9 +1,11 @@
 import 'dart:ui';
 import './TRTCMeetingRoom.dart';
 
-class TRTCMeetingTools {
+class MeetingTool {
+  // 每4个一屏，得到一个二维数组
+  static int screenLen = 4;
   static List<List<UserInfo>> getScreenList(List<UserInfo> list) {
-    int len = 4;
+    int len = screenLen; //4个一屏
     int index = 1;
     List<List<UserInfo>> result = [];
 

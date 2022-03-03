@@ -205,7 +205,7 @@ class TRTCMeetingImpl extends TRTCMeeting {
     if (code == 0 || code == 10013) {
       mRoomId = roomId.toString();
       mIsEnterMeeting = true;
-      mTRTCCloud.enterRoom(
+      await mTRTCCloud.enterRoom(
         TRTCParams(
           sdkAppId: mSdkAppId,
           userId: mUserId,
@@ -215,6 +215,8 @@ class TRTCMeetingImpl extends TRTCMeeting {
         ),
         TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL,
       );
+      mTRTCCloud.callExperimentalAPI(
+          "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 5}}");
 
       timManager.getGroupManager().setGroupInfo(
               info: V2TimGroupInfo(
@@ -261,7 +263,7 @@ class TRTCMeetingImpl extends TRTCMeeting {
     if (joinRes.code == 0 || joinRes.code == 10013) {
       mRoomId = roomId.toString();
       mIsEnterMeeting = true;
-      mTRTCCloud.enterRoom(
+      await mTRTCCloud.enterRoom(
         TRTCParams(
           sdkAppId: mSdkAppId,
           userId: mUserId,
@@ -271,6 +273,8 @@ class TRTCMeetingImpl extends TRTCMeeting {
         ),
         TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL,
       );
+      mTRTCCloud.callExperimentalAPI(
+          "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 5}}");
 
       V2TimValueCallback<List<V2TimGroupInfoResult>> res = await timManager
           .getGroupManager()

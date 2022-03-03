@@ -31,12 +31,14 @@ class UserInfo {
   bool audioMuted;
   bool videoMuted;
   Size size;
+  int viewId;
   UserInfo(
       {this.userId = '',
       this.type = 'empty',
       this.visible = false,
       this.audioMuted = false,
       this.videoMuted = false,
+      this.viewId = 0,
       this.size = defaultViewSize});
 }
 
@@ -68,12 +70,11 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
   List<UserInfo> _userList = [];
   List<List<UserInfo>> _screenUserList = [];
   List viewList = [];
-  int? _localViewId;
 
   late MyInfo myInfo;
   late TRTCMeeting trtcMeeting;
   late TXBeautyManager txBeautyManager;
-  late ScrollController scrollController;
+  late ScrollController scrollControl;
 
   @override
   initState() {
@@ -134,49 +135,61 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
       await trtcMeeting.startMicrophone();
     }
 
-    _screenUserList = TRTCMeetingTools.getScreenList(_userList);
+    _screenUserList = MeetingTool.getScreenList(_userList);
     setState(() {
       _userList = _userList;
       _screenUserList = _screenUserList;
     });
   }
 
+  // 屏幕左右滚动事件监听
   initScrollListener() {
-    scrollController = ScrollController();
-    scrollController.addListener(() {
-      var firstScreen = _screenUserList[0];
+    scrollControl = ScrollController();
+    double lastOffset = 0;
+    scrollControl.addListener(() async {
+      double screenWidth = MediaQuery.of(context).size.width;
+      int pageSize = (scrollControl.offset / screenWidth).ceil();
 
-      if (scrollController.offset >=
-              scrollController.position.maxScrollExtent &&
-          !scrollController.position.outOfRange) {
-        for (var i = 1; i < firstScreen.length; i++) {
-          if (i != 0) {
-            trtcMeeting.stopRemoteView(
-              firstScreen[i].userId,
-              TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG,
-            );
+      if (lastOffset < scrollControl.offset) {
+        scrollControl.animateTo(pageSize * screenWidth,
+            duration: Duration(milliseconds: 100), curve: Curves.ease);
+        if (scrollControl.offset == pageSize * screenWidth) {
+          //从左向右滑动
+          for (var i = 1; i < pageSize * MeetingTool.screenLen; i++) {
+            await trtcMeeting.stopRemoteView(
+                _userList[i].userId,
+                _userList[i].type == "video"
+                    ? TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG
+                    : TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB);
           }
         }
-      } else if (scrollController.offset <=
-              scrollController.position.minScrollExtent &&
-          !scrollController.position.outOfRange) {
-        for (var i = 1; i < firstScreen.length; i++) {
-          if (i != 0) {
-            trtcMeeting.startRemoteView(
-              firstScreen[i].userId,
-              TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG,
-              viewList[i],
-            );
+      } else {
+        scrollControl.animateTo((pageSize - 1) * screenWidth,
+            duration: Duration(milliseconds: 100), curve: Curves.ease);
+        if (scrollControl.offset == pageSize * screenWidth) {
+          var pageScreen = _screenUserList[pageSize];
+          int initI = 0;
+          if (pageSize == 0) {
+            initI = 1;
+          }
+          for (var i = initI; i < pageScreen.length; i++) {
+            await trtcMeeting.startRemoteView(
+                pageScreen[i].userId,
+                pageScreen[i].type == "video"
+                    ? TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG
+                    : TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB,
+                pageScreen[i].viewId);
           }
         }
       }
+      lastOffset = scrollControl.offset;
     });
   }
 
   @override
   dispose() {
     leaveMeeting();
-    scrollController.dispose();
+    scrollControl.dispose();
     super.dispose();
   }
 
@@ -228,13 +241,13 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
       case TRTCMeetingDelegate.onUserEnterRoom:
         _userList.add(UserInfo(
           userId: param,
-          type: 'empty',
+          type: 'video',
           visible: false,
           audioMuted: false,
           videoMuted: false,
           size: defaultViewSize,
         ));
-        _screenUserList = TRTCMeetingTools.getScreenList(_userList);
+        _screenUserList = MeetingTool.getScreenList(_userList);
         setState(() {
           _userList = _userList;
           _screenUserList = _screenUserList;
@@ -253,7 +266,7 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
           _doubleUserIdType = '';
         }
 
-        _screenUserList = TRTCMeetingTools.getScreenList(_userList);
+        _screenUserList = MeetingTool.getScreenList(_userList);
         setState(() {
           _isDoubleTap = _isDoubleTap;
           _doubleUserId = _doubleUserId;
@@ -267,15 +280,7 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
         String userId = param['userId'];
 
         for (var i = 0; i < _userList.length; i++) {
-          if (_userList[i].userId == userId) {
-            if (!param['available']) {
-              if (_isDoubleTap &&
-                  _doubleUserId == userId &&
-                  _doubleUserIdType == 'video') {
-                onDoubleTap(_userList[i]);
-              }
-            }
-            _userList[i].type = param['available'] ? 'video' : 'empty';
+          if (_userList[i].userId == userId && _userList[i].type == 'video') {
             _userList[i].visible = param['available'];
           }
         }
@@ -287,7 +292,7 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
           );
         }
 
-        _screenUserList = TRTCMeetingTools.getScreenList(_userList);
+        _screenUserList = MeetingTool.getScreenList(_userList);
         setState(() {
           _userList = _userList;
           _screenUserList = _screenUserList;
@@ -295,29 +300,27 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
         break;
       case TRTCMeetingDelegate.onUserSubStreamAvailable:
         String userId = param['userId'];
-
-        for (var i = 0; i < _userList.length; i++) {
-          if (_userList[i].userId == userId) {
-            if (!param['available']) {
-              if (_isDoubleTap &&
-                  _doubleUserId == userId &&
-                  _doubleUserIdType == 'subStream') {
-                onDoubleTap(_userList[i]);
-              }
+        //视频可用
+        if (param["available"]) {
+          _userList.add(UserInfo(
+              userId: userId,
+              type: 'subStream',
+              visible: true,
+              audioMuted: false,
+              videoMuted: false,
+              size: defaultViewSize));
+        } else {
+          for (var i = 0; i < _userList.length; i++) {
+            if (_userList[i].userId == userId &&
+                _userList[i].type == 'subStream') {
+              trtcMeeting.stopRemoteView(
+                  userId, TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB);
+              _userList.removeAt(i);
             }
-            _userList[i].type = param['available'] ? 'subStream' : 'empty';
-            _userList[i].visible = param['available'];
           }
         }
 
-        if (!param['available']) {
-          trtcMeeting.stopRemoteView(
-            userId,
-            TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB,
-          );
-        }
-
-        _screenUserList = TRTCMeetingTools.getScreenList(_userList);
+        _screenUserList = MeetingTool.getScreenList(_userList);
         setState(() {
           _userList = _userList;
           _screenUserList = _screenUserList;
@@ -406,63 +409,13 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
 
     if (_enabledCamera) {
       trtcMeeting.stopCameraPreview();
-      if (_isDoubleTap && _doubleUserId == _userList[0].userId) {
-        onDoubleTap(_userList[0]);
-      }
     }
-
+    //开启摄像头触发视频view重新渲染
     _userList[0].type = !_enabledCamera ? 'video' : 'empty';
     _userList[0].visible = !_enabledCamera;
 
     setState(() {
       _enabledCamera = !_enabledCamera;
-      _userList = _userList;
-    });
-  }
-
-  onDoubleTap(UserInfo userItem) async {
-    if (userItem.type == 'empty') return;
-
-    Size screenSize = MediaQuery.of(context).size;
-
-    if (_isDoubleTap) {
-      _isDoubleTap = false;
-      _doubleUserId = '';
-      _doubleUserIdType = '';
-      userItem.size = defaultViewSize;
-    } else {
-      _isDoubleTap = true;
-      _doubleUserId = userItem.userId;
-      _doubleUserIdType = userItem.type;
-      userItem.size = Size(screenSize.width, screenSize.height);
-    }
-
-    if (userItem.userId == myInfo.userId) {
-      if (Platform.isIOS) {
-        await trtcMeeting.stopCameraPreview();
-      }
-    } else {
-      if (userItem.type == 'video') {
-        await trtcMeeting.stopRemoteView(
-          userItem.userId,
-          TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG,
-        );
-      } else if (userItem.type == 'subStream') {
-        await trtcMeeting.stopRemoteView(
-          userItem.userId,
-          TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB,
-        );
-      }
-
-      if (!_isDoubleTap && Platform.isIOS) {
-        await trtcMeeting.stopCameraPreview();
-      }
-    }
-
-    setState(() {
-      _isDoubleTap = _isDoubleTap;
-      _doubleUserId = _doubleUserId;
-      _doubleUserIdType = _doubleUserIdType;
       _userList = _userList;
     });
   }
@@ -496,10 +449,6 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
     await trtcMeeting.stopScreenCapture();
     _userList[0].type = _enabledCamera ? 'video' : 'empty';
     _userList[0].visible = _enabledCamera;
-
-    if (_enabledCamera) {
-      trtcMeeting.startCameraPreview(_enabledFrontCamera, _localViewId!);
-    }
 
     setState(() {
       _isShareWindow = false;
@@ -565,7 +514,7 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
       scrollDirection: Axis.horizontal,
       itemCount: _screenUserList.length,
       cacheExtent: 0,
-      controller: scrollController,
+      controller: scrollControl,
       itemBuilder: (BuildContext context, int index) {
         var screenUserItem = _screenUserList[index];
         return Container(
@@ -578,7 +527,7 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
               (index) => LayoutBuilder(
                 key: ValueKey(screenUserItem[index].userId),
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  Size size = TRTCMeetingTools.getViewSize(
+                  Size size = MeetingTool.getViewSize(
                       MediaQuery.of(context).size,
                       _userList.length,
                       screenUserItem.length);
@@ -626,19 +575,18 @@ class TRTCMeetingRoomState extends State<TRTCMeetingRoom> {
     if (showView) {
       return GestureDetector(
         key: valueKey,
-        onDoubleTap: () => onDoubleTap(item),
         child: TRTCCloudVideoView(
           key: valueKey,
-          viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+          viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
           onViewCreated: (viewId) {
             if (isMine) {
               trtcMeeting.startCameraPreview(_enabledFrontCamera, viewId);
-              setState(() => _localViewId = viewId);
             } else {
               var streamType = item.type == 'video'
                   ? TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG
                   : TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_SUB;
               trtcMeeting.startRemoteView(item.userId, streamType, viewId);
+              item.viewId = viewId;
             }
           },
         ),

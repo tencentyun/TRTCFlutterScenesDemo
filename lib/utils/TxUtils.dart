@@ -1,4 +1,3 @@
-import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart' as StyledToast;
@@ -22,7 +21,7 @@ class TxUtils {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 3,
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.grey,
       textColor: Colors.white,
       fontSize: 16.0,
     );
@@ -96,15 +95,5 @@ class TxUtils {
       return getStorageByKey(constants.USERID_KEY);
     }
     return Future.value(_loginUserId);
-  }
-
-  static Future<Null> uploadException(
-      String title, //标题
-      String detail, //内容
-      {Map? data} //data为文本附件, Android 错误分析=>跟踪数据=>extraMessage.txt
-      //iOS 错误分析=>跟踪数据=>crash_attach.log
-      ) {
-    return FlutterBugly.uploadException(
-        message: title, detail: detail, data: data);
   }
 }
