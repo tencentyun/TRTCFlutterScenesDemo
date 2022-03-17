@@ -177,7 +177,9 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
         await timManager.joinGroup(groupID: roomId.toString(), message: '');
     if (joinRes.code == 0 || joinRes.code == 10013) {
       mRoomId = roomId.toString();
-      await mTRTCCloud.enterRoom(
+      mTRTCCloud.callExperimentalAPI(
+          "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 7}}");
+      mTRTCCloud.enterRoom(
           TRTCParams(
               sdkAppId: mSdkAppId, //应用Id
               userId: mUserId, // 用户Id
@@ -185,8 +187,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
               role: TRTCCloudDef.TRTCRoleAudience,
               roomId: roomId),
           TRTCCloudDef.TRTC_APP_SCENE_LIVE);
-      mTRTCCloud.callExperimentalAPI(
-          "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 7}}");
+
       V2TimValueCallback<List<V2TimGroupInfoResult>> res = await timManager
           .getGroupManager()
           .getGroupsInfo(groupIDList: [roomId.toString()]);

@@ -147,7 +147,9 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
       mRoomId = roomId.toString();
       mIsEnterRoom = true;
       mOriginRole = TRTCCloudDef.TRTCRoleAnchor;
-      await mTRTCCloud.enterRoom(
+      mTRTCCloud.callExperimentalAPI(
+          "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 4}}");
+      mTRTCCloud.enterRoom(
           TRTCParams(
               sdkAppId: mSdkAppId, //应用Id
               userId: mUserId, // 用户Id
@@ -155,8 +157,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
               role: TRTCCloudDef.TRTCRoleAnchor,
               roomId: roomId),
           TRTCCloudDef.TRTC_APP_SCENE_LIVE);
-      mTRTCCloud.callExperimentalAPI(
-          "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 4}}");
+
       // 默认打开麦克风
       // await enableAudioVolumeEvaluation(true);
       if (roomParam.quality != null) {
@@ -873,7 +874,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
   @override
   Future<void> updateRemoteView(String userId, int viewId) {
     return mTRTCCloud.updateRemoteView(
-        viewId, TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG, userId);
+        userId, TRTCCloudDef.TRTC_VIDEO_STREAM_TYPE_BIG, viewId);
   }
 
   @override

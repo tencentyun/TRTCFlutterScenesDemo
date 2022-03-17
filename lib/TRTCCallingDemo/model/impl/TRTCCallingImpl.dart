@@ -451,7 +451,9 @@ class TRTCCallingImpl extends TRTCCalling {
     txDeviceManager.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
     mTRTCCloud.muteLocalAudio(false);
     mTRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT);
-    await mTRTCCloud.enterRoom(
+    mTRTCCloud.callExperimentalAPI(
+        "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 3}}");
+    mTRTCCloud.enterRoom(
         TRTCParams(
             sdkAppId: mSdkAppId,
             userId: mCurUserId,
@@ -461,8 +463,6 @@ class TRTCCallingImpl extends TRTCCalling {
         mCurCallType == TRTCCalling.typeVideoCall
             ? TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL
             : TRTCCloudDef.TRTC_APP_SCENE_AUDIOCALL);
-    mTRTCCloud.callExperimentalAPI(
-        "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 3}}");
   }
 
   @override
@@ -632,7 +632,7 @@ class TRTCCallingImpl extends TRTCCalling {
 
   @override
   Future<void> updateRemoteView(String userId, int streamType, int viewId) {
-    return mTRTCCloud.updateRemoteView(viewId, streamType, userId);
+    return mTRTCCloud.updateRemoteView(userId, streamType, viewId);
   }
 
   @override

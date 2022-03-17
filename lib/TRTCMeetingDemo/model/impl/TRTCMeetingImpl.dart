@@ -205,7 +205,9 @@ class TRTCMeetingImpl extends TRTCMeeting {
     if (code == 0 || code == 10013) {
       mRoomId = roomId.toString();
       mIsEnterMeeting = true;
-      await mTRTCCloud.enterRoom(
+      mTRTCCloud.callExperimentalAPI(
+          "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 5}}");
+      mTRTCCloud.enterRoom(
         TRTCParams(
           sdkAppId: mSdkAppId,
           userId: mUserId,
@@ -215,8 +217,6 @@ class TRTCMeetingImpl extends TRTCMeeting {
         ),
         TRTCCloudDef.TRTC_APP_SCENE_VIDEOCALL,
       );
-      mTRTCCloud.callExperimentalAPI(
-          "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 5}}");
 
       timManager.getGroupManager().setGroupInfo(
               info: V2TimGroupInfo(
@@ -341,7 +341,7 @@ class TRTCMeetingImpl extends TRTCMeeting {
 
   @override
   Future<void> updateRemoteView(int viewId, int streamType, String userId) {
-    return mTRTCCloud.updateRemoteView(viewId, streamType, userId);
+    return mTRTCCloud.updateRemoteView(userId, streamType, viewId);
   }
 
   @override
