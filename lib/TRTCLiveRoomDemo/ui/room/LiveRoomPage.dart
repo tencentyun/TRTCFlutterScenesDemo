@@ -27,6 +27,8 @@ class LiveRoomPage extends StatefulWidget {
   _LiveRoomPageState createState() => _LiveRoomPageState();
 }
 
+bool useCdnFirst = false;
+
 class _LiveRoomPageState extends State<LiveRoomPage> {
   late TRTCLiveRoom trtcLiveCloud;
   late TXBeautyManager beautyManager;
@@ -54,6 +56,8 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   String musicTips = "";
   List<String> _popupMessageList = [];
   bool isFavoriteVisiable = false;
+
+  bool useCdnCurrent = useCdnFirst;
   TextEditingController inputController = new TextEditingController();
   final inputFocusNode = FocusNode();
   @override
@@ -85,7 +89,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
       GenerateTestUserSig.sdkAppId,
       currLoginUserId,
       GenerateTestUserSig.genTestSig(currLoginUserId),
-      TRTCLiveRoomConfig(useCDNFirst: false),
+      TRTCLiveRoomConfig(useCDNFirst: useCdnFirst),
     );
     if (isNeedCreateRoom) {
       await createRoom(
@@ -159,11 +163,18 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
         await trtcLiveCloud.createRoom(roomId, roomParam);
     if (actionCallback.code == 0) {
       await YunApiHelper.createRoom(roomId.toString(), roomType: "liveRoom");
+      // Example：sdkAppId = 12345678，roomId = 12345，userId = userA，So：streamId = 12345678_12345_userA_main
+      // String currLoginUserId = await TxUtils.getLoginUserId();
+      // String streamId = GenerateTestUserSig.sdkAppId.toString() +
+      //     '_' +
+      //     roomId.toString() +
+      //     '_' +
+      //     currLoginUserId +
+      //     '_main';
       await trtcLiveCloud.startPublish("");
     } else {
       showErrorToast("创建房间失败" + actionCallback.desc, stopAndGoIndex);
     }
-    return await trtcLiveCloud.startPublish("");
   }
 
   @override
@@ -292,6 +303,10 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
             if (_smallVideoUserId.containsKey(_currentLoginUser)) {
               _smallVideoUserId.remove(_currentLoginUser);
             }
+            if (useCdnFirst) {
+              // trtc change to cdn
+              useCdnCurrent = true;
+            }
           });
           trtcLiveCloud.stopPublish();
           showErrorToast("你被管理员踢下主播", null);
@@ -349,10 +364,13 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
 
   //主播同意观众的连麦请求
   onAnchorAcceptedHandle(params) async {
-    String userId = params["userId"].toString();
     safeSetState(() {
       isJoinAnchor = true;
       _smallVideoUserId[_currentLoginUser] = true;
+      if (useCdnFirst) {
+        //cdn change to trtc
+        useCdnCurrent = false;
+      }
     });
     await trtcLiveCloud.startPublish("");
     addMessageLog([
@@ -904,8 +922,13 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
               //主动退出主播
               safeSetState(() {
                 isJoinAnchor = false;
-                if (_smallVideoUserId.containsKey(_currentLoginUser))
+                if (_smallVideoUserId.containsKey(_currentLoginUser)) {
                   _smallVideoUserId.remove(_currentLoginUser);
+                }
+                if (useCdnFirst) {
+                  //trtc change to cdn
+                  useCdnCurrent = true;
+                }
               });
               await trtcLiveCloud.stopPublish();
             }
@@ -1017,12 +1040,15 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                 : Container(
                     color: Color.fromRGBO(0, 0, 0, 0.3),
                     child: Container(
-                      child: !widget.isAdmin && !isOwerAvailable
+                      child: (!widget.isAdmin && !isOwerAvailable) ||
+                              useCdnCurrent
                           ? Center(
                               child: Text(
-                                '直播暂不在线~~',
+                                useCdnCurrent
+                                    ? 'Please use the player to play the CDN URL'
+                                    : 'The live broadcast is temporarily offline~~~',
                                 style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
                               ),

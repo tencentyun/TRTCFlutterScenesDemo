@@ -318,9 +318,8 @@ class TRTCCallingImpl extends TRTCCalling {
         // customMap['call_end'] = 'call_end';
         customMap['call_end'] = 10;
         if (_isEmpty(mCurGroupId)) {
-          timManager
-              .getSignalingManager()
-              .invite(invitee: leaveUser!, data: jsonEncode(customMap));
+          timManager.getSignalingManager().invite(
+              invitee: leaveUser!, data: jsonEncode(customMap), timeout: 0);
         } else {
           timManager.getSignalingManager().inviteInGroup(
               groupID: mCurGroupId,

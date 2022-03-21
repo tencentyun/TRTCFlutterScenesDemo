@@ -15,9 +15,7 @@ class TRTCLiveRoomConfig {
   /// 【特殊说明】true: 默认进房使用CDN播放 false: 使用低延时播放
   bool useCDNFirst;
 
-  /// 【字段含义】CDN播放的域名地址
-  String? cdnPlayDomain;
-  TRTCLiveRoomConfig({required this.useCDNFirst, this.cdnPlayDomain});
+  TRTCLiveRoomConfig({required this.useCDNFirst});
 }
 
 class IMAnchorInfo {

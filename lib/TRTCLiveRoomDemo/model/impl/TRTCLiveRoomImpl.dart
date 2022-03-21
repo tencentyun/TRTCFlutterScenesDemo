@@ -65,7 +65,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
   String mCurPKCallID = "";
   bool isPk = false;
   late int mOriginRole;
-  TRTCLiveRoomConfig? mRoomConfig;
+  late TRTCLiveRoomConfig mRoomConfig;
   // List<IMAnchorInfo> mAnchorList = [];
   List<String> mAnchorList = [];
   List<String> mAudienceList = [];
@@ -199,6 +199,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
     mCurCallID = "";
     mCurPKCallID = "";
     mAnchorList = [];
+    mAudienceList = [];
   }
 
   @override
@@ -217,17 +218,20 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
       mRoomId = roomId.toString();
       mIsEnterRoom = true;
       mOriginRole = TRTCCloudDef.TRTCRoleAudience;
-      await mTRTCCloud.enterRoom(
-          TRTCParams(
-              sdkAppId: mSdkAppId, //应用Id
-              userId: mUserId, // 用户Id
-              userSig: mUserSig, // 用户签名
-              role: TRTCCloudDef.TRTCRoleAudience,
-              roomId: roomId),
-          TRTCCloudDef.TRTC_APP_SCENE_LIVE);
-
       mTRTCCloud.callExperimentalAPI(
           "{\"api\": \"setFramework\", \"params\": {\"framework\": 7, \"component\": 4}}");
+
+      if (!mRoomConfig.useCDNFirst) {
+        await mTRTCCloud.enterRoom(
+            TRTCParams(
+                sdkAppId: mSdkAppId, //应用Id
+                userId: mUserId, // 用户Id
+                userSig: mUserSig, // 用户签名
+                role: TRTCCloudDef.TRTCRoleAudience,
+                roomId: roomId),
+            TRTCCloudDef.TRTC_APP_SCENE_LIVE);
+      }
+
       V2TimValueCallback<List<V2TimGroupInfoResult>> res = await timManager
           .getGroupManager()
           .getGroupsInfo(groupIDList: [roomId.toString()]);
@@ -565,6 +569,9 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
         }
       },
       onMemberLeave: (String groupId, V2TimGroupMemberInfo member) {
+        if (mAudienceList.contains(member.userID)) {
+          mAudienceList.remove(member.userID);
+        }
         type = TRTCLiveRoomDelegate.onAudienceExit;
         emitEvent(type, {
           'userId': member.userID,
@@ -884,6 +891,16 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
     }
     // 如果是观众，那么则切换到主播
     if (mOriginRole == TRTCCloudDef.TRTCRoleAudience) {
+      if (mRoomConfig.useCDNFirst) {
+        await mTRTCCloud.enterRoom(
+            TRTCParams(
+                sdkAppId: mSdkAppId, //应用Id
+                userId: mUserId, // 用户Id
+                userSig: mUserSig, // 用户签名
+                role: TRTCCloudDef.TRTCRoleAnchor,
+                roomId: int.parse(mRoomId!)),
+            TRTCCloudDef.TRTC_APP_SCENE_LIVE);
+      }
       mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAnchor);
       // 观众切换到主播是小主播，小主播设置一下分辨率
       TRTCVideoEncParam param = new TRTCVideoEncParam();
@@ -935,6 +952,9 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
     mTRTCCloud.stopLocalPreview();
     if (mOriginRole == TRTCCloudDef.TRTCRoleAudience) {
       mTRTCCloud.switchRole(TRTCCloudDef.TRTCRoleAudience);
+      if (mRoomConfig.useCDNFirst) {
+        mTRTCCloud.exitRoom();
+      }
     } else if (mOriginRole == TRTCCloudDef.TRTCRoleAnchor) {
       mTRTCCloud.exitRoom();
     }
