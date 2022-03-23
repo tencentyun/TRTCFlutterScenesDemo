@@ -1,3 +1,9 @@
+import 'dart:convert';
+
+import 'package:tencent_im_sdk_plugin/enum/V2TimGroupListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSDKListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSignalingListener.dart';
+import 'package:tencent_im_sdk_plugin/enum/V2TimSimpleMsgListener.dart';
 import 'package:tencent_im_sdk_plugin/enum/group_add_opt_type.dart';
 import 'package:tencent_im_sdk_plugin/enum/group_member_filter_enum.dart';
 import 'package:tencent_im_sdk_plugin/enum/log_level_enum.dart';
@@ -5,6 +11,7 @@ import 'package:tencent_im_sdk_plugin/enum/message_priority.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_info_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_full_info.dart';
+import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_info.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_group_member_info_result.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_message.dart';
 import 'package:tencent_im_sdk_plugin/models/v2_tim_user_full_info.dart';
@@ -28,9 +35,9 @@ import 'package:tencent_im_sdk_plugin/models/v2_tim_callback.dart';
 class TRTCChatSalonImpl extends TRTCChatSalon {
   String logTag = "VoiceRoomFlutterSdk";
   static TRTCChatSalonImpl? sInstance;
-  static VoiceRoomListener? listener;
 
   int codeErr = -1;
+  int timeOutCount = 30; //超时时间，默认30s
 
   late int mSdkAppId;
   late String mUserId;
@@ -45,6 +52,9 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
   late TRTCCloud mTRTCCloud;
   late TXAudioEffectManager txAudioManager;
   late TXDeviceManager txDeviceManager;
+  VoiceListenerFunc? listenersSet;
+  Map<String, String> mOldAttributeMap = {};
+  String mCurCallID = "";
 
   TRTCChatSalonImpl() {
     //获取腾讯即时通信IM manager
@@ -144,7 +154,8 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
               introduction: mSelfUserName,
               groupType: "AVChatRoom"));
 
-      listener!.initData(mOwnerUserId!, {mUserId: "1"});
+      mUserId = mOwnerUserId!;
+      mOldAttributeMap = {mUserId: "1"};
       V2TimCallback initRes = await timManager
           .getGroupManager()
           .initGroupAttributes(groupID: mRoomId!, attributes: {mUserId: "1"});
@@ -198,7 +209,7 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
           .getGroupManager()
           .getGroupAttributes(groupID: mRoomId!, keys: []);
       Map<String, String> attributeMap = attrRes.data!;
-      listener!.initData(mUserId, attributeMap);
+      mOldAttributeMap = attributeMap;
     }
 
     return ActionCallback(code: joinRes.code, desc: joinRes.desc);
@@ -406,15 +417,274 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
 
   @override
   void registerListener(VoiceListenerFunc func) async {
-    if (listener == null) {
-      listener = VoiceRoomListener(mTRTCCloud, timManager);
+    if (listenersSet == null) {
+      listenersSet = func;
+      //监听trtc事件
+      mTRTCCloud.registerListener(rtcListener);
+      //监听im事件
+      timManager.addSimpleMsgListener(
+        listener: simpleMsgListener(),
+      );
+      //监听im事件
+      timManager
+          .getSignalingManager()
+          .addSignalingListener(listener: signalingListener());
+      timManager.addGroupListener(listener: groupListener());
     }
-    listener!.addListener(func);
   }
 
   @override
   void unRegisterListener(VoiceListenerFunc func) async {
-    listener!.removeListener(func, mTRTCCloud, timManager);
+    listenersSet = null;
+    mTRTCCloud.unRegisterListener(rtcListener);
+    timManager.removeSimpleMsgListener();
+    timManager.removeGroupListener();
+    timManager.getSignalingManager().removeSignalingListener();
+  }
+
+  V2TimSignalingListener signalingListener() {
+    TRTCChatSalonDelegate type;
+    return new V2TimSignalingListener(
+        onInvitationCancelled: (inviteID, inviter, data) {},
+        onInvitationTimeout: (inviteID, inviteeList) {},
+        onInviteeAccepted: (inviteID, invitee, data) {
+          if (!_isSalonData(data)) {
+            return;
+          }
+          if (mCurCallID == inviteID) {
+            try {
+              Map<String, dynamic>? customMap = jsonDecode(data);
+              if (customMap == null) {
+                print(
+                    logTag + "onReceiveNewInvitation extraMap is null, ignore");
+                return;
+              }
+              if (customMap.containsKey('salon_type') &&
+                  customMap['salon_type'] == 'agreeToSpeak') {
+                type = TRTCChatSalonDelegate.onAgreeToSpeak;
+                emitEvent(type, invitee);
+              }
+            } catch (e) {
+              print(logTag +
+                  "=onReceiveNewInvitation JsonSyntaxException:" +
+                  e.toString());
+            }
+          }
+        },
+        onInviteeRejected: (inviteID, invitee, data) {
+          if (!_isSalonData(data)) {
+            return;
+          }
+          if (mCurCallID == inviteID) {
+            try {
+              Map<String, dynamic>? customMap = jsonDecode(data);
+              if (customMap == null) {
+                print(
+                    logTag + "onReceiveNewInvitation extraMap is null, ignore");
+                return;
+              }
+              if (customMap.containsKey('salon_type') &&
+                  customMap['salon_type'] == 'refuseToSpeak') {
+                type = TRTCChatSalonDelegate.onRefuseToSpeak;
+                emitEvent(type, invitee);
+              }
+            } catch (e) {
+              print(logTag +
+                  "=onReceiveNewInvitation JsonSyntaxException:" +
+                  e.toString());
+            }
+          }
+        },
+        onReceiveNewInvitation:
+            (inviteID, inviter, groupID, inviteeList, data) async {
+          if (!_isSalonData(data)) {
+            return;
+          }
+          mCurCallID = inviteID;
+          try {
+            Map<String, dynamic>? customMap = jsonDecode(data);
+            if (customMap == null) {
+              print(logTag + "onReceiveNewInvitation extraMap is null, ignore");
+              return;
+            }
+            if (customMap.containsKey('salon_type') &&
+                customMap['salon_type'] == 'raiseHand') {
+              type = TRTCChatSalonDelegate.onRaiseHand;
+              emitEvent(type, inviter);
+            } else if (customMap.containsKey('salon_type') &&
+                customMap['salon_type'] == 'kickMic') {
+              type = TRTCChatSalonDelegate.onKickMic;
+              emitEvent(type, inviter);
+            }
+          } catch (e) {
+            print(logTag +
+                "=onReceiveNewInvitation JsonSyntaxException:" +
+                e.toString());
+          }
+        });
+  }
+
+  _isSalonData(String data) {
+    try {
+      Map<String, dynamic> customMap = jsonDecode(data);
+      if (customMap.containsKey('salon_type')) {
+        return true;
+      }
+    } catch (e) {
+      print("isSalonData json parse error");
+      return false;
+    }
+    return false;
+  }
+
+  rtcListener(rtcType, param) {
+    String typeStr = rtcType.toString();
+    TRTCChatSalonDelegate type;
+    typeStr = typeStr.replaceFirst("TRTCCloudListener.", "");
+    if (typeStr == "onEnterRoom") {
+      type = TRTCChatSalonDelegate.onEnterRoom;
+      emitEvent(type, param);
+    } else if (typeStr == "onExitRoom") {
+      type = TRTCChatSalonDelegate.onExitRoom;
+      emitEvent(type, param);
+    } else if (typeStr == "onError") {
+      type = TRTCChatSalonDelegate.onError;
+      emitEvent(type, param);
+    } else if (typeStr == "onWarning") {
+      type = TRTCChatSalonDelegate.onWarning;
+      emitEvent(type, param);
+    } else if (typeStr == "onUserVoiceVolume") {
+      type = TRTCChatSalonDelegate.onUserVolumeUpdate;
+      emitEvent(type, param);
+    }
+  }
+
+  initImLisener() {
+    return new V2TimSDKListener(onKickedOffline: () {
+      TRTCChatSalonDelegate type = TRTCChatSalonDelegate.onKickedOffline;
+      emitEvent(type, {});
+    });
+  }
+
+  groupListener() {
+    TRTCChatSalonDelegate type;
+    return new V2TimGroupListener(
+      onGroupAttributeChanged:
+          (String groupId, Map<String, String> groupAttributeMap) {
+        //群属性发生变更
+        groupAttriChange(groupAttributeMap);
+      },
+      onMemberEnter: (String groupId, List<V2TimGroupMemberInfo> list) {
+        type = TRTCChatSalonDelegate.onAudienceEnter;
+        List<V2TimGroupMemberInfo> memberList = list;
+        List newList = [];
+        for (var i = 0; i < memberList.length; i++) {
+          if (!mOldAttributeMap.containsKey(memberList[i].userID)) {
+            newList.add({
+              'userId': memberList[i].userID,
+              'userName': memberList[i].nickName,
+              'userAvatar': memberList[i].faceUrl
+            });
+          }
+        }
+        if (newList.length > 0) {
+          emitEvent(type, newList);
+        }
+      },
+      onMemberLeave: (String groupId, V2TimGroupMemberInfo member) {
+        type = TRTCChatSalonDelegate.onAudienceExit;
+        emitEvent(type, {'userId': member.userID});
+      },
+      onGroupDismissed: (groupID, opUser) {
+        //房间被群主解散
+        type = TRTCChatSalonDelegate.onRoomDestroy;
+        emitEvent(type, {});
+      },
+    );
+  }
+
+  groupAttriChange(Map<String, String> data) {
+    Map<String, String> groupAttributeMap = data;
+    TRTCChatSalonDelegate type;
+
+    List newGroupList = [];
+    groupAttributeMap.forEach((key, value) async {
+      newGroupList.add({'userId': key, 'mute': value == "1" ? false : true});
+      if (mOldAttributeMap.containsKey(key) && mOldAttributeMap[key] != value) {
+        //有成员改变了麦的状态
+        type = TRTCChatSalonDelegate.onMicMute;
+        emitEvent(type, {'userId': key, 'mute': value == "1" ? false : true});
+      } else if (!mOldAttributeMap.containsKey(key)) {
+        //有成员上麦
+        type = TRTCChatSalonDelegate.onAnchorEnterMic;
+        V2TimValueCallback<List<V2TimUserFullInfo>> res =
+            await timManager.getUsersInfo(userIDList: [key]);
+        if (res.code == 0) {
+          List<V2TimUserFullInfo> userInfo = res.data!;
+          if (userInfo.length > 0) {
+            emitEvent(type, {
+              'userId': key,
+              'userName': userInfo[0].nickName,
+              'userAvatar': userInfo[0].faceUrl,
+              'mute': false // 默认开麦
+            });
+          } else {
+            emitEvent(type, {'userId': key});
+          }
+        } else {
+          emitEvent(type, {'userId': key});
+        }
+      }
+    });
+    //每次有变化必定触发更新
+    emitEvent(TRTCChatSalonDelegate.onAnchorListChange, newGroupList);
+
+    mOldAttributeMap.forEach((key, value) async {
+      if (!groupAttributeMap.containsKey(key)) {
+        //有成员下麦
+        type = TRTCChatSalonDelegate.onAnchorLeaveMic;
+
+        V2TimValueCallback<List<V2TimUserFullInfo>> res =
+            await timManager.getUsersInfo(userIDList: [key]);
+        if (res.code == 0) {
+          List<V2TimUserFullInfo> userInfo = res.data!;
+          if (userInfo.length > 0) {
+            emitEvent(type, {
+              'userId': key,
+              'userName': userInfo[0].nickName,
+              'userAvatar': userInfo[0].faceUrl,
+              'mute': false // 默认开麦
+            });
+          } else {
+            emitEvent(type, {'userId': key});
+          }
+        } else {
+          emitEvent(type, {'userId': key});
+        }
+      }
+    });
+
+    mOldAttributeMap = groupAttributeMap;
+  }
+
+  simpleMsgListener() {
+    TRTCChatSalonDelegate type;
+    return new V2TimSimpleMsgListener(
+      onRecvGroupTextMessage: (msgID, groupID, sender, customData) {
+        //群文本消息
+        type = TRTCChatSalonDelegate.onRecvRoomTextMsg;
+        emitEvent(type, {
+          "message": customData,
+          "sendId": sender.userID,
+          "userAvatar": sender.faceUrl,
+          "userName": sender.nickName
+        });
+      },
+    );
+  }
+
+  emitEvent(type, param) {
+    listenersSet!(type, param);
   }
 
   @override
@@ -458,12 +728,11 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     mUserSig = userSig;
 
     if (!mIsInitIMSDK) {
-      listener = VoiceRoomListener(mTRTCCloud, timManager);
       //初始化SDK
       V2TimValueCallback<bool> initRes = await timManager.initSDK(
         sdkAppID: sdkAppId, //填入在控制台上申请的sdkappid
         loglevel: LogLevelEnum.V2TIM_LOG_ERROR,
-        listener: listener!.initImLisener(),
+        listener: initImLisener(),
       );
       if (initRes.code != 0) {
         //初始化sdk错误
@@ -491,14 +760,14 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
 
   @override
   Future<ActionCallback> agreeToSpeak(String userId) async {
-    V2TimValueCallback<V2TimMessage> res = await timManager
-        .sendC2CCustomMessage(customData: 'agreeToSpeak', userID: userId);
-
-    if (res.code == 0) {
-      return ActionCallback(code: 0, desc: 'agreeToSpeak success');
-    } else {
-      return ActionCallback(code: codeErr, desc: res.desc);
-    }
+    Map<String, dynamic> customMap = _getCustomMap();
+    customMap['salon_type'] = 'agreeToSpeak';
+    String signalId = mCurCallID;
+    mCurCallID = "";
+    V2TimCallback res = await timManager
+        .getSignalingManager()
+        .accept(inviteID: signalId, data: jsonEncode(customMap));
+    return ActionCallback(code: res.code, desc: res.desc);
   }
 
   @override
@@ -506,13 +775,15 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (mRoomId == null) {
       return ActionCallback(code: codeErr, desc: 'mRoomId is not valid');
     }
-    V2TimValueCallback<V2TimMessage> res = await timManager
-        .sendC2CCustomMessage(customData: 'kickMic', userID: userId);
-    if (res.code == 0) {
-      return ActionCallback(code: 0, desc: 'kickMic success');
-    } else {
-      return ActionCallback(code: codeErr, desc: res.desc);
-    }
+
+    Map<String, dynamic> customMap = _getCustomMap();
+    customMap['salon_type'] = 'kickMic';
+    V2TimValueCallback res = await timManager.getSignalingManager().invite(
+        invitee: userId,
+        data: jsonEncode(customMap),
+        timeout: 0,
+        onlineUserOnly: false);
+    return ActionCallback(code: res.code, desc: res.desc);
   }
 
   @override
@@ -579,24 +850,38 @@ class TRTCChatSalonImpl extends TRTCChatSalon {
     if (mOwnerUserId == null) {
       return ActionCallback(code: codeErr, desc: 'mOwnerUserId is not valid');
     }
-    V2TimValueCallback<V2TimMessage> res = await timManager
-        .sendC2CCustomMessage(customData: 'raiseHand', userID: mOwnerUserId!);
-    if (res.code == 0) {
-      return ActionCallback(code: 0, desc: 'raiseHand success');
-    } else {
-      return ActionCallback(code: codeErr, desc: res.desc);
-    }
+
+    Map<String, dynamic> customMap = _getCustomMap();
+    customMap['salon_type'] = 'raiseHand';
+    V2TimValueCallback res = await timManager.getSignalingManager().invite(
+        invitee: mOwnerUserId!,
+        data: jsonEncode(customMap),
+        timeout: timeOutCount,
+        onlineUserOnly: false);
+    mCurCallID = res.data;
+    return ActionCallback(code: res.code, desc: res.desc);
+  }
+
+  _getCustomMap() {
+    Map<String, dynamic> customMap = new Map<String, dynamic>();
+    customMap['version'] = 1;
+    customMap['room_id'] = mRoomId;
+    return customMap;
   }
 
   @override
   Future<ActionCallback> refuseToSpeak(String userId) async {
-    V2TimValueCallback<V2TimMessage> res = await timManager
-        .sendC2CCustomMessage(customData: 'refuseToSpeak', userID: userId);
-
-    if (res.code == 0) {
-      return ActionCallback(code: 0, desc: 'refuseToSpeak success');
-    } else {
-      return ActionCallback(code: codeErr, desc: res.desc);
-    }
+    Map<String, dynamic> customMap = _getCustomMap();
+    customMap['salon_type'] = 'refuseToSpeak';
+    String signalId = mCurCallID;
+    mCurCallID = "";
+    V2TimCallback res = await timManager
+        .getSignalingManager()
+        .reject(inviteID: signalId, data: jsonEncode(customMap));
+    return ActionCallback(code: res.code, desc: res.desc);
   }
 }
+
+/// @nodoc
+typedef VoiceListenerFunc<P> = void Function(
+    TRTCChatSalonDelegate type, P params);

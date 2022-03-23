@@ -1,7 +1,6 @@
 import 'package:tencent_trtc_cloud/tx_audio_effect_manager.dart';
 import 'impl/TRTCChatSalonImpl.dart';
 import 'TRTCChatSalonDef.dart';
-import 'TRTCChatSalonDelegate.dart';
 
 abstract class TRTCChatSalon {
   /*

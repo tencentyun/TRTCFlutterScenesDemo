@@ -75,7 +75,7 @@ class TRTCMeetingImpl extends TRTCMeeting {
   @override
   void registerListener(MeetingListenerFunc func) {
     if (listeners.isEmpty) {
-      timManager.setGroupListener(listener: groupListener());
+      timManager.addGroupListener(listener: groupListener());
       timManager.addSimpleMsgListener(listener: simpleMsgListener());
       mTRTCCloud.registerListener(rtcListener);
     }
@@ -90,6 +90,7 @@ class TRTCMeetingImpl extends TRTCMeeting {
     if (listeners.isEmpty) {
       mTRTCCloud.unRegisterListener(rtcListener);
       timManager.removeSimpleMsgListener();
+      timManager.removeGroupListener();
     }
   }
 

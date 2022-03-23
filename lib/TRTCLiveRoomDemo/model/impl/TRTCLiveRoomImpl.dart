@@ -450,7 +450,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
       timManager
           .getSignalingManager()
           .addSignalingListener(listener: signalingListener());
-      timManager.setGroupListener(listener: groupListener());
+      timManager.addGroupListener(listener: groupListener());
       timManager.addSimpleMsgListener(
         listener: simpleMsgListener(),
       );
@@ -466,6 +466,7 @@ class TRTCLiveRoomImpl extends TRTCLiveRoom {
     if (listeners.isEmpty) {
       mTRTCCloud.unRegisterListener(rtcListener);
       timManager.removeSimpleMsgListener();
+      timManager.removeGroupListener();
       timManager.getSignalingManager().removeSignalingListener();
     }
   }
