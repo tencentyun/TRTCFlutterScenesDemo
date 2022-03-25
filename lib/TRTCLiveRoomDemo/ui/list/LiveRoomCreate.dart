@@ -76,6 +76,7 @@ class _LiveRoomCreatePageState extends State<LiveRoomCreatePage> {
   @override
   void dispose() {
     super.dispose();
+    trtcCloud!.stopCameraPreview();
   }
 
   goLiveRoomPage() async {
