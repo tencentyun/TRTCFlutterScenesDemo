@@ -219,7 +219,7 @@ class _LiveRoomCreatePageState extends State<LiveRoomCreatePage> {
           ),
           builder: (BuildContext context) {
             return FilterSettingWidget(
-              onChanged: (String key, double value) {},
+              onChanged: onBeautyValueChange,
               onClose: () {
                 setState(() {
                   isShowFilterSetting = false;
