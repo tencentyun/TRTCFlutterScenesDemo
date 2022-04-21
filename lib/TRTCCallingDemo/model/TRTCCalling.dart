@@ -113,7 +113,7 @@ abstract class TRTCCalling {
   Future<void> stopRemoteView(String userId, int streamType);
 
   /*
-  * 更新远端视频画面的窗口,仅仅ios有效
+  * 更新远端视频画面的窗口
   *
   * @param userId           远端用户id
   * @param viewId 远端用户数据将渲染到该view中
@@ -128,7 +128,7 @@ abstract class TRTCCalling {
   */
   Future<void> openCamera(bool isFrontCamera, int viewId);
 
-  /// 更新本地视频预览画面的窗口,仅仅ios有效
+  /// 更新本地视频预览画面的窗口
   ///
   /// 参数：
   ///
