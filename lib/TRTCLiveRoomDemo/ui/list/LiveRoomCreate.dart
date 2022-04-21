@@ -2,8 +2,8 @@
  * 创建房间
  */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_video_view.dart';
 import 'package:tencent_trtc_cloud/tx_beauty_manager.dart';
@@ -22,6 +22,7 @@ class LiveRoomCreatePage extends StatefulWidget {
 class _LiveRoomCreatePageState extends State<LiveRoomCreatePage> {
   late TRTCLiveRoom? trtcCloud;
   late TXBeautyManager beautyManager;
+  final nameFocusNode = FocusNode();
   String roomTitle = "test的房间";
   String userName = "test";
   bool isStandardQuality = true;
@@ -118,7 +119,6 @@ class _LiveRoomCreatePageState extends State<LiveRoomCreatePage> {
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
             subtitle: TextField(
-              autofocus: true,
               controller: TextEditingController.fromValue(
                 TextEditingValue(
                   text: this.roomTitle, //判断keyword是否为空
@@ -130,6 +130,7 @@ class _LiveRoomCreatePageState extends State<LiveRoomCreatePage> {
                 ),
               ),
               style: TextStyle(color: Colors.white, fontSize: 14),
+              focusNode: nameFocusNode,
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.transparent),
@@ -294,17 +295,28 @@ class _LiveRoomCreatePageState extends State<LiveRoomCreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
+          GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          if (nameFocusNode.hasFocus) {
+            nameFocusNode.unfocus();
+          }
+        },
+        child: 
           Container(
             color: Color.fromRGBO(0, 0, 0, 0.2),
             child: TRTCCloudVideoView(
               key: ValueKey("LiveRoomCreatePage_bigVideoViewId"),
-              viewType: TRTCCloudDef.TRTC_VideoView_SurfaceView,
+              viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
+              hitTestBehavior: PlatformViewHitTestBehavior.transparent,
               onViewCreated: (viewId) async {
                 trtcCloud!.startCameraPreview(isFrontCamera, viewId);
               },
             ),
+          ),
           ),
           Positioned(
             top: 100,

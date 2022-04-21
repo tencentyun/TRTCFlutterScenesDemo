@@ -537,8 +537,8 @@ class _TRTCCallingVideoState extends State<TRTCCallingVideo> {
       }
     }
     return Container(
-      height: _currentCallStatus == CallStatus.calling ? 100 : 216,
-      width: 100,
+      height: _currentCallStatus == CallStatus.calling ? 100 : 180,
+      width: _currentCallStatus == CallStatus.calling ? 100 : 120,
       child: _currentCallStatus == CallStatus.answer
           ? AnimatedOpacity(
               duration: Duration(milliseconds: 100),
