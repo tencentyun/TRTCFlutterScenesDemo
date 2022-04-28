@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../utils/TxUtils.dart';
@@ -27,11 +25,7 @@ class LiveRoomListPageState extends State<LiveRoomListPage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      Fluttertoast.showToast(
-        msg: Languages.of(context)!.errorOpenUrl,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-      );
+      TxUtils.showToast(Languages.of(context)!.errorOpenUrl, context);
     }
   }
 
@@ -57,15 +51,11 @@ class LiveRoomListPageState extends State<LiveRoomListPage> {
         TRTCLiveRoomConfig(useCDNFirst: false));
     var roomIdls = await YunApiHelper.getRoomList(roomType: 'liveRoom');
     if (roomIdls.isEmpty) {
-      print('no room list');
       setState(() {
         roomInfList = [];
       });
       return;
     }
-    // roomIdls.forEach((element) {
-    //   YunApiHelper.destroyRoom(element, roomType: "liveRoom");
-    // });
     RoomInfoCallback resp = await trtcLiveRoomServer.getRoomInfos(roomIdls);
     if (resp.code == 0) {
       setState(() {
@@ -277,21 +267,14 @@ class LiveRoomListPageState extends State<LiveRoomListPage> {
           ),
         ),
       ),
-      // bottomNavigationBar: Container(
-      //   constraints:
-      //       BoxConstraints(maxHeight: 52, maxWidth: 140, minWidth: 140),
-      //   width: 140,
-      //   child: LiveButton(
-      //     onPressed: () {},
-      //     size: Size(140, 52),
-      //     text: "创建房间",
-      //   ),
-      // ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
           Navigator.pushReplacementNamed(
             context,
-            "/liveRoom/roomCreate",
+            "/liveRoom/roomAnchor",
+            arguments: {
+              'isNeedCreateRoom': true,
+            },
           )
         },
         tooltip: "创建视频互动房间",

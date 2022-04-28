@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_def.dart';
 import 'package:tencent_trtc_cloud/trtc_cloud_video_view.dart';
 import 'package:tencent_trtc_cloud/tx_audio_effect_manager.dart';
@@ -17,7 +17,6 @@ import 'package:trtc_scenes_demo/TRTCLiveRoomDemo/ui/base/PKUserList.dart';
 import 'package:trtc_scenes_demo/TRTCLiveRoomDemo/ui/base/PopUpMessageLIst.dart';
 import 'package:trtc_scenes_demo/TRTCLiveRoomDemo/ui/base/SubVideoList.dart';
 import 'package:trtc_scenes_demo/base/YunApiHelper.dart';
-import 'package:trtc_scenes_demo/debug/GenerateTestUserSig.dart';
 import 'package:trtc_scenes_demo/utils/TxUtils.dart';
 
 class LiveRoomPage extends StatefulWidget {
@@ -33,6 +32,12 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   late TRTCLiveRoom trtcLiveCloud;
   late TXBeautyManager beautyManager;
   late TXAudioEffectManager audioEffectManager;
+  final nameFocusNode = FocusNode();
+  String roomTitle = "test的房间";
+  String userName = "test";
+  bool isStandardQuality = true;
+  bool isNeedCreateRoom = false;
+  bool isInRoom = false;
   bool isShowFilterSetting = false;
   bool isShowMusicSetting = false;
   bool isShowPkUserList = false;
@@ -41,13 +46,11 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   bool isBarrageON = true;
   bool isBarrageSliderOn = false;
   int _onLineUserCount = 0;
-  String _currenRoomName = "";
   String _currentOwnerId = "";
   bool isOwerAvailable = true;
   int _currentRoomId = 0;
   Map<String, bool> _smallVideoUserId = {};
   String _currentLoginUser = '';
-
   bool isJoinAnchor = false;
   bool isPKing = false;
   String pkUserId = "";
@@ -56,7 +59,6 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   String musicTips = "";
   List<String> _popupMessageList = [];
   bool isFavoriteVisiable = false;
-
   bool useCdnCurrent = useCdnFirst;
   TextEditingController inputController = new TextEditingController();
   final inputFocusNode = FocusNode();
@@ -64,7 +66,33 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   void initState() {
     initTrtc();
     super.initState();
-    initRoomInfo();
+    Future.delayed(Duration.zero, () {
+      initRoomInfo();
+    });
+  }
+
+  initRoomInfo() async {
+    Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    if (arguments.containsKey('isNeedCreateRoom')) {
+      isNeedCreateRoom = arguments['isNeedCreateRoom'] as bool;
+    }
+    if(!isNeedCreateRoom) {
+      isInRoom = true;
+      enterRoom();
+    } else {
+      String userId = await TxUtils.getLoginUserId();
+      _currentOwnerId = userId;
+      String loginUserName = await TxUtils.getStorageByKey("loginUserName");
+      String tmpName = loginUserName == ""
+          ? userId == ""
+              ? "test"
+              : userId.replaceAll("：", "")
+          : loginUserName.replaceAll("：", "");
+      setState(() {
+        userName = tmpName;
+        roomTitle = tmpName + "的房间";
+      });
+    }
   }
 
   initTrtc() async {
@@ -74,46 +102,29 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
     trtcLiveCloud.registerListener(onListenerFunc);
   }
 
-  initRoomInfo() async {
-    String currLoginUserId = await TxUtils.getLoginUserId();
-    _currentLoginUser = currLoginUserId;
+  enterRoom() async {
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
     int _tpmCurrentRoomId = int.tryParse(arguments['roomId'].toString())!;
     _currentOwnerId = arguments['ownerId'].toString();
     _currentRoomId = _tpmCurrentRoomId;
-    bool isNeedCreateRoom = false;
-    if (arguments.containsKey('isNeedCreateRoom')) {
-      isNeedCreateRoom = arguments['isNeedCreateRoom'] as bool;
+    ActionCallback _actionCallback = await trtcLiveCloud.enterRoom(_tpmCurrentRoomId);
+    if (_actionCallback.code != 0) {
+      showErrorToast("进房失败" + _actionCallback.desc, stopAndGoIndex);
+      return;
     }
-    await trtcLiveCloud.login(
-      GenerateTestUserSig.sdkAppId,
-      currLoginUserId,
-      GenerateTestUserSig.genTestSig(currLoginUserId),
-      TRTCLiveRoomConfig(useCDNFirst: useCdnFirst),
-    );
-    if (isNeedCreateRoom) {
-      await createRoom(
-          _tpmCurrentRoomId,
-          RoomParam(
-              roomName: arguments['roomName'].toString(),
-              quality: arguments['isStandardQuality']
-                  ? null
-                  : TRTCCloudDef.TRTC_AUDIO_QUALITY_MUSIC,
-              coverUrl:
-                  "https://imgcache.qq.com/operation/dianshi/other/5.ca48acfebc4dfb68c6c463c9f33e60cb8d7c9565.png"));
-    } else {
-      ActionCallback _actionCallback =
-          await trtcLiveCloud.enterRoom(_tpmCurrentRoomId);
-      if (_actionCallback.code != 0) {
-        showErrorToast("进房失败" + _actionCallback.desc, stopAndGoIndex);
-        return;
-      }
+    if(widget.isAdmin) {
+      trtcLiveCloud.startPublish("");
     }
+    initData(_currentRoomId);
+  }
+
+  initData(int roomId) async {
+    String currLoginUserId = await TxUtils.getLoginUserId();
+    _currentLoginUser = currLoginUserId;
     getPKList(currLoginUserId, null);
     UserListCallback memberListCallback =
         await trtcLiveCloud.getRoomMemberList(0);
     UserListCallback anchorListCallback = await trtcLiveCloud.getAnchorList();
-    _currenRoomName = arguments['roomName'].toString();
 
     Future.delayed(
       Duration(microseconds: 30),
@@ -123,8 +134,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
         });
         safeSetState(
           () {
-            _currentRoomId = _tpmCurrentRoomId;
-            _currenRoomName = arguments['roomName'].toString();
+            _currentRoomId = roomId;
             if (memberListCallback.list != null) {
               _onLineUserCount = memberListCallback.list!.length;
             }
@@ -139,6 +149,38 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
         );
       },
     );
+  }
+
+  startBroadcast() async {
+    int roomId = TxUtils.getRandomNumber();
+    ActionCallback actionCallback =
+        await trtcLiveCloud.createRoom(roomId, RoomParam(
+            roomName: roomTitle,
+            quality: isStandardQuality
+                ? TRTCCloudDef.TRTC_AUDIO_QUALITY_DEFAULT
+                : TRTCCloudDef.TRTC_AUDIO_QUALITY_MUSIC,
+            coverUrl:
+                "https://imgcache.qq.com/operation/dianshi/other/5.ca48acfebc4dfb68c6c463c9f33e60cb8d7c9565.png"));
+    if (actionCallback.code == 0) {
+      // test service code, please use your own service
+      await YunApiHelper.createRoom(roomId.toString(), roomType: "liveRoom");
+      // Example：sdkAppId = 12345678，roomId = 12345，userId = userA，So：streamId = 12345678_12345_userA_main
+      // String currLoginUserId = await TxUtils.getLoginUserId();
+      // String streamId = GenerateTestUserSig.sdkAppId.toString() +
+      //     '_' +
+      //     roomId.toString() +
+      //     '_' +
+      //     currLoginUserId +
+      //     '_main';
+      await trtcLiveCloud.startPublish("");
+      initData(roomId);
+      setState(() {
+        isInRoom = true;
+      });
+    } else {
+      showErrorToast("创建房间失败" + actionCallback.desc, stopAndGoIndex);
+    }
+    
   }
 
   getPKList(currLoginUserId, Function? callBack) async {
@@ -158,33 +200,13 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
     }
   }
 
-  createRoom(roomId, RoomParam roomParam) async {
-    ActionCallback actionCallback =
-        await trtcLiveCloud.createRoom(roomId, roomParam);
-    if (actionCallback.code == 0) {
-      await YunApiHelper.createRoom(roomId.toString(), roomType: "liveRoom");
-      // Example：sdkAppId = 12345678，roomId = 12345，userId = userA，So：streamId = 12345678_12345_userA_main
-      // String currLoginUserId = await TxUtils.getLoginUserId();
-      // String streamId = GenerateTestUserSig.sdkAppId.toString() +
-      //     '_' +
-      //     roomId.toString() +
-      //     '_' +
-      //     currLoginUserId +
-      //     '_main';
-      await trtcLiveCloud.startPublish("");
-    } else {
-      showErrorToast("创建房间失败" + actionCallback.desc, stopAndGoIndex);
-    }
-  }
-
   @override
   void dispose() async {
-    try {
       if (inputFocusNode.hasFocus) inputFocusNode.unfocus();
       super.dispose();
-      await trtcLiveCloud.stopPublish();
+      trtcLiveCloud.stopCameraPreview();
+      trtcLiveCloud.stopPublish();
       trtcLiveCloud.unRegisterListener(onListenerFunc);
-    } catch (ex) {} finally {}
   }
 
   onListenerFunc(type, params) {
@@ -717,11 +739,6 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                 });
               },
             ),
-            // 暂时不做share
-            // LiveImgButton(
-            //   imgUrl: "assets/images/liveRoom/share.png",
-            //   onTap: () {},
-            // ),
             LiveImgButton(
               imgUrl: "assets/images/liveRoom/closeRoom.png",
               onTap: () {
@@ -767,7 +784,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                           child: Container(
                             constraints: BoxConstraints(maxWidth: 70),
                             child: Text(
-                              _currenRoomName,
+                              roomTitle,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(color: Colors.white),
                             ),
@@ -794,6 +811,105 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
         child: Row(
           children: btnList,
         ));
+  }
+
+  Widget getCreateRoomCard() {
+    return Container(
+      margin: EdgeInsets.all(10),
+      decoration: new BoxDecoration(
+        color: Color.fromRGBO(0, 0, 0, 0.5),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            leading: CircleAvatar(
+              radius: 28,
+              backgroundImage: NetworkImage(
+                'https://imgcache.qq.com/operation/dianshi/other/5.ca48acfebc4dfb68c6c463c9f33e60cb8d7c9565.png',
+              ),
+            ),
+            title: Text(
+              this.userName,
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            subtitle: TextField(
+              controller: TextEditingController.fromValue(
+                TextEditingValue(
+                  text: this.roomTitle, //判断keyword是否为空
+                  selection: TextSelection.fromPosition(
+                    TextPosition(
+                        affinity: TextAffinity.downstream,
+                        offset: this.roomTitle.length),
+                  ),
+                ),
+              ),
+              style: TextStyle(color: Colors.white, fontSize: 14),
+              focusNode: nameFocusNode,
+              decoration: InputDecoration(
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.transparent),
+                ),
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                this.roomTitle = value;
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 15, right: 15),
+            child: Divider(
+              color: Colors.white,
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  '音质',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+              Expanded(
+                  flex: 2,
+                  child: ButtonBar(
+                    children: [
+                      LiveTextButton(
+                        text: '标准',
+                        textStyle: isStandardQuality
+                            ? null
+                            : TextStyle(color: Color(0xff333333), fontSize: 14),
+                        backgroundColor:
+                            isStandardQuality ? null : Color(0xFFF4F5F9),
+                        onPressed: () {
+                          setState(() {
+                            isStandardQuality = true;
+                          });
+                        },
+                      ),
+                      LiveTextButton(
+                        text: '音乐',
+                        backgroundColor:
+                            isStandardQuality ? Color(0xFFF4F5F9) : null,
+                        textStyle: isStandardQuality
+                            ? TextStyle(color: Color(0xff333333), fontSize: 14)
+                            : null,
+                        onPressed: () {
+                          setState(() {
+                            isStandardQuality = false;
+                          });
+                        },
+                      ),
+                    ],
+                  ))
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget getInputMessage() {
@@ -852,6 +968,63 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
               onSubmitted(inputController.text, context);
             }),
       ],
+    );
+  }
+
+    Widget getBottomBtnListPreview() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 30),
+            child: InkWell(
+              onTap: () {
+                onCameraSwitchTap();
+              },
+              child: Image.asset(
+                "assets/images/liveRoom/CameraSwitch.png",
+                height: 52,
+                width: 52,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              constraints:
+                  BoxConstraints(maxHeight: 52, maxWidth: 148, minWidth: 148),
+              width: 148,
+              padding: EdgeInsets.only(left: 30, right: 30),
+              child: LiveTextButton(
+                text: '开始直播',
+                radius: 28,
+                textStyle: TextStyle(color: Color(0xFFFFFFFF), fontSize: 18),
+                backgroundColor: Color(0xFF006EFF),
+                size: Size(148, 52),
+                onPressed: () {
+                  startBroadcast();
+                },
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(right: 30),
+            child: InkWell(
+              onTap: () {
+                onFilterSettingTap();
+              },
+              child: Image.asset(
+                "assets/images/liveRoom/Filter.png",
+                height: 52,
+                width: 52,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -990,7 +1163,6 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
               Container(
                 width: 180,
                 height: 250,
-                //color: Color.fromRGBO(0, 00, 0, 0.2),
                 child: TRTCCloudVideoView(
                   key: ValueKey("PKPreview_VideoViewId"),
                   viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
@@ -1023,13 +1195,16 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           if (inputFocusNode.hasFocus) {
             safeSetState(() {
               isShowComment = false;
             });
             inputFocusNode.unfocus();
+          }
+          if (nameFocusNode.hasFocus) {
+            nameFocusNode.unfocus();
           }
         },
         child: Stack(
@@ -1056,23 +1231,19 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                           : TRTCCloudVideoView(
                               key: ValueKey("LiveRoomPage_bigVideoViewId"),
                               viewType: TRTCCloudDef.TRTC_VideoView_TextureView,
+                              hitTestBehavior: PlatformViewHitTestBehavior.transparent,
                               onViewCreated: (viewId) async {
                                 if (widget.isAdmin) {
-                                  await trtcLiveCloud.stopCameraPreview();
-                                  //为啥需要延迟，不延迟视频渲染会有问题。
-                                  Future.delayed(Duration(milliseconds: 500),
-                                      () async {
-                                    await trtcLiveCloud.startCameraPreview(
-                                        isFrontCamera, viewId);
-                                  });
+                                  await trtcLiveCloud.startCameraPreview(isFrontCamera, viewId);
                                 } else {
-                                  await trtcLiveCloud.startPlay(
-                                      _currentOwnerId, viewId);
+                                  await trtcLiveCloud.startPlay( _currentOwnerId, viewId);
                                 }
                               },
                             ),
                     ),
                   ),
+            isInRoom ?  Stack(
+              children: [
             Align(
               alignment: Alignment.topLeft,
               child: getTopBtnList(),
@@ -1090,7 +1261,6 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                   : _smallVideoUserId.keys.toList(),
               onClose: (String userId) async {
                 if (userId == _currentLoginUser) {
-                  //主动下麦
                   await trtcLiveCloud.stopPublish();
                   setState(() {
                     isJoinAnchor = false;
@@ -1098,7 +1268,6 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
                 } else {
                   await trtcLiveCloud.kickoutJoinAnchor(userId);
                 }
-
                 if (_smallVideoUserId.containsKey(userId))
                   safeSetState(() {
                     _smallVideoUserId.remove(userId);
@@ -1121,7 +1290,39 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
               child: isShowComment ? getInputMessage() : getBottomBtnList(),
             ),
           ],
-        ),
+        ) : Stack(
+              children: [
+                Positioned(
+            top: 100,
+            left: 20,
+            right: 20,
+            child: getCreateRoomCard(),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: getBottomBtnListPreview(),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: () {
+                Navigator.pushReplacementNamed(
+                  context,
+                  "/liveRoom/list",
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 58, right: 30),
+                child: Image.asset(
+                  'assets/images/liveRoom/closeRoom.png',
+                  height: 32,
+                  width: 32,
+                ),
+              ),
+            ),
+          ),
+              ],
+            )],)
       ),
     );
   }
