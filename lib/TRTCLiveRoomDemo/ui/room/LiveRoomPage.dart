@@ -1194,6 +1194,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
@@ -1209,6 +1210,7 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
         },
         child: Stack(
           fit: StackFit.expand,
+
           children: [
             isPKing
                 ? getPKingView()
@@ -1287,7 +1289,10 @@ class _LiveRoomPageState extends State<LiveRoomPage> {
               bottom: 10,
               left: 10,
               right: 10,
-              child: isShowComment ? getInputMessage() : getBottomBtnList(),
+              child: isShowComment ? 
+                 Padding(
+                   child: getInputMessage(),
+                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom)) : getBottomBtnList(),
             ),
           ],
         ) : Stack(
