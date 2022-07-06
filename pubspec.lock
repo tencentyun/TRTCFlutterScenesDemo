@@ -300,21 +300,21 @@ packages:
       name: tencent_im_sdk_plugin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.9.7"
+    version: "3.9.0"
   tencent_im_sdk_plugin_platform_interface:
     dependency: transitive
     description:
       name: tencent_im_sdk_plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.3"
+    version: "0.1.7"
   tencent_im_sdk_plugin_web:
     dependency: transitive
     description:
       name: tencent_im_sdk_plugin_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.8"
+    version: "0.1.2"
   tencent_trtc_cloud:
     dependency: "direct main"
     description:
